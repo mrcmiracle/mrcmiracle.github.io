@@ -89,14 +89,25 @@ printf 'protocol=https\nhost=github.com\n' | git credential-osxkeychain erase
 Nothing is printed. That is what success looks like.
 
 **Then make a token.** GitHub stopped accepting account passwords over git in 2021, so
-the "password" it asks for is a *personal access token*:
+the "password" it asks for is a *personal access token*. There are two kinds, and for an
+organization repo the older kind is genuinely less hassle:
 
-1. Go to <https://github.com/settings/tokens?type=beta> → **Generate new token**.
-2. Name it something like `mrcmiracle site`. Expiration: 90 days is fine.
-3. Resource owner: **`mrcmiracle`** (the organization — not your personal account).
-4. Repository access: **Only select repositories** → pick `mrcmiracle.github.io`.
-5. Permissions → Repository permissions → **Contents: Read and write**.
-6. **Generate token**, then copy it. It is shown once and never again.
+**Classic token — recommended here.**
+
+1. Go to <https://github.com/settings/tokens> → **Generate new token (classic)**.
+2. Note: `mrcmiracle site`. Expiration: 90 days.
+3. Tick the top-level **`repo`** box. Nothing else.
+4. **Generate token**, then copy it. It is shown once and never again.
+
+**Fine-grained token — narrower, but has an extra step.** A fine-grained token
+(<https://github.com/settings/tokens?type=beta>) can be limited to this one repository,
+which is safer. But when you set the resource owner to an *organization*, organizations
+by default require an owner to approve the token before it works — so you would then go
+to the org's **Settings → Personal access tokens → Pending requests** and approve your
+own request. If the push fails with a permissions error, that unapproved request is the
+first thing to check.
+
+Either kind is pasted in exactly the same way below.
 
 **Then push:**
 
