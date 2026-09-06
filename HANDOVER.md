@@ -1,12 +1,13 @@
 # Handover — MRC Miracle
 
 Written 2026-09-06 for a fresh session picking this up cold.
-Updated 2026-09-06 (second session): Task 4 done, Task 1 nearly done — read Task 1 first.
+Updated 2026-09-06 (second session): **Tasks 1 and 4 are done. The site is LIVE.**
+Only Tasks 2 and 3 remain, and both need the user.
 
 **Project:** `/Users/vihaa/Downloads/mrc-miracle`
 **Owner:** North Creek High School HOSA · MRC Unit 503 partnership
 **Contact:** northcreek.mrc@gmail.com · Instagram @mrc.miracle.nchs
-**Target URL:** https://mrcmiracle.github.io (not live yet — see Task 1)
+**Live URL:** https://mrcmiracle.github.io (deployed 2026-09-06)
 
 ---
 
@@ -18,9 +19,9 @@ fast on library wifi and old phones. Landing page is ~20KB gzipped.
 
 Read `README.md` first, then `docs/DEPLOY.md`. Those are current and accurate.
 
-## State: everything is built and tested. Five commits on `main`, working tree clean.
+## State: built, tested, pushed and live. Six commits on `main`, working tree clean.
 
-**Nothing has been pushed to GitHub yet.** The remote repository exists but is empty.
+`main` is in sync with `origin/main`. 26 tracked files.
 
 Re-verified end to end in a real browser in the second session, at 375px width, serving
 from the scratchpad copy. Every result below was observed, not assumed:
@@ -51,53 +52,43 @@ from the scratchpad copy. Every result below was observed, not assumed:
 
 ## The four remaining tasks
 
-### Task 1 — Push to GitHub (one command away, needs the user)
+### Task 1 — Push to GitHub — **DONE**
 
-**The repository now exists and is correctly configured.** It was created in the second
-session as `mrcmiracle/Emergency-Preparedness-Website` and then renamed by the user to:
-
-```
-https://github.com/mrcmiracle/mrcmiracle.github.io
-```
-
-Confirmed by API: **HTTP 200, public, owned by the `mrcmiracle` organization, and empty**
-("Git Repository is empty"). The name matters — `<owner>.github.io` is the only name that
-serves at the bare org URL with no folder path after it. Do not let anyone rename it back.
-
-The local remote already points there, so nothing needs reconfiguring:
+The site went live on 2026-09-06 at <https://mrcmiracle.github.io>.
 
 ```
 origin  https://github.com/mrcmiracle/mrcmiracle.github.io.git
 ```
 
-**What is left is the push, and only the user can do it.** A push attempted this session
-failed with:
+Public, owned by the `mrcmiracle` organization, Pages serving `main` / `/ (root)`.
 
+**The repository name is load-bearing.** `<owner>.github.io` is the only name GitHub Pages
+serves at the bare org URL with no folder path after it. This repo was briefly named
+`Emergency-Preparedness-Website`, which would have served at
+`mrcmiracle.github.io/Emergency-Preparedness-Website/` and broken every printed poster.
+**Do not let anyone rename it back.**
+
+Verified against the live site, not a local copy: all 5 pages plus every JS, CSS, JSON and
+image asset return 200; the clean air lookup fetches its data over HTTPS and returns 6 real
+branches for 98011 (Bothell Library, 0.5 mi); the calculator returns 56 gallons for a
+4-person household and issues a save code; Spanish switches the whole page including
+generated text; Leaflet is still absent until the map button is tapped; console is clean.
+
+Pushing again needs nothing special — the token is saved in the macOS keychain, so
+`git push` just works:
+
+```bash
+cd ~/Downloads/mrc-miracle && git push origin main
 ```
-fatal: could not read Username for 'https://github.com': terminal prompts disabled
-```
 
-That error is good news, and worth understanding: with `credential.helper=osxkeychain`
-configured, git would have silently used a stored credential if one existed. It asked for
-a username instead, which means **the stale keychain entry has already been erased** — the
-user completed that step. Do not tell them to erase it again.
+If it ever asks for a password again the token has expired. Make a new classic token at
+<https://github.com/settings/tokens> with the `repo` box ticked. **Never ask the user to
+paste a token into the chat and never read one out of their keychain.**
 
-So the only remaining steps, in *their* Terminal:
-
-1. Make a classic token at <https://github.com/settings/tokens> — "Generate new token
-   (classic)", tick the top-level `repo` box.
-2. `cd ~/Downloads/mrc-miracle && git push -u origin main`
-   Username = their GitHub username; password = **paste the token**. Nothing appears on
-   screen while pasting; that is normal.
-3. Repo **Settings → Pages** → Deploy from a branch → `main` / `/ (root)`.
-
-**Do not ask the user to paste a token into the chat, do not read it out of their
-keychain, and do not try to push on their behalf with a credential you obtained.**
-
-**Do not push with the GitHub MCP `push_files` tool either**, tempting as it looks. Two
-reasons: it flattens five commits into one and leaves the local clone with an unrelated
-history that will collide on their first real push, and its `content` field is a string,
-so `assets/logo.png` (a 22KB binary PNG) would be corrupted on upload.
+**Do not push with the GitHub MCP `push_files` tool.** It flattens history into an
+unrelated root commit, and its `content` field is a string, so `assets/logo.png` would be
+corrupted. (That MCP connection was also returning `Bad credentials` at the end of the
+second session; plain `git` over HTTPS is the reliable path.)
 
 ### Task 2 — Wire up data collection
 
