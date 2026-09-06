@@ -1,8 +1,8 @@
 # Handover — MRC Miracle
 
 Written 2026-09-06 for a fresh session picking this up cold.
-Updated 2026-09-06 (second session): **Tasks 1 and 4 are done. The site is LIVE.**
-Only Tasks 2 and 3 remain, and both need the user.
+Updated 2026-09-06 (second session): **Tasks 1, 3 and 4 are done. The site is LIVE.**
+Task 2 is wired up in code but blocked on one Apps Script setting — read it first.
 
 **Project:** `/Users/vihaa/Downloads/mrc-miracle`
 **Owner:** North Creek High School HOSA · MRC Unit 503 partnership
@@ -90,17 +90,55 @@ unrelated root commit, and its `content` field is a string, so `assets/logo.png`
 corrupted. (That MCP connection was also returning `Bad credentials` at the end of the
 second session; plain `git` over HTTPS is the reliable path.)
 
-### Task 2 — Wire up data collection
+### Task 2 — Wire up data collection — **code done, BLOCKED on one setting**
 
-`js/track.js` line ~14: `var ENDPOINT = '';`
-Until this is filled in, events log to the browser console instead of being sent.
-`apps-script/Code.gs` is ready to paste into a Google Sheet's Apps Script editor.
-Click-by-click instructions: `docs/DEPLOY.md` step 4.
+`js/track.js` now points at the deployed collector:
 
-### Task 3 — Wire up analytics
+```
+https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec
+```
 
-`js/app.js` line ~9: `var GOATCOUNTER_CODE = '';`
-Sign up at goatcounter.com, put the site code here. `docs/DEPLOY.md` step 5.
+**No data is being recorded yet.** The deployment rejects anonymous callers. Measured
+directly, not inferred:
+
+- `GET` → `302` to `https://accounts.google.com/ServiceLogin`
+- `POST` (text/plain, exactly as the site sends) → **`401`**
+
+That means **"Who has access" is not set to "Anyone"**. Library visitors are not signed in
+to Google, so every event is refused.
+
+**This failure is invisible from the browser.** `Track.send` posts with `mode: 'no-cors'`,
+so the page cannot read the rejection: no console error, no broken UI, and an empty
+spreadsheet is the only symptom. Do not conclude it works because the site looks fine.
+
+The fix, which the user must do — it keeps the same `/exec` URL, so no code change:
+
+**Deploy → Manage deployments →** pencil (edit) icon → Version: **New version** →
+**Who has access: Anyone** → **Deploy**.
+
+Then confirm from Terminal. Anything other than `200` means it is still refusing:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' -X POST 'https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec' -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
+```
+
+A `200` writes a row — delete that test row from the sheet afterwards.
+
+### Task 3 — Wire up analytics — **DONE**
+
+`js/app.js` has `GOATCOUNTER_CODE = 'vihaan'`; the dashboard is
+<https://vihaan.goatcounter.com>. Verified on the live site: the loader injects
+`data-goatcounter="https://vihaan.goatcounter.com/count"` with `src=https://gc.zgo.at/count.js`
+and `window.goatcounter` initialises.
+
+The site code is registered — an unregistered code returns `400` at its subdomain root,
+`vihaan` returns `303`. (`mrcmiracle` returns `400`, i.e. it was never claimed.)
+
+> **Worth raising with the user:** the analytics account is named `vihaan`, not
+> `mrcmiracle`. It works, but it is personal rather than the organisation's, which cuts
+> against the reason the GitHub org exists — the project outliving its founder. GoatCounter
+> can rename a site's code in its settings, and the dashboard can be made public under
+> **Settings** so judges can see live numbers without a login.
 
 ### Task 4 — Two docs were stale — **DONE**
 

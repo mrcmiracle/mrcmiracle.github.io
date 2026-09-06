@@ -184,9 +184,28 @@ records nothing.
 11. Commit that change (edit the file directly on GitHub: open `js/track.js`, click the
     pencil icon, paste, then **Commit changes**).
 
-**Check it worked:** open the live site, run the kit calculator, then look at your
-spreadsheet. Rows should appear within a few seconds. If nothing arrives, open the site,
-press F12 for the browser console, and look for a line starting `[track]`.
+**Check it worked.** Before opening the site, test the endpoint directly. Paste this in
+Terminal, substituting your own `/exec` URL:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' -X POST 'PASTE_YOUR_EXEC_URL_HERE' -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
+```
+
+- **`200`** — working. Delete the test row from your sheet.
+- **`401`, or a `302` to `accounts.google.com`** — the deployment is asking visitors to log
+  in to Google. **"Who has access" is not set to "Anyone".** This is the single most common
+  mistake here, and the site cannot tell you about it: browsers send these events with
+  `mode: 'no-cors'`, so a rejection is invisible to the page and the console stays clean
+  while every event is silently discarded.
+
+  Fix it without changing the URL: **Deploy → Manage deployments →** the pencil (edit)
+  icon → set Version to **New version** → **Who has access: Anyone** → **Deploy**. Editing
+  the existing deployment keeps the same `/exec` URL, so no code change is needed. Re-run
+  the curl above until it returns `200`.
+
+Then open the live site, run the kit calculator, and look at your spreadsheet. Rows should
+appear within a few seconds. If nothing arrives, press F12 for the browser console and look
+for a line starting `[track]`.
 
 > **Export to a spreadsheet** is just **File → Download → Comma Separated Values** in
 > Google Sheets. The data is already in a spreadsheet; nothing to migrate.
