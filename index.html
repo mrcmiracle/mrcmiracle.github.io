@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MRC Miracle — Emergency preparedness for King County</title>
+<meta name="description" content="Free emergency preparedness tools for King County households: clean air locations, a household kit calculator, and immediate steps for smoke and earthquakes.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="./">MRC Miracle<span data-i18n="site.tagline">Emergency preparedness for King County</span></a>
+    <div class="langswitch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Main">
+  <ul>
+    <li><a href="./" data-i18n="nav.home">Home</a></li>
+    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
+    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
+    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+<div class="wrap">
+
+  <section class="rn-zone" aria-labelledby="rn-h">
+    <p class="rn-label" id="rn-h" data-i18n="home.rn.title">Right now</p>
+    <div class="rn-row">
+      <button type="button" class="rn-btn rn-smoke" data-rn-open="smoke">
+        <span data-i18n="home.rn.smoke">There&#39;s smoke today</span>
+        <small data-i18n="home.rn.hint">Immediate steps. Opens instantly.</small>
+      </button>
+      <button type="button" class="rn-btn rn-quake" data-rn-open="quake">
+        <span data-i18n="home.rn.quake">There was just an earthquake</span>
+        <small data-i18n="home.rn.hint">Immediate steps. Opens instantly.</small>
+      </button>
+    </div>
+  </section>
+
+  <section class="rn-panel smoke" id="rn-smoke" hidden aria-labelledby="rn-smoke-h">
+    <h2 id="rn-smoke-h" tabindex="-1" data-i18n="rn.smoke.title">There&#39;s smoke today</h2>
+    <p class="sub" data-i18n="rn.smoke.sub">Do these now.</p>
+    <ol>
+      <li data-i18n="rn.smoke.1">Go inside and close all windows and doors.</li>
+      <li data-i18n="rn.smoke.2">Set your heat or AC to recirculate so it stops pulling outside air in. If you have a window unit, close its fresh-air vent.</li>
+      <li data-i18n="rn.smoke.3">Pick one room with the fewest windows. Put your air cleaner there and keep the door shut.</li>
+      <li data-i18n="rn.smoke.4">Do not vacuum, burn candles, fry food, or smoke indoors. All of it adds particles to air you are trying to clean.</li>
+      <li data-i18n="rn.smoke.5">Skip outdoor exercise. Skip indoor exercise too if you can smell smoke inside.</li>
+      <li data-i18n="rn.smoke.6">Asthma, COPD, or a heart condition? Keep your inhaler or medication within reach and follow your action plan.</li>
+      <li data-i18n="rn.smoke.7">Wear an N95 or KN95 if you must go out. Cloth and surgical masks do not filter smoke.</li>
+      <li data-i18n="rn.smoke.8">If your home cannot get clean, go to a clean air location.</li>
+    </ol>
+    <p class="call911" data-i18n="rn.smoke.911">Trouble breathing, chest pain, or confusion is an emergency. Call 911.</p>
+    <a class="btn" href="clean-air.html" data-i18n="rn.smoke.cta">Find clean air near me</a>
+    <p style="margin-top:.75rem"><button type="button" class="rn-close" data-rn-close data-i18n="common.close">Close</button></p>
+  </section>
+
+  <section class="rn-panel quake" id="rn-quake" hidden aria-labelledby="rn-quake-h">
+    <h2 id="rn-quake-h" tabindex="-1" data-i18n="rn.quake.title">There was just an earthquake</h2>
+    <p class="sub" data-i18n="rn.quake.sub">Do these now.</p>
+    <ol>
+      <li data-i18n="rn.quake.1">Check yourself, then the people near you. For serious bleeding, press hard on the wound and keep pressing.</li>
+      <li data-i18n="rn.quake.2">Put shoes on before you walk anywhere. Broken glass causes most injuries after a quake.</li>
+      <li data-i18n="rn.quake.3">Expect aftershocks. When one starts: Drop, Cover, and Hold On.</li>
+      <li data-i18n="rn.quake.4">Smell gas or hear hissing? Get everyone outside first. Shut the gas off only if you know how. Once it is off, the utility must turn it back on.</li>
+      <li data-i18n="rn.quake.5">No candles, no matches, no lighters. Use a flashlight. Do not flip light switches if you suspect a gas leak.</li>
+      <li data-i18n="rn.quake.6">If your building is damaged, get out and stay out. Do not go back inside for belongings.</li>
+      <li data-i18n="rn.quake.7">Text instead of calling. Texts get through when networks are jammed. Contact your out-of-area person.</li>
+      <li data-i18n="rn.quake.8">Turn on a battery or hand-crank radio for official instructions.</li>
+      <li data-i18n="rn.quake.9">Near Puget Sound or the coast? If shaking was long or violent, move to high ground on foot right away. Do not wait for an official warning.</li>
+      <li data-i18n="rn.quake.10">Fill your bathtub and containers while water is still running.</li>
+    </ol>
+    <p class="call911" data-i18n="rn.quake.911">Call 911 only for a life-threatening emergency. Lines will be overwhelmed.</p>
+    <p><button type="button" class="rn-close" data-rn-close data-i18n="common.close">Close</button></p>
+  </section>
+
+  <h1 data-i18n="home.h1">Get ready for smoke and earthquakes</h1>
+  <p class="lede" data-i18n="home.intro">Free tools for King County households. Nothing to sign up for.</p>
+
+  <h2 data-i18n="home.tools">Plan ahead</h2>
+  <div class="cards">
+    <article class="card">
+      <h3 data-i18n="home.card.kit.title">Build your household kit</h3>
+      <p data-i18n="home.card.kit.body">Answer four questions, get a checklist sized to your household. Print it or save it.</p>
+      <a class="btn btn-block" href="kit.html" data-i18n="home.card.kit.cta">Start the calculator</a>
+    </article>
+    <article class="card">
+      <h3 data-i18n="home.card.air.title">Find clean air near you</h3>
+      <p data-i18n="home.card.air.body">Search by zip code. See hours, transit, pet policy, and accessibility.</p>
+      <a class="btn btn-block" href="clean-air.html" data-i18n="home.card.air.cta">Find a location</a>
+    </article>
+    <article class="card">
+      <h3 data-i18n="home.card.quake.title">Earthquake</h3>
+      <p data-i18n="home.card.quake.body">What to do before, during, and after shaking.</p>
+      <a class="btn btn-secondary btn-block" href="earthquake.html" data-i18n="nav.quake">Earthquake</a>
+    </article>
+    <article class="card">
+      <h3 data-i18n="home.card.smoke.title">Wildfire smoke</h3>
+      <p data-i18n="home.card.smoke.body">How to keep the air in your home breathable.</p>
+      <a class="btn btn-secondary btn-block" href="smoke.html" data-i18n="nav.smoke">Smoke</a>
+    </article>
+    <article class="card card-wound card-wide">
+      <h3 data-i18n="home.card.wound.title">Wound care guide</h3>
+      <p data-i18n="home.card.wound.body">A companion tool from our team covering bleeding control and wound care.</p>
+      <!-- PLACEHOLDER LINK: replace href with the real wound care tool URL when your teammate ships it. -->
+      <a class="btn btn-block" href="#" id="wound-link" aria-disabled="true"
+         data-i18n="home.card.wound.soon">Coming soon</a>
+    </article>
+  </div>
+
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="logo-slot" data-i18n="footer.logo_alt">Logo placeholder</div>
+    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <p class="small" data-i18n="footer.review">Content pending review by MRC Unit 503.</p>
+    <details>
+      <summary data-i18n="footer.privacy_h">Privacy</summary>
+      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
+    </details>
+    <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

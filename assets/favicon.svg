@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MRC Miracle">
+  <rect width="64" height="64" rx="12" fill="#0b5d3b"/>
+  <path d="M32 12 18 18v12c0 10 6 17 14 22 8-5 14-12 14-22V18z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M32 24v16M24 32h16" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

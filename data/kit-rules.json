@@ -1,0 +1,386 @@
+{
+  "_README": "Checklist rules. Item names/notes live in i18n/en.json + i18n/es.json under keys item.<id>.name and item.<id>.note. See docs/UPDATING-SITES.md.",
+  "version": "2026-09-06",
+  "review_required": true,
+  "water": {
+    "gallons_per_person_per_day": 1,
+    "days": 14,
+    "pet_gallons_per_day": 1
+  },
+  "medication_buffer_days": 14,
+  "categories": [
+    "water",
+    "food",
+    "meds",
+    "air",
+    "power",
+    "docs",
+    "comfort",
+    "home",
+    "pets"
+  ],
+  "items": [
+    {
+      "id": "water_supply",
+      "cat": "water",
+      "when": [
+        "always"
+      ],
+      "qty": "water"
+    },
+    {
+      "id": "water_storage",
+      "cat": "water",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "water_treat",
+      "cat": "water",
+      "when": [
+        "always"
+      ],
+      "qty": "none",
+      "review": true
+    },
+    {
+      "id": "pet_water",
+      "cat": "water",
+      "when": [
+        "pets"
+      ],
+      "qty": "petwater",
+      "review": true
+    },
+    {
+      "id": "food_supply",
+      "cat": "food",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "can_opener",
+      "cat": "food",
+      "when": [
+        "always"
+      ],
+      "qty": "fixed",
+      "n": 1
+    },
+    {
+      "id": "pet_food",
+      "cat": "food",
+      "when": [
+        "pets"
+      ],
+      "qty": "fixed",
+      "n": 14,
+      "unit": "days"
+    },
+    {
+      "id": "rx_buffer",
+      "cat": "meds",
+      "when": [
+        "meds"
+      ],
+      "qty": "meddays",
+      "review": true
+    },
+    {
+      "id": "med_list",
+      "cat": "meds",
+      "when": [
+        "meds"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "med_cooler",
+      "cat": "meds",
+      "when": [
+        "meds"
+      ],
+      "qty": "none",
+      "review": true
+    },
+    {
+      "id": "first_aid",
+      "cat": "meds",
+      "when": [
+        "always"
+      ],
+      "qty": "fixed",
+      "n": 1
+    },
+    {
+      "id": "otc_meds",
+      "cat": "meds",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "n95",
+      "cat": "air",
+      "when": [
+        "always"
+      ],
+      "qty": "perPerson",
+      "n": 3,
+      "review": true
+    },
+    {
+      "id": "box_fan_filter",
+      "cat": "air",
+      "when": [
+        "always"
+      ],
+      "qty": "fixed",
+      "n": 1
+    },
+    {
+      "id": "clean_room",
+      "cat": "air",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "flashlight",
+      "cat": "power",
+      "when": [
+        "always"
+      ],
+      "qty": "perPerson",
+      "n": 1
+    },
+    {
+      "id": "batteries",
+      "cat": "power",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "radio",
+      "cat": "power",
+      "when": [
+        "always"
+      ],
+      "qty": "fixed",
+      "n": 1
+    },
+    {
+      "id": "power_bank",
+      "cat": "power",
+      "when": [
+        "always"
+      ],
+      "qty": "fixed",
+      "n": 1
+    },
+    {
+      "id": "doc_copies",
+      "cat": "docs",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "cash",
+      "cat": "docs",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "contact_card",
+      "cat": "docs",
+      "when": [
+        "always"
+      ],
+      "qty": "perPerson",
+      "n": 1
+    },
+    {
+      "id": "blanket",
+      "cat": "comfort",
+      "when": [
+        "always"
+      ],
+      "qty": "perPerson",
+      "n": 1
+    },
+    {
+      "id": "clothes",
+      "cat": "comfort",
+      "when": [
+        "always"
+      ],
+      "qty": "perPerson",
+      "n": 1
+    },
+    {
+      "id": "hygiene",
+      "cat": "comfort",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "sanitation",
+      "cat": "comfort",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "comfort_items",
+      "cat": "comfort",
+      "when": [
+        "always"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_exits",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_shutoff",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_gobag",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_meetup",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_storage",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "apt_neighbors",
+      "cat": "home",
+      "when": [
+        "apartment"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "house_gas",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none",
+      "review": true
+    },
+    {
+      "id": "house_water",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "house_heater",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "house_secure",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "house_storage",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "house_meetup",
+      "cat": "home",
+      "when": [
+        "house"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "pet_carrier",
+      "cat": "pets",
+      "when": [
+        "pets"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "pet_records",
+      "cat": "pets",
+      "when": [
+        "pets"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "pet_leash",
+      "cat": "pets",
+      "when": [
+        "pets"
+      ],
+      "qty": "none"
+    },
+    {
+      "id": "pet_plan",
+      "cat": "pets",
+      "when": [
+        "pets"
+      ],
+      "qty": "none"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find clean air near you — MRC Miracle</title>
+<meta name="description" content="Search King County clean air locations by zip code. Hours, transit, pet policy, and accessibility.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="./">MRC Miracle<span data-i18n="site.tagline">Emergency preparedness for King County</span></a>
+    <div class="langswitch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Main">
+  <ul>
+    <li><a href="./" data-i18n="nav.home">Home</a></li>
+    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
+    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
+    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+<div class="wrap">
+  <h1 data-i18n="air.h1">Find clean air near you</h1>
+  <p class="lede" data-i18n="air.intro">Clean air locations are indoor public spaces with filtered air, open during smoke events.</p>
+
+  <div class="notice" id="air-placeholder-banner" hidden>
+    <strong>Demonstration data</strong>
+    <span data-i18n="banner.placeholder">Demonstration data. The clean air locations below are examples, not real places. Verified locations are coming from Public Health Reserve Corps, MRC Unit 503.</span>
+  </div>
+
+  <p class="notice" id="air-load-err" hidden data-i18n="common.error">Something went wrong loading this. Check your connection and reload.</p>
+
+  <form id="zip-form" class="field" novalidate>
+    <label for="zip" data-i18n="air.zip.label">Enter a King County zip code</label>
+    <input type="text" id="zip" name="zip" inputmode="numeric" pattern="[0-9]*" maxlength="5"
+           autocomplete="postal-code" placeholder="98101" data-i18n-ph="air.zip.placeholder">
+    <p style="margin:.6rem 0 0"><button type="submit" class="btn btn-block" data-i18n="air.zip.button">Find locations</button></p>
+  </form>
+
+  <p class="small" style="text-align:center" data-i18n="air.or">or</p>
+
+  <div class="field">
+    <label for="city" data-i18n="air.city.label">Pick a city</label>
+    <select id="city">
+      <option value="" data-i18n="air.city.any">Choose a city&hellip;</option>
+    </select>
+  </div>
+
+  <section id="air-results" hidden aria-live="polite"></section>
+  <div id="map" hidden role="application" aria-label="Map of clean air locations"></div>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="logo-slot" data-i18n="footer.logo_alt">Logo placeholder</div>
+    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <p class="small" data-i18n="footer.review">Content pending review by MRC Unit 503.</p>
+    <details>
+      <summary data-i18n="footer.privacy_h">Privacy</summary>
+      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
+    </details>
+    <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/app.js"></script>
+<script src="js/cleanair.js"></script>
+</body>
+</html>

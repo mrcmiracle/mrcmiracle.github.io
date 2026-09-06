@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Household kit calculator — MRC Miracle</title>
+<meta name="description" content="Answer four questions and get an emergency kit checklist sized to your household, with water gallons calculated for two weeks.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="./">MRC Miracle<span data-i18n="site.tagline">Emergency preparedness for King County</span></a>
+    <div class="langswitch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Main">
+  <ul>
+    <li><a href="./" data-i18n="nav.home">Home</a></li>
+    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
+    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
+    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+<div class="wrap">
+  <h1 data-i18n="kit.h1">Build your household kit</h1>
+  <p class="lede" data-i18n="kit.intro">Four questions. You will get a checklist sized to your household that you can print or save.</p>
+
+  <p class="notice" id="kit-load-err" hidden data-i18n="common.error">Something went wrong loading this. Check your connection and reload.</p>
+
+  <form id="kit-form" novalidate class="no-print">
+    <div class="field">
+      <label for="people" data-i18n="kit.q.people">How many people live in your household?</label>
+      <input type="number" id="people" name="people" min="1" max="12" step="1" value="2" inputmode="numeric" required>
+      <p class="err" id="people-err" hidden data-i18n="kit.err.people">Enter a number between 1 and 12.</p>
+    </div>
+
+    <fieldset class="field">
+      <legend data-i18n="kit.q.pets">Any pets?</legend>
+      <div class="choices">
+        <label><input type="radio" name="pets" value="yes"><span data-i18n="common.yes">Yes</span></label>
+        <label><input type="radio" name="pets" value="no" checked><span data-i18n="common.no">No</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend data-i18n="kit.q.meds">Does anyone take daily medication?</legend>
+      <div class="choices">
+        <label><input type="radio" name="meds" value="yes"><span data-i18n="common.yes">Yes</span></label>
+        <label><input type="radio" name="meds" value="no" checked><span data-i18n="common.no">No</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend data-i18n="kit.q.housing">Do you live in an apartment or a house?</legend>
+      <div class="choices">
+        <label><input type="radio" name="housing" value="apartment" checked><span data-i18n="kit.housing.apartment">Apartment</span></label>
+        <label><input type="radio" name="housing" value="house"><span data-i18n="kit.housing.house">House</span></label>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-block" data-i18n="kit.submit">Build my checklist</button>
+  </form>
+
+  <section id="kit-result" hidden></section>
+  <section id="kit-save" class="savebox no-print" hidden></section>
+  <section id="kit-ask" class="askbox no-print" hidden></section>
+
+  <section class="savebox no-print">
+    <h3 data-i18n="save.restore_label">Have a code already?</h3>
+    <div class="row">
+      <input type="text" id="restore-input" maxlength="10" autocapitalize="characters" autocomplete="off"
+             spellcheck="false" placeholder="KC-XXXX" data-i18n-ph="save.restore_placeholder"
+             aria-describedby="restore-err">
+      <button type="button" class="btn" id="restore-btn" data-i18n="save.restore_button">Restore</button>
+    </div>
+    <p class="err" id="restore-err" hidden data-i18n="save.restore_bad">That code was not recognized. Check for typos and try again.</p>
+  </section>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="logo-slot" data-i18n="footer.logo_alt">Logo placeholder</div>
+    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <p class="small" data-i18n="footer.review">Content pending review by MRC Unit 503.</p>
+    <details>
+      <summary data-i18n="footer.privacy_h">Privacy</summary>
+      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
+    </details>
+    <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/app.js"></script>
+<script src="js/savecode.js"></script>
+<script src="js/calculator.js"></script>
+</body>
+</html>
