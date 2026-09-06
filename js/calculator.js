@@ -93,7 +93,6 @@
         }
         span.appendChild(name);
         span.appendChild(el('span', 'ck-note', t('item.' + it.id + '.note')));
-        if (it.review) span.appendChild(el('span', 'ck-review', t('kit.result.review')));
         label.appendChild(cb);
         label.appendChild(span);
         li.appendChild(label);

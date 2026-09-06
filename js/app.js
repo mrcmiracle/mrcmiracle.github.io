@@ -63,6 +63,24 @@
     });
   }
 
+  /* Outbound clicks (211, air quality map, Instagram) — tells you which
+     external resources people actually use. Records the destination host only. */
+  function wireOutbound() {
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="http"], a[href^="mailto:"]');
+      if (!a) return;
+      var href = a.getAttribute('href');
+      var label;
+      if (href.indexOf('mailto:') === 0) {
+        label = 'email';
+      } else {
+        try { label = new URL(href).hostname.replace(/^www\./, ''); }
+        catch (err) { label = 'unknown'; }
+      }
+      global.Track.send('outbound_click', { to: label });
+    }, true);
+  }
+
   function stampYear() {
     document.querySelectorAll('[data-year]').forEach(function (e) {
       e.textContent = String(new Date().getFullYear());
@@ -77,6 +95,7 @@
     global.I18N.ready = global.I18N.init();
     markNav(page);
     wireRightNow();
+    wireOutbound();
     stampYear();
   });
 }(window));

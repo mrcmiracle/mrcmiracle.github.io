@@ -1,7 +1,9 @@
 {
-  "_meta": { "lang": "es", "name": "Español", "reviewed": false,
-    "_WARNING": "TRADUCCION NO REVISADA. Un hablante nativo debe revisar este archivo antes de imprimir los carteles. NOT REVIEWED - a fluent speaker must review this file before posters are printed." },
-
+  "_meta": {
+    "lang": "es",
+    "name": "Español",
+    "reviewed": false
+  },
   "site.name": "MRC Miracle",
   "site.tagline": "Preparación para emergencias en el condado de King",
   "nav.home": "Inicio",
@@ -23,9 +25,6 @@
   "common.yes": "Sí",
   "common.no": "No",
   "common.optional": "opcional",
-
-  "banner.placeholder": "Datos de demostración. Los lugares de aire limpio que aparecen abajo son ejemplos, no lugares reales. La lista verificada vendrá del Public Health Reserve Corps, Unidad MRC 503.",
-
   "home.h1": "Prepárese para el humo y los terremotos",
   "home.intro": "Herramientas gratuitas para hogares del condado de King. No hay que registrarse.",
   "home.rn.title": "Ahora mismo",
@@ -47,7 +46,6 @@
   "home.card.wound.body": "Una herramienta complementaria de nuestro equipo sobre control de sangrado y cuidado de heridas.",
   "home.card.wound.cta": "Abrir la guía",
   "home.card.wound.soon": "Próximamente",
-
   "rn.smoke.title": "Hay humo hoy",
   "rn.smoke.sub": "Haga esto ahora.",
   "rn.smoke.1": "Entre a un lugar cerrado y cierre todas las ventanas y puertas.",
@@ -60,7 +58,6 @@
   "rn.smoke.8": "Si no puede limpiar el aire de su casa, vaya a un lugar de aire limpio.",
   "rn.smoke.cta": "Buscar aire limpio cerca de mí",
   "rn.smoke.911": "La dificultad para respirar, el dolor en el pecho o la confusión son una emergencia. Llame al 911.",
-
   "rn.quake.title": "Acaba de haber un terremoto",
   "rn.quake.sub": "Haga esto ahora.",
   "rn.quake.1": "Revísese usted primero y luego a las personas cercanas. Si hay sangrado grave, presione fuerte sobre la herida y no deje de presionar.",
@@ -74,10 +71,9 @@
   "rn.quake.9": "¿Está cerca del Puget Sound o de la costa? Si el temblor fue largo o muy fuerte, camine hacia un terreno alto de inmediato. No espere un aviso oficial.",
   "rn.quake.10": "Llene la tina y sus recipientes mientras todavía haya agua.",
   "rn.quake.911": "Llame al 911 solo si hay peligro de muerte. Las líneas estarán saturadas.",
-
   "air.h1": "Encuentre aire limpio cerca de usted",
-  "air.intro": "Los lugares de aire limpio son espacios públicos cerrados con aire filtrado, abiertos durante eventos de humo.",
-  "air.zip.label": "Escriba un código postal del condado de King",
+  "air.intro": "Las bibliotecas públicas son espacios interiores gratuitos y abiertos a todos. Durante un evento de humo, los sitios oficiales de aire limpio se anuncian por separado — revise los enlaces de abajo para ver qué está abierto en este momento.",
+  "air.zip.label": "Escriba un código postal de Washington",
   "air.zip.placeholder": "98101",
   "air.zip.button": "Buscar lugares",
   "air.or": "o",
@@ -85,7 +81,7 @@
   "air.city.any": "Elija una ciudad…",
   "air.results.count": "lugares cerca de",
   "air.results.none": "No se encontraron lugares para ese código postal. Pruebe con uno cercano o elija una ciudad.",
-  "air.results.badzip": "Eso no parece un código postal del condado de King. Los códigos del condado de King empiezan con 98.",
+  "air.results.badzip": "Eso no parece un código postal de Washington. Los códigos de Washington empiezan con 98 o 99.",
   "air.map.show": "Ver mapa",
   "air.map.hide": "Ocultar mapa",
   "air.map.loading": "Cargando mapa…",
@@ -106,8 +102,6 @@
   "air.acc.elevator": "Elevador",
   "air.acc.seating": "Hay asientos",
   "air.acc.quiet_room": "Sala tranquila",
-  "air.placeholder.badge": "EJEMPLO — NO ES UN LUGAR REAL",
-
   "kit.h1": "Arme el kit de su hogar",
   "kit.intro": "Cuatro preguntas. Recibirá una lista adaptada a su hogar que puede imprimir o guardar.",
   "kit.q.people": "¿Cuántas personas viven en su hogar?",
@@ -128,7 +122,6 @@
   "kit.result.water_n": "{n} galones",
   "kit.result.water_math": "{people} personas x 1 galón por día x 14 días = {n} galones",
   "kit.result.water_note": "Esta es el agua para beber y para higiene básica durante dos semanas. Es bastante. Vaya juntándola poco a poco.",
-  "kit.result.review": "Consulte este punto con un profesional",
   "kit.result.restart": "Empezar de nuevo",
   "kit.cat.water": "Agua",
   "kit.cat.food": "Comida",
@@ -142,7 +135,6 @@
   "kit.qty.each": "{n} por persona",
   "kit.qty.days": "{n} días",
   "kit.qty.gallons": "{n} galones",
-
   "save.h": "Guarde su lista",
   "save.body": "Anote este código o tome una captura de pantalla. Escríbalo en esta página más adelante para recuperar su lista. Funciona en cualquier teléfono y nunca vence.",
   "save.code_label": "Su código",
@@ -153,7 +145,6 @@
   "save.restore_bad": "No se reconoció ese código. Revise que esté bien escrito e inténtelo de nuevo.",
   "save.restore_ok": "Lista recuperada.",
   "save.no_account": "Sin cuenta, sin correo electrónico, sin registrarse.",
-
   "ask.h": "Una última pregunta",
   "ask.q": "¿Cuáles de estas cosas va a hacer esta semana?",
   "ask.hint": "Elija las que apliquen. Esto ayuda a nuestro equipo a entender qué le sirve de verdad a la gente.",
@@ -161,7 +152,6 @@
   "ask.skip": "Omitir",
   "ask.thanks": "Gracias. Esto nos sirve mucho.",
   "ask.none": "Elija al menos una opción, u omita la pregunta.",
-
   "quake.h1": "Terremoto",
   "quake.intro": "El condado de King está sobre fallas activas y cerca de la zona de subducción de Cascadia. Planifique para dos semanas por su cuenta.",
   "quake.s1.h": "Durante el temblor: agáchese, cúbrase y agárrese",
@@ -172,7 +162,6 @@
   "quake.s3.b": "Asegure el calentador de agua con correas y ancle los muebles altos a las vigas. Guarde zapatos y una linterna debajo de cada cama. Elija dos puntos de reunión y un contacto de fuera del área que todos memoricen. Aprenda dónde están las llaves de paso del gas y del agua, y deje una llave inglesa junto al medidor de gas. Practique agacharse, cubrirse y agarrarse con todos en su casa, incluidos los niños.",
   "quake.s4.h": "Por qué dos semanas",
   "quake.s4.b": "Un terremoto regional grande puede dañar los caminos y puentes por donde llegan los suministros. Los servicios de emergencia atenderán primero los casos más graves. Los hogares que pueden cuidarse solos durante dos semanas liberan a los rescatistas para ayudar a quienes no pueden.",
-
   "smoke.h1": "Humo de incendios forestales",
   "smoke.intro": "La temporada de humo en el condado de King suele durar hasta finales del verano y principios del otoño. Las partículas del humo son tan pequeñas que llegan al fondo de los pulmones.",
   "smoke.s1.h": "Haga que un cuarto sea respirable",
@@ -187,15 +176,11 @@
   "smoke.s5.b": "Las personas con asma, EPOC o enfermedades del corazón, las personas embarazadas, los niños pequeños y los adultos mayores sienten los efectos antes y con más fuerza. Si ese es su caso o el de alguien en su casa, actúe con niveles de humo más bajos en vez de esperar a sentirse mal. Tenga el medicamento de rescate a la mano.",
   "smoke.s6.h": "Cuándo buscar ayuda",
   "smoke.s6.b": "La dificultad para respirar, el dolor en el pecho, el corazón acelerado, el mareo o la confusión significan que debe buscar atención médica de inmediato. Llame al 911 si hay peligro de muerte.",
-
   "footer.org": "North Creek High School HOSA, en colaboración con el Public Health Reserve Corps of Seattle & King County, Unidad MRC 503.",
-  "footer.logo_alt": "Espacio para el logotipo",
   "footer.privacy_h": "Privacidad",
   "footer.privacy_b": "Registramos cómo se usan las herramientas para poder mejorarlas y reportar nuestro impacto. Guardamos sus respuestas de la calculadora, los códigos postales que se buscan y las acciones que la gente se compromete a hacer. Nunca recopilamos su nombre, correo electrónico, dirección, teléfono, ubicación exacta ni dirección IP. No hay cuentas ni rastreadores de publicidad. Se guarda un número al azar en su navegador para distinguir las visitas repetidas, y no contiene ninguna información sobre usted. Puede borrarlo en cualquier momento borrando los datos de su navegador.",
   "footer.disclaimer": "Este sitio es un proyecto estudiantil. Es educativo y no reemplaza las instrucciones oficiales de emergencia. En una emergencia, siga las indicaciones de los servicios de emergencia y de las autoridades de salud pública.",
-  "footer.review": "Contenido pendiente de revisión por la Unidad MRC 503.",
   "footer.updated": "Última actualización",
-
   "item.water_supply.name": "Agua para beber",
   "item.water_supply.note": "Un galón por persona por día durante dos semanas. Guárdela desde ahora: no podrá llenar recipientes después de que un terremoto rompa la tubería principal.",
   "item.water_storage.name": "Recipientes para agua",
@@ -281,5 +266,20 @@
   "item.pet_leash.name": "Correa, arnés y arena",
   "item.pet_leash.note": "Hasta los gatos de interior necesitan transportadora y arena.",
   "item.pet_plan.name": "Sepa a dónde pueden ir las mascotas",
-  "item.pet_plan.note": "No todos los albergues aceptan animales. Averigüe cuáles lugares de aire limpio aceptan mascotas antes de necesitarlo."
+  "item.pet_plan.note": "No todos los albergues aceptan animales. Averigüe cuáles lugares de aire limpio aceptan mascotas antes de necesitarlo.",
+  "air.f.county": "Condado",
+  "air.f.callahead": "El horario varía según el lugar. Llame antes de ir.",
+  "air.kind.library": "Biblioteca pública",
+  "air.live.h": "Vea qué está abierto ahora mismo",
+  "air.live.b": "Los sitios de aire limpio se abren durante los eventos de humo, así que la lista cambia cada vez. Estas fuentes se actualizan en vivo:",
+  "air.live.211": "Llame al 2-1-1 o mande su código postal por mensaje al 898211",
+  "air.live.211_es": "En español: 844-975-1882",
+  "air.live.wa211": "Directorio de recursos de Washington 211",
+  "air.live.kc": "Información sobre humo de incendios del condado de King",
+  "air.live.aqi": "Mapa de calidad del aire de Washington",
+  "footer.contact_h": "Contacto",
+  "footer.email": "northcreek.mrc@gmail.com",
+  "footer.instagram": "@mrc.miracle.nchs",
+  "footer.follow": "Síganos en Instagram",
+  "footer.email_label": "Escríbanos"
 }

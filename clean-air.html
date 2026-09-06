@@ -37,10 +37,19 @@
   <h1 data-i18n="air.h1">Find clean air near you</h1>
   <p class="lede" data-i18n="air.intro">Clean air locations are indoor public spaces with filtered air, open during smoke events.</p>
 
-  <div class="notice" id="air-placeholder-banner" hidden>
-    <strong>Demonstration data</strong>
-    <span data-i18n="banner.placeholder">Demonstration data. The clean air locations below are examples, not real places. Verified locations are coming from Public Health Reserve Corps, MRC Unit 503.</span>
-  </div>
+  <section class="live-now" aria-labelledby="live-h">
+    <h2 id="live-h" data-i18n="air.live.h">Check what is open right now</h2>
+    <p data-i18n="air.live.b">Cleaner air sites are opened during smoke events, so the list changes each time. These sources are updated live:</p>
+    <p class="live-211">
+      <strong data-i18n="air.live.211">Call 2-1-1, or text your zip code to 898211</strong><br>
+      <span class="small" data-i18n="air.live.211_es">En espa&ntilde;ol: 844-975-1882</span>
+    </p>
+    <ul class="live-links">
+      <li><a href="https://wa211.org/" target="_blank" rel="noopener noreferrer" data-i18n="air.live.wa211">Washington 211 resource directory</a></li>
+      <li><a href="https://kingcounty.gov/en/dept/dph/health-safety/safety-injury-prevention/emergency-preparedness/personal-preparedness/wildfire-smoke" target="_blank" rel="noopener noreferrer" data-i18n="air.live.kc">King County wildfire smoke information</a></li>
+      <li><a href="https://enviwa.ecology.wa.gov/" target="_blank" rel="noopener noreferrer" data-i18n="air.live.aqi">Washington current air quality map</a></li>
+    </ul>
+  </section>
 
   <p class="notice" id="air-load-err" hidden data-i18n="common.error">Something went wrong loading this. Check your connection and reload.</p>
 
@@ -67,10 +76,16 @@
 
 <footer class="site-foot">
   <div class="wrap">
-    <div class="logo-slot" data-i18n="footer.logo_alt">Logo placeholder</div>
+    <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
+         alt="MRC Miracle seal — King County MRC — HOSA, North Creek High School">
     <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p class="small footer-contact">
+      <a href="mailto:northcreek.mrc@gmail.com" data-i18n="footer.email">northcreek.mrc@gmail.com</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="https://www.instagram.com/mrc.miracle.nchs/" target="_blank" rel="noopener noreferrer"
+         data-i18n="footer.instagram">@mrc.miracle.nchs</a>
+    </p>
     <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
-    <p class="small" data-i18n="footer.review">Content pending review by MRC Unit 503.</p>
     <details>
       <summary data-i18n="footer.privacy_h">Privacy</summary>
       <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>

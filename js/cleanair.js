@@ -46,13 +46,12 @@
     var s = entry.site;
     var c = el('article', 'site-card');
 
-    if (s.placeholder) c.appendChild(el('div', 'ph-badge', t('air.placeholder.badge')));
-
     var head = el('h3', null, s.name);
     c.appendChild(head);
 
     var meta = el('p', 'site-dist');
-    meta.textContent = s.city + ' · ' + entry.dist.toFixed(1) + ' ' + t('common.miles');
+    meta.textContent = t('air.kind.' + (s.kind || 'library')) + ' · ' + s.city +
+      ' · ' + entry.dist.toFixed(1) + ' ' + t('common.miles');
     c.appendChild(meta);
 
     var dl = el('dl');
@@ -62,6 +61,7 @@
       dl.appendChild(el('dd', null, value));
     }
     row('air.f.address', s.address);
+    row('air.f.county', s.county);
     row('air.f.hours', localized(s, 'hours'));
     row('air.f.transit', localized(s, 'transit'));
     row('air.f.pets', t('air.pets.' + (s.pets || 'unknown')));
@@ -70,6 +70,8 @@
     if (accNote) row('air.f.access', accNote);
     c.appendChild(dl);
 
+    if (!localized(s, 'hours')) c.appendChild(el('p', 'small', t('air.f.callahead')));
+
     if (s.access && s.access.length) {
       var ul = el('ul', 'tags');
       s.access.forEach(function (a) { ul.appendChild(el('li', null, t('air.acc.' + a))); });
@@ -77,7 +79,7 @@
     }
 
     // Directions open in the user's own map app; only the destination is passed.
-    if (!s.placeholder) {
+    {
       var a = el('a', 'btn btn-secondary', t('air.f.directions'));
       a.href = 'https://www.openstreetmap.org/directions?to=' + s.lat + '%2C' + s.lon;
       a.rel = 'noopener noreferrer';
@@ -199,7 +201,8 @@
     var raw = $('#zip').value.trim();
     var zip = raw.replace(/[^0-9]/g, '').slice(0, 5);
     if (zip.length !== 5 || !zips[zip]) {
-      showNone(zip.length === 5 ? 'air.results.none' : 'air.results.badzip');
+      // A well-formed zip we don't hold is an out-of-state zip, not an empty result.
+      showNone('air.results.badzip');
       global.Track.send('cleanair_lookup', { zip: zip || 'invalid', results: 0, method: 'zip' });
       return;
     }
@@ -240,10 +243,6 @@
 
   function start(data) {
     sites = data.sites || [];
-    if (!data.verified) {
-      var b = $('#air-placeholder-banner');
-      if (b) b.hidden = false;
-    }
     fillCities();
     $('#zip-form').addEventListener('submit', function (e) { e.preventDefault(); byZip(); });
     $('#city').addEventListener('change', byCity);

@@ -1,6 +1,9 @@
 {
-  "_meta": { "lang": "en", "name": "English", "reviewed": true },
-
+  "_meta": {
+    "lang": "en",
+    "name": "English",
+    "reviewed": true
+  },
   "site.name": "MRC Miracle",
   "site.tagline": "Emergency preparedness for King County",
   "nav.home": "Home",
@@ -22,9 +25,6 @@
   "common.yes": "Yes",
   "common.no": "No",
   "common.optional": "optional",
-
-  "banner.placeholder": "Demonstration data. The clean air locations below are examples, not real places. Verified locations are coming from Public Health Reserve Corps, MRC Unit 503.",
-
   "home.h1": "Get ready for smoke and earthquakes",
   "home.intro": "Free tools for King County households. Nothing to sign up for.",
   "home.rn.title": "Right now",
@@ -46,7 +46,6 @@
   "home.card.wound.body": "A companion tool from our team covering bleeding control and wound care.",
   "home.card.wound.cta": "Open the guide",
   "home.card.wound.soon": "Coming soon",
-
   "rn.smoke.title": "There's smoke today",
   "rn.smoke.sub": "Do these now.",
   "rn.smoke.1": "Go inside and close all windows and doors.",
@@ -59,7 +58,6 @@
   "rn.smoke.8": "If your home cannot get clean, go to a clean air location.",
   "rn.smoke.cta": "Find clean air near me",
   "rn.smoke.911": "Trouble breathing, chest pain, or confusion is an emergency. Call 911.",
-
   "rn.quake.title": "There was just an earthquake",
   "rn.quake.sub": "Do these now.",
   "rn.quake.1": "Check yourself, then the people near you. For serious bleeding, press hard on the wound and keep pressing.",
@@ -73,10 +71,9 @@
   "rn.quake.9": "Near Puget Sound or the coast? If shaking was long or violent, move to high ground on foot right away. Do not wait for an official warning.",
   "rn.quake.10": "Fill your bathtub and containers while water is still running.",
   "rn.quake.911": "Call 911 only for a life-threatening emergency. Lines will be overwhelmed.",
-
   "air.h1": "Find clean air near you",
-  "air.intro": "Clean air locations are indoor public spaces with filtered air, open during smoke events.",
-  "air.zip.label": "Enter a King County zip code",
+  "air.intro": "Public libraries are free indoor spaces open to everyone. During a smoke event, officially designated cleaner air sites are announced separately — check the links below for what is open right now.",
+  "air.zip.label": "Enter a Washington zip code",
   "air.zip.placeholder": "98101",
   "air.zip.button": "Find locations",
   "air.or": "or",
@@ -84,7 +81,7 @@
   "air.city.any": "Choose a city…",
   "air.results.count": "locations near",
   "air.results.none": "No locations found for that zip code. Try a nearby zip or pick a city.",
-  "air.results.badzip": "That does not look like a King County zip code. King County zips start with 98.",
+  "air.results.badzip": "That does not look like a Washington zip code. Washington zips start with 98 or 99.",
   "air.map.show": "Show map",
   "air.map.hide": "Hide map",
   "air.map.loading": "Loading map…",
@@ -105,8 +102,6 @@
   "air.acc.elevator": "Elevator",
   "air.acc.seating": "Seating available",
   "air.acc.quiet_room": "Quiet room",
-  "air.placeholder.badge": "PLACEHOLDER — NOT A REAL LOCATION",
-
   "kit.h1": "Build your household kit",
   "kit.intro": "Four questions. You will get a checklist sized to your household that you can print or save.",
   "kit.q.people": "How many people live in your household?",
@@ -127,7 +122,6 @@
   "kit.result.water_n": "{n} gallons",
   "kit.result.water_math": "{people} people x 1 gallon per day x 14 days = {n} gallons",
   "kit.result.water_note": "This is drinking and basic hygiene water for two weeks. It is a lot. Build up to it a few jugs at a time.",
-  "kit.result.review": "Check this item with a professional",
   "kit.result.restart": "Start over",
   "kit.cat.water": "Water",
   "kit.cat.food": "Food",
@@ -141,7 +135,6 @@
   "kit.qty.each": "{n} each",
   "kit.qty.days": "{n} days",
   "kit.qty.gallons": "{n} gallons",
-
   "save.h": "Save your checklist",
   "save.body": "Write this code down or take a screenshot. Enter it on this page later to bring your checklist back. It works on any phone and never expires.",
   "save.code_label": "Your code",
@@ -152,7 +145,6 @@
   "save.restore_bad": "That code was not recognized. Check for typos and try again.",
   "save.restore_ok": "Checklist restored.",
   "save.no_account": "No account, no email, nothing to sign up for.",
-
   "ask.h": "One last question",
   "ask.q": "Which of these will you do this week?",
   "ask.hint": "Pick any that apply. This helps our team understand what actually helps people.",
@@ -160,7 +152,6 @@
   "ask.skip": "Skip",
   "ask.thanks": "Thank you. That is genuinely useful to us.",
   "ask.none": "Select at least one item, or skip.",
-
   "quake.h1": "Earthquake",
   "quake.intro": "King County sits on active faults and near the Cascadia Subduction Zone. Plan for two weeks on your own.",
   "quake.s1.h": "During shaking: Drop, Cover, Hold On",
@@ -171,7 +162,6 @@
   "quake.s3.b": "Strap your water heater and bolt tall furniture to studs. Keep shoes and a flashlight under every bed. Pick two meeting places and one out-of-area contact everyone memorizes. Learn where your gas and water shutoffs are, and keep a wrench with the gas meter. Practice Drop, Cover, Hold On with everyone in your home, including kids.",
   "quake.s4.h": "Why two weeks",
   "quake.s4.b": "A large regional earthquake can damage the roads and bridges that supplies travel on. Emergency services will go to the most severe cases first. Households that can look after themselves for two weeks free up responders for people who cannot.",
-
   "smoke.h1": "Wildfire smoke",
   "smoke.intro": "Smoke season in King County generally runs through late summer and early fall. The particles in smoke are small enough to reach deep into your lungs.",
   "smoke.s1.h": "Make one room breathable",
@@ -186,15 +176,11 @@
   "smoke.s5.b": "People with asthma, COPD, or heart disease, people who are pregnant, young children, and older adults feel effects sooner and more severely. If that is you or someone in your home, act at lower smoke levels rather than waiting to feel bad. Keep rescue medication where you can reach it.",
   "smoke.s6.h": "When to get help",
   "smoke.s6.b": "Trouble breathing, chest pain, a fast heartbeat, dizziness, or confusion means get medical help right away. Call 911 for anything life-threatening.",
-
   "footer.org": "North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle & King County, MRC Unit 503.",
-  "footer.logo_alt": "Logo placeholder",
   "footer.privacy_h": "Privacy",
   "footer.privacy_b": "We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.",
   "footer.disclaimer": "This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.",
-  "footer.review": "Content pending review by MRC Unit 503.",
   "footer.updated": "Last updated",
-
   "item.water_supply.name": "Drinking water",
   "item.water_supply.note": "One gallon per person per day for two weeks. Store it now — you cannot fill containers after a quake breaks the water main.",
   "item.water_storage.name": "Water containers",
@@ -280,5 +266,20 @@
   "item.pet_leash.name": "Leash, harness, and litter",
   "item.pet_leash.note": "Even indoor cats need a carrier and litter.",
   "item.pet_plan.name": "Know where pets can go",
-  "item.pet_plan.note": "Not every shelter takes animals. Check which clean air locations allow pets before you need one."
+  "item.pet_plan.note": "Not every shelter takes animals. Check which clean air locations allow pets before you need one.",
+  "air.f.county": "County",
+  "air.f.callahead": "Hours vary by location. Call before you go.",
+  "air.kind.library": "Public library",
+  "air.live.h": "Check what is open right now",
+  "air.live.b": "Cleaner air sites are opened during smoke events, so the list changes each time. These sources are updated live:",
+  "air.live.211": "Call 2-1-1, or text your zip code to 898211",
+  "air.live.211_es": "En español: 844-975-1882",
+  "air.live.wa211": "Washington 211 resource directory",
+  "air.live.kc": "King County wildfire smoke information",
+  "air.live.aqi": "Washington current air quality map",
+  "footer.contact_h": "Contact",
+  "footer.email": "northcreek.mrc@gmail.com",
+  "footer.instagram": "@mrc.miracle.nchs",
+  "footer.follow": "Follow us on Instagram",
+  "footer.email_label": "Email us"
 }
