@@ -11,7 +11,7 @@
   // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BETWEEN THE QUOTES.
   // Until you do, events are logged to the browser console instead
   // of being sent anywhere. See docs/DEPLOY.md step 4.
-  var ENDPOINT = '';
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec';
   // ---------------------------------------------------------------
 
   var SITE_VERSION = '1.0.0';

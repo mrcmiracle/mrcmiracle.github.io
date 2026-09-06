@@ -6,7 +6,7 @@
   // GoatCounter analytics. Paste the site code you chose at signup
   // (the part before ".goatcounter.com"). Leave empty to disable.
   // See docs/DEPLOY.md step 5.
-  var GOATCOUNTER_CODE = '';
+  var GOATCOUNTER_CODE = 'vihaan';
   // ---------------------------------------------------------------
 
   /* Loaded from script rather than pasted into five HTML files, so there is
