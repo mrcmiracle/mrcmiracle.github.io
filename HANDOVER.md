@@ -1,6 +1,7 @@
 # Handover — MRC Miracle
 
 Written 2026-09-06 for a fresh session picking this up cold.
+Updated 2026-09-06 (second session): Task 4 done, Task 1 nearly done — read Task 1 first.
 
 **Project:** `/Users/vihaa/Downloads/mrc-miracle`
 **Owner:** North Creek High School HOSA · MRC Unit 503 partnership
@@ -17,63 +18,86 @@ fast on library wifi and old phones. Landing page is ~20KB gzipped.
 
 Read `README.md` first, then `docs/DEPLOY.md`. Those are current and accurate.
 
-## State: everything is built and tested. Two commits on `main`, working tree clean.
+## State: everything is built and tested. Five commits on `main`, working tree clean.
 
-Verified working in a real browser this session, at 375px width:
+**Nothing has been pushed to GitHub yet.** The remote repository exists but is empty.
+
+Re-verified end to end in a real browser in the second session, at 375px width, serving
+from the scratchpad copy. Every result below was observed, not assumed:
 
 - All 5 pages load with **no console errors, no missing translation keys, no
   horizontal overflow**
-- Calculator: 4 people → 56 gal / 37 items; 5 people → 70 gal; 1 person → 14 gal /
-  28 items with pets section correctly absent
-- Save codes: all **96 possible households round-trip**, 96 unique codes, typo
-  tolerant (lowercase / no dash / spaces all work), all 8 garbage inputs rejected
-- Clean air finder returns correct real libraries for Bothell (98011), Seattle,
-  Spokane, Bellingham, Vancouver; an Oregon zip is correctly refused
+- Calculator water maths exact: 4 people → 56 gal, 5 → 70, 3 → 42, 1 → 14
+  (`people x 1 gal x 14 days`). Item count tracks the pets/meds/housing toggles, not
+  headcount — 28 items for apartment/no pets/no meds, 37 with pets + meds + house.
+  (The first draft of this doc read "4 people → 37 items"; that run simply had the pet
+  and medication toggles on. Item count does not vary with people, by design.)
+- Save codes: all **96 possible households round-trip** in Node, and the round trip was
+  re-confirmed through the actual UI — `KC-1WHV` restored 3 people / pets / meds / house.
+  Typo tolerant (`kc-1whv`, `KC1WHV`, and padded spaces all restore correctly); all five
+  garbage inputs tried (`ZZ-9999`, `hello`, empty, `KC-IIII`, `12345678`) left the form
+  untouched. The code is shown in `#kit-save`, a separate section from `#kit-result`.
+- Clean air finder returns correct real libraries for Bothell (98011 → Bothell Library,
+  0.5 mi), Seattle (98101 → Central Library), Spokane (99201), Bellingham (98225) and
+  Vancouver (98660); Oregon 97201 is refused with "Washington zips start with 98 or 99"
 - Spanish switches everything including JavaScript-built text, and persists across pages
-- Map is genuinely lazy (Leaflet absent until the button is tapped)
+- Map is genuinely lazy: `window.L` is undefined until "Ver mapa"/"View map" is tapped,
+  then the Leaflet CSS and JS tags are injected from cdnjs and the container initialises
+  to 343x320 with tiles requested. **Measure it after it settles** — a `getBoundingClientRect()`
+  taken too early reports ~52px tall and zero tiles, which looks like a bug and is not one.
 - Footer logo, email, and Instagram present on all 5 pages
 
 ---
 
 ## The four remaining tasks
 
-### Task 1 — Push to GitHub (BLOCKED, needs the user)
+### Task 1 — Push to GitHub (one command away, needs the user)
 
-The org `https://github.com/mrcmiracle` **exists**. The repo does **not**.
-The remote is already configured:
+**The repository now exists and is correctly configured.** It was created in the second
+session as `mrcmiracle/Emergency-Preparedness-Website` and then renamed by the user to:
+
+```
+https://github.com/mrcmiracle/mrcmiracle.github.io
+```
+
+Confirmed by API: **HTTP 200, public, owned by the `mrcmiracle` organization, and empty**
+("Git Repository is empty"). The name matters — `<owner>.github.io` is the only name that
+serves at the bare org URL with no folder path after it. Do not let anyone rename it back.
+
+The local remote already points there, so nothing needs reconfiguring:
 
 ```
 origin  https://github.com/mrcmiracle/mrcmiracle.github.io.git
 ```
 
-A push was attempted and failed:
+**What is left is the push, and only the user can do it.** A push attempted this session
+failed with:
 
 ```
-remote: Invalid username or token. Password authentication is not supported
-fatal: Authentication failed
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
 ```
 
-Two separate blockers:
+That error is good news, and worth understanding: with `credential.helper=osxkeychain`
+configured, git would have silently used a stored credential if one existed. It asked for
+a username instead, which means **the stale keychain entry has already been erased** — the
+user completed that step. Do not tell them to erase it again.
 
-1. **The repo does not exist.** The user must create it at
-   <https://github.com/organizations/mrcmiracle/repositories/new> — named exactly
-   `mrcmiracle.github.io`, **Public**, with **no** README/gitignore/licence.
-   The exact name is what produces a URL with no folder path after it.
-2. **Auth.** The macOS keychain holds a github.com entry for `vihaannrsingh-cmyk`
-   but it is rejected — almost certainly an old password rather than a token.
+So the only remaining steps, in *their* Terminal:
 
-**Do not ask the user to paste a token into the chat, and do not read the token out
-of their keychain.** Let them authenticate themselves. Easiest options:
+1. Make a classic token at <https://github.com/settings/tokens> — "Generate new token
+   (classic)", tick the top-level `repo` box.
+2. `cd ~/Downloads/mrc-miracle && git push -u origin main`
+   Username = their GitHub username; password = **paste the token**. Nothing appears on
+   screen while pasting; that is normal.
+3. Repo **Settings → Pages** → Deploy from a branch → `main` / `/ (root)`.
 
-- **GitHub CLI** (no Homebrew on this machine — use the `.pkg` from
-  <https://github.com/cli/cli/releases>), then `gh auth login` (browser flow), then
-  `gh repo create mrcmiracle/mrcmiracle.github.io --public --source=. --push`
-- **Or** create the repo in the browser, then `git push -u origin main` and let git
-  prompt them for a Personal Access Token in *their* terminal
-- **Or** create the repo in the browser and drag the folder *contents* (not the
-  folder) into GitHub's web uploader
+**Do not ask the user to paste a token into the chat, do not read it out of their
+keychain, and do not try to push on their behalf with a credential you obtained.**
 
-Once it exists: Settings → Pages → Deploy from a branch → `main` / `/ (root)`.
+**Do not push with the GitHub MCP `push_files` tool either**, tempting as it looks. Two
+reasons: it flattens five commits into one and leaves the local clone with an unrelated
+history that will collide on their first real push, and its `content` field is a string,
+so `assets/logo.png` (a 22KB binary PNG) would be corrupted on upload.
 
 ### Task 2 — Wire up data collection
 
@@ -87,12 +111,22 @@ Click-by-click instructions: `docs/DEPLOY.md` step 4.
 `js/app.js` line ~9: `var GOATCOUNTER_CODE = '';`
 Sign up at goatcounter.com, put the site code here. `docs/DEPLOY.md` step 5.
 
-### Task 4 — Two docs are stale
+### Task 4 — Two docs were stale — **DONE**
 
-`README.md` is **current**. But `docs/UPDATING-SITES.md` and `docs/DEPLOY.md` still
-describe the old placeholder dataset (they talk about eight `ph-` entries and setting
-`"verified": true`). Those placeholders are gone. Update both to describe the real
-IMLS library dataset and the `kind`/`county` fields.
+Completed in the second session (commits `a523f53` and `0078f91`).
+`docs/UPDATING-SITES.md` and `docs/DEPLOY.md` now describe the real IMLS dataset.
+
+Three things were found to be wrong in the code-facing docs while fixing them, and are
+now documented correctly — worth knowing before editing anything:
+
+- **`"verified": true` is not a switch.** No code reads it. There is no "Demonstration
+  data" banner anywhere any more. It is a provenance note for humans only.
+- **`kind` is a translation key** (`air.kind.<kind>`), and `library` is the only value
+  either `i18n` file carries wording for. Any other value renders a raw `air.kind.…`
+  string on the page. Add the key to both `en.json` and `es.json` first.
+- **A site's own `zip` field is never matched against.** Visitor lookups compare the
+  typed zip to `data/zips.json` centroids, so a wrong `zip` on a site changes nothing
+  on screen. Keep it correct anyway; the next person will assume it is load-bearing.
 
 ---
 
