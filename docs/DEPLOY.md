@@ -19,6 +19,10 @@ and make one. Use an email you will still have after graduation.
 
 ## Step 1 — Create the organization and the repository
 
+> **Status as of 2026-09-06:** the organization `mrcmiracle` **already exists**. Skip
+> ahead to "Now the repository" below. The rest of this step is kept as a record of how
+> it was set up.
+
 We are using a GitHub **organization** rather than your personal account. Two reasons:
 the URL says the project's name instead of your username, and you can add next year's
 officers as owners so the site outlives you.
@@ -66,15 +70,48 @@ https://mrcmiracle.github.io
 
 ### The command-line way
 
-If you would rather use Terminal, the repository is already initialized locally:
+**The local repository is already fully prepared.** The work is committed on a branch
+called `main`, and the remote is already pointed at
+`https://github.com/mrcmiracle/mrcmiracle.github.io.git`. You do **not** need to run
+`git init`, `git add`, `git commit`, or `git remote add` — running `git remote add` again
+just errors with "remote origin already exists".
+
+All that is left is the push, and the only hard part is the password prompt.
+
+**First, clear the stale saved login.** Your Mac's keychain is holding an old github.com
+password that GitHub no longer accepts, and git will keep silently retrying it instead of
+asking you for anything. Run this once, in Terminal:
 
 ```bash
-cd ~/Downloads/mrc-miracle && git add -A && git commit -m "Initial site" && git branch -M main && git remote add origin https://github.com/mrcmiracle/mrcmiracle.github.io.git && git push -u origin main
+printf 'protocol=https\nhost=github.com\n' | git credential-osxkeychain erase
 ```
 
-GitHub will ask for a password. It will **not** accept your account password — you need
-a personal access token from <https://github.com/settings/tokens> (choose "Generate new
-token (classic)", tick the `repo` box, copy the token, paste it as the password).
+Nothing is printed. That is what success looks like.
+
+**Then make a token.** GitHub stopped accepting account passwords over git in 2021, so
+the "password" it asks for is a *personal access token*:
+
+1. Go to <https://github.com/settings/tokens?type=beta> → **Generate new token**.
+2. Name it something like `mrcmiracle site`. Expiration: 90 days is fine.
+3. Resource owner: **`mrcmiracle`** (the organization — not your personal account).
+4. Repository access: **Only select repositories** → pick `mrcmiracle.github.io`.
+5. Permissions → Repository permissions → **Contents: Read and write**.
+6. **Generate token**, then copy it. It is shown once and never again.
+
+**Then push:**
+
+```bash
+cd ~/Downloads/mrc-miracle && git push -u origin main
+```
+
+- `Username for 'https://github.com':` → your GitHub username
+- `Password for ...:` → **paste the token**, not your password. Nothing appears on screen
+  as you paste. That is normal — press Return.
+
+The token is then saved to your keychain, so later pushes will not ask again.
+
+> Type the token into **your own Terminal**. Do not paste it into a chat window, an email,
+> or a file in this project. Anyone holding it can write to your repository.
 
 ---
 
@@ -177,13 +214,15 @@ showing judges live numbers without handing over your login.
 
 Work through this list. Several items need someone other than you.
 
-- [ ] Real clean air locations are in `data/clean-air-sites.json`, every
-      `"placeholder": true` entry is gone, and `"verified"` is set to `true`
-      (see `UPDATING-SITES.md`)
+- [x] Real clean air locations are in `data/clean-air-sites.json` — **already done.**
+      344 Washington public libraries across 39 counties, from the federal IMLS Public
+      Libraries Survey FY2023. There are no placeholder entries left to remove.
+      Optional follow-up: fill in `hours` and `pets` for the branches your team
+      actually calls and verifies (see `UPDATING-SITES.md`)
 - [ ] A fluent Spanish speaker has read `i18n/es.json` and `_meta.reviewed` is now `true`
 - [ ] Your MRC Unit 503 contact has read the earthquake and smoke text and approved it
 - [ ] The wound care link in `index.html` points at your teammate's real tool
-- [ ] The logo placeholder in the footer has been replaced, or is deliberately left
+- [x] The footer logo is the team's own seal — **already done** (`assets/logo.png`)
 - [ ] You have opened the live URL on a real phone, on library wifi if you can
 - [ ] The QR code on the poster points to `https://mrcmiracle.github.io` and you have
       scanned the printed proof yourself

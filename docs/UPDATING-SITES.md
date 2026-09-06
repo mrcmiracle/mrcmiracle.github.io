@@ -12,43 +12,67 @@ These are **JSON** files. JSON is picky about punctuation:
 
 ---
 
-## Adding real clean air locations
+## The clean air locations list
 
 Open `data/clean-air-sites.json`.
 
-At the top, once the real list is in:
+It already holds **344 real Washington public libraries across all 39 counties** — 76 of
+them in King County. They come from the federal **IMLS Public Libraries Survey FY2023**
+outlet file, which is public domain. The names, addresses, ZIPs, phone numbers, and
+coordinates are the real published values. Bookmobiles were removed. Burien Library was
+spot-checked by hand against the KCLS website.
+
+**There is nothing fake in this file to delete.** An earlier draft of this project had
+eight `ph-` placeholder entries and a yellow "Demonstration data" banner. Both are gone —
+that banner no longer exists anywhere in the code.
+
+### Why libraries, and not an official clean-air-site list
+
+Washington does not publish a fixed list of cleaner air sites. Local health jurisdictions
+activate them per smoke event, and Public Health — Seattle & King County points people to
+libraries and shopping centres when it does. So `clean-air.html` leads with the **live**
+sources (WA 211, the King County smoke page, the state AQI map) and lists these libraries
+underneath as year-round public indoor spaces. That is a deliberate design decision, not a
+dataset someone forgot to finish.
+
+### The header block
+
+Above `sites` there is a block like this:
 
 ```json
-"version": "2027-01-15",
+"version": "2026-09-06",
 "verified": true,
-"source": "Supplied by MRC Unit 503, verified 15 Jan 2027",
+"source": "US Institute of Museum and Library Services, Public Libraries Survey FY2023, outlet file (pls_fy23_outlet_pud23i.csv). Retrieved 2026-09-06 from imls.gov. Bookmobiles excluded.",
+"source_url": "https://www.imls.gov/research-evaluation/surveys/public-libraries-survey-pls",
 ```
 
-Setting `verified` to `true` hides the yellow "Demonstration data" banner. **Leave it
-`false` until the list is genuinely verified** — that banner is what stops someone
-driving to a location that does not exist.
+This is a **written record for the next person, not a switch.** No code reads any of it,
+and `verified` no longer turns a banner on or off. Update `version` and `source` whenever
+you change the list, so whoever inherits this project knows where the data came from and
+when it was last touched.
 
-Each location looks like this. Delete all eight `ph-` placeholder entries once you have
-real ones.
+### What one entry looks like
 
 ```json
 {
-  "id": "kcls-burien",
-  "name": "Burien Library",
-  "city": "Burien",
-  "address": "400 SW 152nd St, Burien, WA 98166",
-  "lat": 47.470,
-  "lon": -122.339,
-  "hours": "Mon-Thu 10am-8pm, Fri-Sat 10am-6pm, Sun 1pm-5pm",
+  "id": "WA0061-013",
+  "name": "Othello Branch Library",
+  "kind": "library",
+  "city": "Othello",
+  "county": "Adams",
+  "address": "101 E. Main Street, Othello, WA 99344",
+  "zip": "99344",
+  "lat": 46.82619,
+  "lon": -119.17376,
+  "phone": "(509) 488-9683",
+  "hours": "",
   "hours_es": "",
-  "transit": "RapidRide F Line, Route 121",
+  "transit": "",
   "transit_es": "",
   "pets": "service_only",
-  "access": ["wheelchair", "accessible_restroom", "elevator"],
-  "access_notes": "Ramp entrance on the north side",
-  "access_notes_es": "",
-  "phone": "206-555-0100",
-  "updated": "2027-01-15"
+  "access": [],
+  "access_notes": "",
+  "access_notes_es": ""
 }
 ```
 
@@ -56,17 +80,22 @@ real ones.
 
 | Field | What to put |
 |---|---|
-| `id` | Any short unique label. Lowercase, no spaces. Used in your analytics data. |
-| `name` | Shown as the heading. |
-| `city` | Must be spelled identically across entries — the city dropdown is built from this field, so "Federal Way" and "federal way" would appear as two cities. |
-| `address` | Shown as written. Include the zip. |
+| `id` | Must be unique. The imported entries use their real IMLS outlet id (`WA0061-013`). Anything you add yourself can use any short unique lowercase label. This shows up in your analytics data. |
+| `name` | Shown as the heading on the card. |
+| `kind` | What sort of place it is. **Every entry is `"library"`, and `library` is the only value the site has wording for.** Any other value prints a raw `air.kind.…` label on the page. To add, say, a community centre, first add an `"air.kind.communitycenter"` line to **both** `i18n/en.json` and `i18n/es.json`. |
+| `city` | Must be spelled identically across entries — the city dropdown is built from this field, so "Federal Way" and "federal way" would show up as two separate cities. |
+| `county` | County name with no "County" on the end: `"King"`, not `"King County"`. Shown as a row on the card. |
+| `address` | Shown exactly as written. Include the ZIP. |
+| `zip` | Reference only. When a visitor types a ZIP, it is matched against `data/zips.json` — **not** against this field — so a wrong value here changes nothing on screen. Keep it correct anyway; the next person will assume it is. |
 | `lat` / `lon` | **Required.** Distance sorting and the map both depend on these. See below. |
-| `hours` | Free text. Whatever the site actually posts. |
-| `pets` | Exactly one of: `yes`, `no`, `service_only`, `unknown`. Anything else shows as "unknown". |
-| `access` | Any of: `wheelchair`, `accessible_restroom`, `elevator`, `seating`, `quiet_room`. Use `[]` for none. |
 | `phone` | Leave as `""` if there isn't one. |
-| `updated` | The date you last confirmed this entry is correct. |
-| `placeholder` | Omit it. Only the fake seed entries have it. |
+| `hours` | **Deliberately blank on every entry.** The IMLS dataset does not contain opening hours and they were not invented. While it is empty the card shows "Hours vary by location. Call before you go." Fill one in only once you have actually checked it. |
+| `transit` | Blank for the same reason. Fill in as verified. |
+| `pets` | Exactly one of `yes`, `no`, `service_only`, `unknown`. Anything else displays as "unknown". Every entry is currently `service_only` as a legal baseline — the ADA requires public buildings to admit service animals — which is recorded in `pets_note` at the top of the file. Confirm branch by branch and correct as you learn. |
+| `access` | Any of `wheelchair`, `accessible_restroom`, `elevator`, `seating`, `quiet_room`. Currently `[]` everywhere, because the source dataset carries no accessibility detail. |
+
+There is no `updated` field and no `placeholder` field in this dataset. If you see either
+mentioned somewhere, that instruction is out of date.
 
 ### Getting latitude and longitude
 
