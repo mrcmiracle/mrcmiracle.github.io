@@ -6,6 +6,24 @@
   var lastState = null;
   var lastItems = [];
   var LAST_KEY = 'mrcm_last';
+  var TICK_PREFIX = 'mrcm_ticks_';
+
+  /* Ticked items are stored per household code on this device only.
+     Nothing is sent anywhere. Codes are not unique between households, but
+     that is harmless here: this never leaves the browser it was set in. */
+  function tickKey(state) { return TICK_PREFIX + global.SaveCode.encode(state); }
+
+  function loadTicks(state) {
+    try {
+      var raw = localStorage.getItem(tickKey(state));
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function saveTicks(state, ids) {
+    try { localStorage.setItem(tickKey(state), JSON.stringify(ids)); }
+    catch (e) { console.warn('[progress] could not save:', e.message); }
+  }
 
   var $ = function (s) { return document.querySelector(s); };
   var t = function (k, v) { return global.I18N ? global.I18N.t(k, v) : k; };
@@ -100,6 +118,50 @@
       });
       host.appendChild(ul);
     });
+
+    // Progress meter, wired to the checkboxes above.
+    var saved = loadTicks(state);
+    var boxes = Array.prototype.slice.call(host.querySelectorAll('.checklist input[type=checkbox]'));
+    var prog = el('div', 'progress no-print');
+    var bar = el('div', 'progress-bar');
+    var fill = el('span');
+    bar.appendChild(fill);
+    var ptext = el('p', 'progress-text');
+    var clear = el('button', 'progress-clear', t('kit.progress_clear'));
+    clear.type = 'button';
+
+    function paint() {
+      var done = boxes.filter(function (b) { return b.checked; }).length;
+      fill.style.width = boxes.length ? Math.round((done / boxes.length) * 100) + '%' : '0%';
+      ptext.textContent = done ? t('kit.progress', { done: done, total: boxes.length })
+                               : t('kit.progress_none');
+      bar.setAttribute('role', 'progressbar');
+      bar.setAttribute('aria-valuenow', String(done));
+      bar.setAttribute('aria-valuemin', '0');
+      bar.setAttribute('aria-valuemax', String(boxes.length));
+      clear.hidden = done === 0;
+    }
+
+    boxes.forEach(function (b) {
+      if (saved.indexOf(b.value) !== -1) b.checked = true;
+      b.addEventListener('change', function () {
+        saveTicks(state, boxes.filter(function (x) { return x.checked; })
+                              .map(function (x) { return x.value; }));
+        paint();
+      });
+    });
+    clear.addEventListener('click', function () {
+      boxes.forEach(function (b) { b.checked = false; });
+      saveTicks(state, []);
+      paint();
+      global.Track.send('progress_cleared', { people: state.people });
+    });
+    prog.appendChild(ptext);
+    prog.appendChild(bar);
+    prog.appendChild(clear);
+    host.insertBefore(prog, host.querySelector('.water-box').nextSibling);
+    paint();
+    if (saved.length) global.Track.send('progress_restored', { done: saved.length, total: boxes.length });
 
     var foot = el('p', 'print-foot', t('footer.org') + ' — ' + t('footer.disclaimer'));
     host.appendChild(foot);

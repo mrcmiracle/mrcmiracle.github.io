@@ -8,10 +8,12 @@
   'use strict';
 
   // ---------------------------------------------------------------
-  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BETWEEN THE QUOTES.
-  // Until you do, events are logged to the browser console instead
-  // of being sent anywhere. See docs/DEPLOY.md step 4.
-  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec';
+  // Events go to this site's own /api/track function, which writes to
+  // Supabase and mirrors to the Google Sheet. Both sets of credentials
+  // live in Vercel's environment variables, never in this file.
+  // Requires the Vercel deployment; see docs/BACKEND.md.
+  // Set to '' to disable collection and log to the console instead.
+  var ENDPOINT = '/api/track';
   // ---------------------------------------------------------------
 
   var SITE_VERSION = '1.0.0';
@@ -146,12 +148,16 @@
           global.navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
           return;
         }
+        // Same-origin on Vercel, so this is a readable response: a failure is
+        // now visible in the console instead of silently disappearing, which
+        // is exactly how the previous collector went unnoticed for weeks.
         fetch(ENDPOINT, {
           method: 'POST',
-          mode: 'no-cors',
           keepalive: true,
           headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
           body: payload
+        }).then(function (r) {
+          if (!r.ok) console.warn('[track] "' + event + '" rejected: HTTP ' + r.status);
         }).catch(function (err) {
           console.warn('[track] send failed for "' + event + '":', err.message);
         });

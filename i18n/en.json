@@ -286,5 +286,9 @@
   "home.stat.sites": "public library locations",
   "home.stat.counties": "Washington counties",
   "home.stat.free_n": "Free",
-  "home.stat.free": "no account, no email"
+  "home.stat.free": "no account, no email",
+  "kit.progress": "{done} of {total} packed",
+  "kit.progress_none": "Tick items as you get them. Your progress is saved on this device.",
+  "kit.progress_clear": "Clear ticks",
+  "kit.progress_restored": "Your progress was restored."
 }

@@ -286,5 +286,9 @@
   "home.stat.sites": "bibliotecas públicas",
   "home.stat.counties": "condados de Washington",
   "home.stat.free_n": "Gratis",
-  "home.stat.free": "sin cuenta, sin correo"
+  "home.stat.free": "sin cuenta, sin correo",
+  "kit.progress": "{done} de {total} listos",
+  "kit.progress_none": "Marque los artículos conforme los consiga. Su avance se guarda en este dispositivo.",
+  "kit.progress_clear": "Borrar marcas",
+  "kit.progress_restored": "Se recuperó su avance."
 }

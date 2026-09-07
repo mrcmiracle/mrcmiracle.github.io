@@ -416,6 +416,28 @@ fieldset { border: 0; margin: 0; padding: 0; }
 @media (prefers-color-scheme: dark) { .ck-qty { color: var(--brand-strong); } }
 .ck-note { display: block; font-size: .86rem; color: var(--ink-3); font-weight: 400; margin-top: .1rem; }
 
+/* ---------- checklist progress ---------- */
+.progress { margin: 0 0 var(--s5); }
+.progress-text { font-size: .9rem; font-weight: 700; color: var(--ink-2); margin: 0 0 var(--s2); }
+.progress-bar {
+  height: 10px; border-radius: var(--r-pill); background: var(--paper-3);
+  border: 1px solid var(--line); overflow: hidden;
+}
+.progress-bar span {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--violet-600), var(--brand));
+  border-radius: var(--r-pill); transition: width .3s ease;
+}
+@media (prefers-color-scheme: dark) {
+  .progress-bar span { background: linear-gradient(90deg, var(--violet-400), var(--brand)); }
+}
+@media (prefers-reduced-motion: reduce) { .progress-bar span { transition: none; } }
+.progress-clear {
+  font: inherit; font-size: .82rem; font-weight: 700; color: var(--ink-3);
+  background: none; border: 0; padding: var(--s2) 0 0; cursor: pointer; text-decoration: underline;
+}
+.progress-clear[hidden] { display: none; }
+
 /* ---------- save code ---------- */
 .savebox {
   border: 1px solid var(--line); border-radius: var(--r); padding: var(--s5) var(--s4);

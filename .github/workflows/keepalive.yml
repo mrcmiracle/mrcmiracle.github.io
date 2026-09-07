@@ -1,0 +1,25 @@
+# Supabase pauses free projects after roughly a week of inactivity. This site
+# can go quiet between smoke events, so a weekly ping keeps the database awake
+# and stops the first visitor after a quiet spell hitting a cold project.
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: '17 9 * * 1'   # Mondays, 09:17 UTC
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the stats endpoint
+        run: |
+          if [ -z "${{ vars.SITE_URL }}" ]; then
+            echo "SITE_URL repository variable is not set."
+            echo "Set it under Settings > Secrets and variables > Actions > Variables"
+            echo "to your deployed URL, e.g. https://mrcmiracle.vercel.app"
+            exit 1
+          fi
+          code=$(curl -s -o /dev/null -w '%{http_code}' "${{ vars.SITE_URL }}/api/stats")
+          echo "GET /api/stats -> $code"
+          [ "$code" = "200" ] || exit 1
