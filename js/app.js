@@ -49,6 +49,7 @@
         panel.querySelector('h2').focus();
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         global.Track.send('rightnow_open', { mode: which });
+        if (which === 'smoke') loadSmokeAqi();
       });
     });
     document.querySelectorAll('[data-rn-close]').forEach(function (btn) {
@@ -113,6 +114,31 @@
         if (c && d.counties) c.textContent = d.counties;
       })
       .catch(function (err) { console.warn('[stats] ' + err.message); });
+  }
+
+  /* Air quality for the panel, loaded only when someone opens it. The landing
+     page itself stays request-free, which is the whole point of the panels
+     being inline. Seattle's Census centroid is used as the reference point:
+     the site is King County first, and no visitor location is involved. */
+  var SEATTLE = { lat: 47.619335, lon: -122.351538 };
+  var smokeAqiLoaded = false;
+  function loadSmokeAqi() {
+    if (smokeAqiLoaded || !global.AQI) return;
+    smokeAqiLoaded = true;
+    var host = document.getElementById('aqi-smoke');
+    if (!host) return;
+    var t = function (k, v) { return global.I18N ? global.I18N.t(k, v) : k; };
+    host.hidden = false;
+    host.className = 'aqi';
+    host.textContent = '';
+    var p = document.createElement('p');
+    p.className = 'aqi-none small';
+    p.textContent = t('aqi.loading');
+    host.appendChild(p);
+    global.AQI.nearest(SEATTLE.lat, SEATTLE.lon).then(function (reading) {
+      global.AQI.render(host, reading, t);
+      if (reading) global.Track.send('aqi_lookup', { results: reading.area.aqi, city: reading.area.name, method: 'rightnow' });
+    });
   }
 
   function stampYear() {

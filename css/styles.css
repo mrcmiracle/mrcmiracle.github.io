@@ -370,6 +370,44 @@ fieldset { border: 0; margin: 0; padding: 0; }
 .live-links { margin: var(--s3) 0 0; padding-left: 1.1rem; font-size: .92rem; }
 .live-links li { margin-bottom: var(--s2); }
 
+/* ---------- live air quality ---------- */
+.aqi {
+  border: 2px solid; border-radius: var(--r); padding: var(--s4);
+  margin-bottom: var(--s5); box-shadow: var(--shadow-1);
+}
+.aqi[hidden] { display: none; }
+.aqi-head { font-size: .82rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; margin: 0 0 var(--s2); opacity: .85; }
+.aqi-row { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s2); }
+.aqi-num {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 100;
+  font-size: clamp(2.4rem, 12vw, 3.2rem); font-weight: 700; line-height: 1; letter-spacing: -.03em;
+}
+.aqi-cat { font-weight: 700; font-size: var(--step-1); line-height: 1.2; }
+.aqi-do { margin: 0 0 var(--s2); font-size: .95rem; }
+.aqi-action { font-weight: 700; margin: 0 0 var(--s2); font-size: .9rem; }
+.aqi-meta { margin: 0; opacity: .8; font-size: .78rem; }
+.aqi-none { margin: 0; }
+
+/* EPA AQI bands. Colours are darkened from the official scale so text on them
+   still meets contrast; the number is never the only signal - the category
+   name and the advice line always say the same thing in words. */
+.aqi-good      { border-color: #1c6b45; background: #e8f6ee; color: #12482f; }
+.aqi-moderate  { border-color: #9a7b00; background: #fdf6dd; color: #5d4a00; }
+.aqi-usg       { border-color: #b25a00; background: #fff0e0; color: #7a3d00; }
+.aqi-unhealthy { border-color: #b3231d; background: #fdeceb; color: #7d1814; }
+.aqi-very      { border-color: #6b2a91; background: #f4ebfa; color: #4a1d66; }
+.aqi-hazardous { border-color: #7a1229; background: #fbe9ed; color: #570d1d; }
+
+@media (prefers-color-scheme: dark) {
+  .aqi-good      { border-color: #2f7d55; background: #10251a; color: #7fd7a5; }
+  .aqi-moderate  { border-color: #8a7100; background: #241f0c; color: #f0d264; }
+  .aqi-usg       { border-color: #a5560b; background: #271807; color: #ffb46b; }
+  .aqi-unhealthy { border-color: #a83029; background: #2a1211; color: #ff9c95; }
+  .aqi-very      { border-color: #7b3aa3; background: #1f1229; color: #d3a8f0; }
+  .aqi-hazardous { border-color: #8d2038; background: #260d13; color: #f2909f; }
+}
+
 /* ---------- clean air results ---------- */
 .site-card {
   border: 1px solid var(--line); border-radius: var(--r); padding: var(--s4);

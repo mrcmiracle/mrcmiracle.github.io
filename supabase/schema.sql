@@ -79,7 +79,10 @@ as $$
   );
 $$;
 
-grant execute on function public.impact_stats() to anon;
+-- EXECUTE is deliberately NOT granted to anon or authenticated. The Vercel
+-- /api/stats function calls this with the service_role key, so the public
+-- roles never need it. Granting it would only widen the attack surface.
+revoke execute on function public.impact_stats() from anon, authenticated, public;
 
 -- ---------------------------------------------------------------------------
 -- Saved checklist progress for people who choose to sign in with Google.

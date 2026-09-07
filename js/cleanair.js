@@ -93,8 +93,31 @@
     return c;
   }
 
+  /* Live air quality for whatever the visitor just searched. Loads after the
+     results are already on screen, so a slow feed never delays the list. */
+  function showAqi(origin) {
+    var host = $('#aqi');
+    if (!host || !global.AQI || !origin) return;
+    host.hidden = false;
+    host.className = 'aqi';
+    host.textContent = '';
+    var p = el('p', 'aqi-none small', t('aqi.loading'));
+    host.appendChild(p);
+    global.AQI.nearest(origin.lat, origin.lon).then(function (reading) {
+      global.AQI.render(host, reading, t);
+      if (reading) {
+        global.Track.send('aqi_lookup', {
+          results: reading.area.aqi,
+          city: reading.area.name,
+          method: 'cleanair'
+        });
+      }
+    });
+  }
+
   function render(entries, originLabel, origin) {
     shown = entries;
+    showAqi(origin);
     var host = $('#air-results');
     host.textContent = '';
 
