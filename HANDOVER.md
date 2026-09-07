@@ -1,7 +1,8 @@
 # Handover — MRC Miracle
 
 Written 2026-09-06 for a fresh session picking this up cold.
-Updated 2026-09-06 (second session): **Tasks 1, 3 and 4 are done. The site is LIVE.**
+Updated 2026-09-07 (third session): redesigned, progress saving added, backend code
+written. **Supabase and Vercel still need the user to create the accounts.**
 Task 2 is wired up in code but blocked on one Apps Script setting — read it first.
 
 **Project:** `/Users/vihaa/Downloads/mrc-miracle`
@@ -50,114 +51,46 @@ from the scratchpad copy. Every result below was observed, not assumed:
 
 ---
 
-## The four remaining tasks
+## Where things stand (third session, 2026-09-07)
 
-### Task 1 — Push to GitHub — **DONE**
+**Done this session:** full visual redesign, per-device checklist progress, and
+the Vercel + Supabase backend code. All pushed.
 
-The site went live on 2026-09-06 at <https://mrcmiracle.github.io>.
+### Remaining — needs the user, I cannot create accounts
 
-```
-origin  https://github.com/mrcmiracle/mrcmiracle.github.io.git
-```
+1. **Supabase project** — sign up, run `supabase/schema.sql`, copy the URL and
+   service_role key. Full steps in `docs/BACKEND.md`.
+2. **Vercel project** — import the GitHub repo, set the three environment
+   variables, deploy. Steps in `docs/BACKEND.md`.
+3. **Set the `SITE_URL` repo variable** on GitHub so the keepalive workflow
+   works (Settings → Secrets and variables → Actions → Variables).
+4. **Fix the Apps Script 401** if the Sheets mirror is wanted — still returning
+   401 as of this session, so still zero rows ever collected.
 
-Public, owned by the `mrcmiracle` organization, Pages serving `main` / `/ (root)`.
+### Remaining — code, not yet built
 
-**The repository name is load-bearing.** `<owner>.github.io` is the only name GitHub Pages
-serves at the bare org URL with no folder path after it. This repo was briefly named
-`Emergency-Preparedness-Website`, which would have served at
-`mrcmiracle.github.io/Emergency-Preparedness-Website/` and broken every printed poster.
-**Do not let anyone rename it back.**
+5. **Optional Google sign-in** (user decided: optional, anonymous stays default).
+   Needs Supabase Auth + Google provider, an age gate for under-13s (COPPA), a
+   real privacy policy page, and written sign-off from the advisor and Unit 503.
+   The `progress` table and its RLS policies are already in the schema.
+6. **Live air quality** on the page — highest-value remaining feature. Verify a
+   free feed (AirNow / WAQI) actually covers King County zips before promising
+   it; the API key goes in Vercel env vars and is read by a new `api/aqi.js`.
+7. **Live impact counter** — `api/stats.js` and `impact_stats()` already exist;
+   just needs wiring into the landing page stats strip.
+8. **Partner-editable locations** — move sites to Supabase plus a small
+   password-protected admin page.
 
-Verified against the live site, not a local copy: all 5 pages plus every JS, CSS, JSON and
-image asset return 200; the clean air lookup fetches its data over HTTPS and returns 6 real
-branches for 98011 (Bothell Library, 0.5 mi); the calculator returns 56 gallons for a
-4-person household and issues a save code; Spanish switches the whole page including
-generated text; Leaflet is still absent until the map button is tapped; console is clean.
+### Hosting decision changed this session
 
-Pushing again needs nothing special — the token is saved in the macOS keychain, so
-`git push` just works:
+The user is moving to **Vercel** for hosting (was GitHub Pages). Reason given:
+they thought GitHub Pages could not do a backend. That premise is wrong — the
+site is static and Supabase works fine from a static host — but Vercel is still
+the right call here, because the Google Sheets mirror and the Supabase
+service_role key both need somewhere server-side to live.
 
-```bash
-cd ~/Downloads/mrc-miracle && git push origin main
-```
-
-If it ever asks for a password again the token has expired. Make a new classic token at
-<https://github.com/settings/tokens> with the `repo` box ticked. **Never ask the user to
-paste a token into the chat and never read one out of their keychain.**
-
-**Do not push with the GitHub MCP `push_files` tool.** It flattens history into an
-unrelated root commit, and its `content` field is a string, so `assets/logo.png` would be
-corrupted. (That MCP connection was also returning `Bad credentials` at the end of the
-second session; plain `git` over HTTPS is the reliable path.)
-
-### Task 2 — Wire up data collection — **code done, BLOCKED on one setting**
-
-`js/track.js` now points at the deployed collector:
-
-```
-https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec
-```
-
-**No data is being recorded yet.** The deployment rejects anonymous callers. Measured
-directly, not inferred:
-
-- `GET` → `302` to `https://accounts.google.com/ServiceLogin`
-- `POST` (text/plain, exactly as the site sends) → **`401`**
-
-That means **"Who has access" is not set to "Anyone"**. Library visitors are not signed in
-to Google, so every event is refused.
-
-**This failure is invisible from the browser.** `Track.send` posts with `mode: 'no-cors'`,
-so the page cannot read the rejection: no console error, no broken UI, and an empty
-spreadsheet is the only symptom. Do not conclude it works because the site looks fine.
-
-The fix, which the user must do — it keeps the same `/exec` URL, so no code change:
-
-**Deploy → Manage deployments →** pencil (edit) icon → Version: **New version** →
-**Who has access: Anyone** → **Deploy**.
-
-Then confirm from Terminal. Anything other than `200` means it is still refusing:
-
-```bash
-curl -s -o /dev/null -w '%{http_code}\n' -X POST 'https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec' -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
-```
-
-A `200` writes a row — delete that test row from the sheet afterwards.
-
-### Task 3 — Wire up analytics — **DONE**
-
-`js/app.js` has `GOATCOUNTER_CODE = 'vihaan'`; the dashboard is
-<https://vihaan.goatcounter.com>. Verified on the live site: the loader injects
-`data-goatcounter="https://vihaan.goatcounter.com/count"` with `src=https://gc.zgo.at/count.js`
-and `window.goatcounter` initialises.
-
-The site code is registered — an unregistered code returns `400` at its subdomain root,
-`vihaan` returns `303`. (`mrcmiracle` returns `400`, i.e. it was never claimed.)
-
-> **Worth raising with the user:** the analytics account is named `vihaan`, not
-> `mrcmiracle`. It works, but it is personal rather than the organisation's, which cuts
-> against the reason the GitHub org exists — the project outliving its founder. GoatCounter
-> can rename a site's code in its settings, and the dashboard can be made public under
-> **Settings** so judges can see live numbers without a login.
-
-### Task 4 — Two docs were stale — **DONE**
-
-Completed in the second session (commits `a523f53` and `0078f91`).
-`docs/UPDATING-SITES.md` and `docs/DEPLOY.md` now describe the real IMLS dataset.
-
-Three things were found to be wrong in the code-facing docs while fixing them, and are
-now documented correctly — worth knowing before editing anything:
-
-- **`"verified": true` is not a switch.** No code reads it. There is no "Demonstration
-  data" banner anywhere any more. It is a provenance note for humans only.
-- **`kind` is a translation key** (`air.kind.<kind>`), and `library` is the only value
-  either `i18n` file carries wording for. Any other value renders a raw `air.kind.…`
-  string on the page. Add the key to both `en.json` and `es.json` first.
-- **A site's own `zip` field is never matched against.** Visitor lookups compare the
-  typed zip to `data/zips.json` centroids, so a wrong `zip` on a site changes nothing
-  on screen. Keep it correct anyway; the next person will assume it is load-bearing.
-
----
+**No posters are printed yet**, confirmed by the user, so the URL is still free
+to change. GitHub Pages remains live at mrcmiracle.github.io.
 
 ## Decisions already made — do not undo these without asking
 
@@ -194,6 +127,26 @@ location. Call before you go." Fill them in only as they are actually verified.
 in the data file's `pets_note`. Confirm per branch.
 
 ---
+
+**The save code cannot be used as a private key.** It encodes only the four
+answers, so there are exactly 96 possible codes — every 4-person household with
+pets, meds and a house gets `KC-1WWT`. Checklist progress is therefore stored
+per device only. Do not key anything private or server-side to this code.
+
+**Chrome does not sync localStorage or cookies across devices.** The user asked
+for cross-device continuity "like Google accounts do"; that only exists via real
+sign-in. This was explained and they chose optional Google sign-in.
+
+**The design system is derived from the seal.** `--brand: #4f2b92` is sampled
+from `assets/logo.png`, not chosen. If the logo ever changes, resample it.
+Fonts are self-hosted in `assets/fonts/` with their OFL licences; do not swap
+them for a Google Fonts link, which would add a third-party request to a site
+that currently makes none.
+
+**The user relaxed the bandwidth constraint** (KCLS wifi is strong). Fonts and
+graphics are fine to spend on. Still keep the two "Right now" panels inline with
+zero requests — old phones and cellular users outside the library are the real
+remaining constraint, not library wifi.
 
 ## Data provenance (all public domain, all fetched and verified this session)
 
