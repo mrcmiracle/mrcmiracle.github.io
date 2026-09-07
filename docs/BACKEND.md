@@ -29,6 +29,12 @@ Everything else is already written and committed.
    - **service_role** key (under Project API keys, click reveal) → this is
      `SUPABASE_SERVICE_ROLE_KEY`
 
+> **The project already exists.** Ref `fsbrpozjfsioxhsqznxw`, so:
+> `SUPABASE_URL=https://fsbrpozjfsioxhsqznxw.supabase.co`
+> Verified live — its REST endpoint answers `401` (correct: it wants a key).
+> Only the service_role key still needs copying, and it goes straight into
+> Vercel, not into this repo.
+
 > **The service_role key bypasses all security rules.** It goes in Vercel only.
 > Never paste it into a page, a chat, a screenshot, or this repository. If it
 > ever leaks, rotate it immediately in Project Settings → API.
