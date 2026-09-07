@@ -12,7 +12,7 @@ create table if not exists public.events (
   visitor        text,          -- random per-browser id, contains nothing about the person
   session        text,          -- random per-visit id
   site_version   text,
-  returning      int,
+  is_returning   int,          -- "returning" alone is a reserved word in Postgres
   visit_number   int,
   new_session    int,
   people         int,

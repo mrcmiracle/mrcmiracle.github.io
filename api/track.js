@@ -44,6 +44,10 @@ const INT_COLS = new Set([
   'seconds', 'scroll_pct', 'done', 'total'
 ]);
 
+// The page sends `returning`, but that is a reserved word in Postgres and
+// cannot be a column name unquoted. Map it on the way into the database.
+const RENAME = { returning: 'is_returning' };
+
 const MAX_BODY = 8 * 1024;   // an event is a few hundred bytes; this is generous
 const MAX_STR = 512;
 
@@ -101,7 +105,8 @@ export default async function handler(req, res) {
   const row = {};
   for (const c of COLUMNS) {
     if (!Object.prototype.hasOwnProperty.call(data, c)) continue;
-    row[c] = INT_COLS.has(c) ? toInt(data[c]) : clampStr(data[c]);
+    const col = RENAME[c] || c;
+    row[col] = INT_COLS.has(c) ? toInt(data[c]) : clampStr(data[c]);
   }
   if (data.nearest_mi !== undefined && data.nearest_mi !== '') {
     const f = parseFloat(data.nearest_mi);
