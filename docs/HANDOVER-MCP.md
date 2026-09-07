@@ -1,8 +1,7 @@
 # Handover — tasks that need the Supabase / Vercel MCP connectors
 
-Written 2026-09-07. Everything that could be done **without** database or
-deployment introspection is finished and live. What remains genuinely benefits
-from being able to query the database and read deploy logs directly.
+Written 2026-09-07. **Updated later that day: Tasks 1 and 2 are done, Task 3 is a
+dead end and should be dropped. Tasks 4-6 remain.**
 
 Start a fresh session with the Supabase and Vercel MCP connectors enabled, then
 work through this in order.
@@ -27,71 +26,63 @@ overflow at 375px, in English and Spanish.
 
 ---
 
-## Task 1 — Prove row level security actually blocks the anon key
+## Task 1 — Prove row level security blocks the anon key — **DONE, and it found a gap**
 
-**Do this first. The entire privacy design rests on it, and it has never been
-tested — only reasoned about from the schema.**
+Run with the live anon key. Three of four probes passed; the third failed:
 
-With the **anon** key (not service_role), all of these must fail or return nothing:
+| Probe | Before | After |
+|---|---|---|
+| read `events` | 401 permission denied | 401 |
+| insert `events` | 401 permission denied | 401 |
+| execute `impact_stats` | **200, returned data** | **401** |
+| read others' `progress` | `[]` | `[]` |
 
-```bash
-ANON="<anon key from Supabase → Project Settings → API>"
-BASE="https://fsbrpozjfsioxhsqznxw.supabase.co/rest/v1"
+**Why the earlier fix missed it.** The function ACL was
+`=X/postgres | anon=X/postgres | authenticated=X/postgres`. That leading `=X/`
+is an implicit grant to **PUBLIC**. Revoking from `anon` and `authenticated`
+does nothing while PUBLIC still holds EXECUTE. Migration
+`revoke_impact_stats_from_public` revokes from all three and leaves a comment on
+the function saying not to re-grant. Both `impact_stats` advisor warnings are
+now gone; the remaining `rls_enabled_no_policy` INFO on `events` is deliberate.
 
-# must NOT return rows
-curl -s "$BASE/events?select=*&limit=5" -H "apikey: $ANON" -H "Authorization: Bearer $ANON"
+**Severity, stated honestly:** this was not a personal-data leak. `impact_stats()`
+returns four aggregate counts that are already public on the landing page via
+`/api/stats`. It was defence-in-depth and a mismatch with the documented design.
 
-# must NOT insert
-curl -s -X POST "$BASE/events" -H "apikey: $ANON" -H "Authorization: Bearer $ANON" \
-  -H 'Content-Type: application/json' -d '{"event":"rls_probe"}'
+`progress` was already correct — three policies, all `auth.uid() = user_id`, so
+`auth.uid()` being NULL for anon yields no rows.
 
-# must NOT execute (revoked in 002_security.sql)
-curl -s -X POST "$BASE/rpc/impact_stats" -H "apikey: $ANON" -H "Authorization: Bearer $ANON" \
-  -H 'Content-Type: application/json' -d '{}'
+To re-run the probes later, get the anon key from
+`get_publishable_keys` (it is a publishable key, safe to use, not a secret).
 
-# must NOT read other people's saved progress
-curl -s "$BASE/progress?select=*" -H "apikey: $ANON" -H "Authorization: Bearer $ANON"
+## Task 2 — Delete the verification rows — **DONE**
+
+3 rows removed (`verifyabc1`, `mirrorchk1`, `sheetchk1` — all `page_view` on
+pages that do not exist). 92 rows remain.
+
+**Read this before quoting any number to a judge.** Every one of those 92 rows
+is developer testing: 5 visitor ids, all from 2026-09-07, and `kits`, `people`
+and `commits` are all still `0`. There is no member of the public in this table
+yet. The numbers only start meaning something once the posters are up.
+
+## Task 3 — The Google Sheets mirror — **STOP; recommend dropping it**
+
+Still failing after the redeploy. Measured again:
+
+```
+POST /exec  -> 401
+GET  /exec  -> 302 to accounts.google.com/ServiceLogin
 ```
 
-If any of those succeeds, that is a live privacy hole on a site used by minors.
-Fix it before anything else. If `002_security.sql` has not been run yet, run it.
+That is the third session in a row this has failed, across two separate
+redeploys by the user. Per this document's own guidance, the remaining
+explanation is that the script is owned by a Workspace (school) account whose
+admin blocks sharing outside the domain — which the user cannot override.
 
-## Task 2 — Delete the verification rows
-
-Synthetic rows written while testing. Remove them before pulling any numbers
-for the portfolio:
-
-```sql
-delete from public.events where visitor in ('verifyabc1','mirrorchk1','sheetchk1');
-delete from public.events where page in ('verify.html','mirror-verify.html','sheetcheck.html','probe');
-delete from public.events where event in ('mirror_probe','orientation_probe','rls_probe');
-select event, page, visitor, received_at from public.events order by received_at desc limit 20;
-```
-
-## Task 3 — The Google Sheets mirror is still failing
-
-`sheets: "HTTP 401"` on every write. The user redeployed as Version 2 but the
-**"Who has access"** dropdown is still restricted — that is a separate control
-from the version number.
-
-Fix: Apps Script → Deploy → Manage deployments → pencil → **Who has access:
-Anyone** → Deploy. Then:
-
-```bash
-curl -s -o /dev/null -w '%{http_code}\n' -X POST \
- 'https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec' \
- -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
-```
-
-**If it still 401s after that**, the script is probably owned by a Google
-Workspace (school) account whose admin blocks sharing outside the domain. In
-that case stop fighting it: Supabase is the primary and works. Either move the
-script to the `northcreek.mrc@gmail.com` account, or drop the mirror entirely
-and export CSV from Supabase, which is what the portfolio actually needs.
-
-Note the Apps Script column list still says `returning`; the database column is
-`is_returning`. The sheet is a flat mirror of the raw payload so this does not
-matter, but do not "fix" one to match the other without checking both.
+**Recommendation: drop the mirror.** Supabase is the primary store and works.
+The portfolio needs CSV, which Supabase exports directly. Continuing to chase
+this spends the user's time on a redundant path. If they want it anyway, the
+only remaining move is to recreate the script under `northcreek.mrc@gmail.com`.
 
 ## Task 4 — Finish optional Google sign-in
 
@@ -128,7 +119,13 @@ Suggested shape:
 - `js/cleanair.js` merges: activated sites first and badged, libraries after.
 - Keep the JSON file as the offline fallback if the database is unreachable.
 
-## Task 6 — Check indexes once there is real traffic
+## Task 6 — Check indexes once there is real traffic — **premature, do not start**
+
+There are 92 rows, all from one day of developer testing. `explain analyze` on a
+table this size measures nothing. Revisit after the posters have been up long
+enough to produce real volume. Original note follows.
+
+### Original note
 
 `supabase-postgres-best-practices` is installed in `.agents/skills/`. Use it.
 Run `explain analyze` on the `impact_stats()` counts once the table has real
@@ -137,6 +134,16 @@ volume; the counts are unindexed aggregates and will slow down eventually.
 ---
 
 ## Things that must not be undone
+
+- **Read `docs/DESIGN.md` before changing anything visual.** It carries the
+  aesthetic direction and seven enforceable rules. The most important: hazard
+  colour is a strict semantic channel — amber only ever means smoke, red only
+  ever means earthquake — and nothing critical may sit behind an animation.
+- **Every page carries a `<noscript>` block that neutralises `.reveal`.**
+  Without it a script failure leaves the landing page's five tool entries
+  permanently invisible, because `.reveal` starts at `opacity: 0` and only
+  JavaScript adds `.is-in`. Do not remove it, and extend it if you add another
+  JS-gated reveal.
 
 - **`events` has RLS on with no policies deliberately.** That is the strongest
   setting, not a bug. Supabase's linter flags it; a table comment explains why.
