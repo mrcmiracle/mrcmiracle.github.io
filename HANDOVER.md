@@ -87,27 +87,11 @@ any numbers for the portfolio.
    visitors there are silently uncounted.
 3. **Decide the final domain before printing posters.**
 
-### Remaining — needs MCP (do these in a session where the connectors work)
+### Remaining — needs MCP
 
-The user can connect the Vercel and Supabase MCP servers in a fresh session but
-not in the one where this was written. These tasks are much better with them:
-
-4. **Delete the verification row** and any other synthetic rows.
-5. **Confirm RLS actually blocks the anon key.** The design rests on this. Prove
-   it: with the anon key, `select` on `events` must return an error or zero rows,
-   and `insert` must be refused. Do not assume it from the schema.
-6. **Check indexes are being used** once there is real data (the postgres
-   best-practices skill in .agents/skills is installed for exactly this).
-7. **Live air quality** — the highest-value remaining feature. Verify a free
-   feed (AirNow needs a key; WAQI has a free token) actually covers King County
-   zips before promising it. Key goes in Vercel env, read by a new api/aqi.js.
-8. **Live impact counter** — api/stats.js and impact_stats() already work; just
-   wire the numbers into the landing page stats strip.
-9. **Optional Google sign-in** — the progress table and its RLS policies already
-   exist. Needs Supabase Auth + Google provider, an under-13 age gate (COPPA), a
-   real privacy policy page, and written sign-off from the advisor and Unit 503.
-10. **Partner-editable locations** — move sites into Supabase plus a small
-    password-protected admin page so Unit 503 can activate sites during an event.
+Moved to **`docs/HANDOVER-MCP.md`**, which is the current list.
+Live air quality, the privacy policy, sign-in code, the impact counter and the
+full redesign are all done and deployed.
 
 ### Hosting decision changed this session
 
