@@ -24,7 +24,8 @@ const ALLOWED_EVENTS = new Set([
   'plan_selected', 'plan_skipped',
   'cleanair_lookup', 'directions_click', 'map_open',
   'lang_switch', 'outbound_click',
-  'progress_restored', 'progress_cleared',
+  'progress_restored', 'progress_cleared', 'progress_synced',
+  'plan_saved', 'signin_start', 'signin_success', 'signout', 'age_gate_blocked',
   'aqi_lookup'
 ]);
 

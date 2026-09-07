@@ -5,6 +5,8 @@
   var rules = null;
   var lastState = null;
   var lastItems = [];
+  var lastBoxes = [];
+  var repaintProgress = null;
   var LAST_KEY = 'mrcm_last';
   var TICK_PREFIX = 'mrcm_ticks_';
 
@@ -142,12 +144,23 @@
       clear.hidden = done === 0;
     }
 
+    lastBoxes = boxes;
+    repaintProgress = paint;
+
+    function currentTicks() {
+      return boxes.filter(function (x) { return x.checked; }).map(function (x) { return x.value; });
+    }
+
     boxes.forEach(function (b) {
       if (saved.indexOf(b.value) !== -1) b.checked = true;
       b.addEventListener('change', function () {
-        saveTicks(state, boxes.filter(function (x) { return x.checked; })
-                              .map(function (x) { return x.value; }));
+        var ids = currentTicks();
+        saveTicks(state, ids);
         paint();
+        // Signed in? Mirror it so other devices see the same progress.
+        if (global.Auth && global.Auth.user) {
+          global.Auth.saveProgress(global.SaveCode.encode(state), ids);
+        }
       });
     });
     clear.addEventListener('click', function () {
@@ -217,26 +230,98 @@
     try { localStorage.setItem(LAST_KEY, code); } catch (e) { /* private mode */ }
 
     host.appendChild(el('h3', null, t('save.h')));
-    host.appendChild(el('p', null, t('save.body')));
-    host.appendChild(el('p', 'small', t('save.code_label')));
-    var cd = el('div', 'code-display', code);
-    cd.setAttribute('role', 'status');
-    host.appendChild(cd);
+    host.appendChild(el('p', null, t('save.auto')));
 
-    var row = el('div', 'row');
-    var cb = el('button', 'btn btn-secondary', t('common.copy'));
-    cb.type = 'button';
-    cb.addEventListener('click', function () { copy(code, cb); });
-    var lb = el('button', 'btn btn-secondary', t('save.link_label'));
-    lb.type = 'button';
-    lb.addEventListener('click', function () { copy(global.SaveCode.link(state), lb); });
-    row.appendChild(cb);
-    row.appendChild(lb);
-    host.appendChild(row);
-    host.appendChild(el('p', 'small', t('save.no_account')));
+    var share = el('button', 'btn btn-secondary btn-block', t('save.share_link'));
+    share.type = 'button';
+    share.addEventListener('click', function () { shareChecklist(state, share); });
+    host.appendChild(share);
+
+    renderAuth(host, state);
     host.hidden = false;
+    global.Track.send('plan_saved', { people: state.people });
+  }
 
-    global.Track.send('code_generated', { code: code, people: state.people });
+  /* Optional Google sign-in. Only ever additive: if it is not configured, or
+     the visitor declines, or anything fails, the page behaves exactly as it
+     does for an anonymous visitor. */
+  function renderAuth(host, state) {
+    var A = global.Auth;
+    if (!A) return;
+
+    var box = el('div', 'authbox');
+    host.appendChild(box);
+
+    function draw() {
+      box.textContent = '';
+      if (!A.available) { box.hidden = true; return; }
+      box.hidden = false;
+
+      if (A.user) {
+        var who = el('p', 'auth-who', t('auth.signed_in', { email: A.user.email }));
+        var out = el('button', 'btn btn-secondary', t('auth.signout'));
+        out.type = 'button';
+        out.addEventListener('click', function () {
+          A.signOut();
+          global.Track.send('signout', {});
+          draw();
+        });
+        box.appendChild(who);
+        box.appendChild(out);
+        return;
+      }
+
+      box.appendChild(el('h3', null, t('auth.h')));
+      box.appendChild(el('p', 'small', t('auth.b')));
+
+      var go = el('button', 'btn btn-block', t('auth.signin'));
+      go.type = 'button';
+      go.addEventListener('click', function () {
+        if (A.ageConfirmed()) { start(); return; }
+        ageGate();
+      });
+      box.appendChild(go);
+
+      var note = el('p', 'small');
+      note.appendChild(document.createTextNode(t('auth.privacy_note') + ' '));
+      var pl = el('a', null, t('priv.h1'));
+      pl.href = 'privacy.html';
+      note.appendChild(pl);
+      box.appendChild(note);
+
+      function start() {
+        global.Track.send('signin_start', {});
+        A.signIn().catch(function (err) {
+          console.warn('[auth] ' + err.message);
+          box.appendChild(el('p', 'err', t('auth.error')));
+        });
+      }
+
+      /* 13+ check. COPPA applies to collecting personal information from
+         under-13s, and signing in shares an email address. Anonymous use of
+         every tool stays open to everyone. */
+      function ageGate() {
+        box.textContent = '';
+        box.appendChild(el('h3', null, t('auth.age_h')));
+        box.appendChild(el('p', 'small', t('auth.age_b')));
+        var row = el('div', 'row');
+        var yes = el('button', 'btn', t('auth.age_yes'));
+        var no = el('button', 'btn btn-secondary', t('auth.age_no'));
+        yes.type = no.type = 'button';
+        yes.addEventListener('click', function () { A.confirmAge(true); start(); });
+        no.addEventListener('click', function () {
+          A.confirmAge(false);
+          global.Track.send('age_gate_blocked', {});
+          box.textContent = '';
+          box.appendChild(el('p', 'auth-who', t('auth.age_denied')));
+        });
+        row.appendChild(yes); row.appendChild(no);
+        box.appendChild(row);
+      }
+    }
+
+    draw();
+    document.addEventListener('auth:changed', draw);
   }
 
   /* The one question — only ever shown after the checklist exists. */
@@ -338,6 +423,7 @@
     });
     $('#kit-result-h').focus();
     $('#kit-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    syncSignedInProgress();
   }
 
   function fillForm(state) {
@@ -351,6 +437,7 @@
     var btn = $('#restore-btn');
     var input = $('#restore-input');
     var err = $('#restore-err');
+    if (!btn || !input) return;   // the code box was removed from the page
     btn.addEventListener('click', function () {
       var state = global.SaveCode.decode(input.value);
       if (!state) {
@@ -368,7 +455,42 @@
     });
   }
 
+  /* If the visitor is signed in, merge the progress stored against their
+     account with whatever this device already has. Union, never overwrite:
+     ticking something on your phone must not un-tick it on your laptop. */
+  function syncSignedInProgress() {
+    var A = global.Auth;
+    if (!A || !A.user || !lastState || !lastBoxes.length) return;
+    A.getProgress().then(function (row) {
+      var remote = (row && Array.isArray(row.ticked)) ? row.ticked : [];
+      var localIds = lastBoxes.filter(function (b) { return b.checked; })
+                              .map(function (b) { return b.value; });
+      var merged = localIds.slice();
+      remote.forEach(function (id) { if (merged.indexOf(id) === -1) merged.push(id); });
+
+      lastBoxes.forEach(function (b) { b.checked = merged.indexOf(b.value) !== -1; });
+      saveTicks(lastState, merged);
+      if (repaintProgress) repaintProgress();
+
+      var grew = merged.length !== remote.length || merged.length !== localIds.length;
+      if (grew) A.saveProgress(global.SaveCode.encode(lastState), merged);
+      global.Track.send('progress_synced', { done: merged.length, total: lastBoxes.length });
+    });
+  }
+
   function start() {
+    // Optional sign-in. Never blocks the page: if it is not configured or the
+    // network fails, everything below still runs for an anonymous visitor.
+    if (global.Auth) {
+      global.Auth.init().then(function (user) {
+        document.dispatchEvent(new CustomEvent('auth:changed'));
+        if (user) {
+          global.Track.send('signin_success', {});
+          syncSignedInProgress();
+        }
+      }).catch(function (err) { console.warn('[auth] init failed:', err.message); });
+    }
+
     $('#kit-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var state = readForm();

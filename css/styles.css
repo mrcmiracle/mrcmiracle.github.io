@@ -454,6 +454,20 @@ fieldset { border: 0; margin: 0; padding: 0; }
 .row { display: flex; gap: var(--s2); flex-wrap: wrap; }
 .row > * { flex: 1 1 8rem; }
 
+/* ---------- optional sign-in ---------- */
+.authbox {
+  margin-top: var(--s5); padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+.authbox[hidden] { display: none; }
+.authbox h3 { margin: 0 0 var(--s2); font-size: var(--step-1); }
+.authbox p { margin: 0 0 var(--s3); }
+.authbox .row { margin-top: var(--s3); }
+.auth-who {
+  font-weight: 700; color: var(--ok); margin: 0 0 var(--s3);
+  display: flex; align-items: center; gap: .5rem;
+}
+
 /* ---------- final question ---------- */
 .askbox {
   border: 1px solid var(--violet-200); border-radius: var(--r); padding: var(--s5) var(--s4);
