@@ -78,17 +78,30 @@
       c.appendChild(ul);
     }
 
-    // Directions open in the user's own map app; only the destination is passed.
+    /* Directions. The visitor picks the map app they already use rather than
+       being forced into one. Only the destination's coordinates and name are
+       put in the URL - never the visitor's own location, which the page does
+       not have. Nothing is requested until the link is tapped. */
     {
-      var a = el('a', 'btn btn-secondary', t('air.f.directions'));
-      a.href = 'https://www.openstreetmap.org/directions?to=' + s.lat + '%2C' + s.lon;
-      a.rel = 'noopener noreferrer';
-      a.target = '_blank';
-      a.style.marginTop = '.6rem';
-      a.addEventListener('click', function () {
-        global.Track.send('directions_click', { site: s.id });
+      var dirs = el('div', 'dirs');
+      dirs.appendChild(el('span', 'dirs-label', t('air.f.directions')));
+      var ll = s.lat + ',' + s.lon;
+      var named = encodeURIComponent(s.name);
+      [
+        ['apple',  'https://maps.apple.com/?ll=' + ll + '&q=' + named],
+        ['google', 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ll)],
+        ['osm',    'https://www.openstreetmap.org/directions?to=' + encodeURIComponent(ll)]
+      ].forEach(function (opt) {
+        var a = el('a', 'dirs-link', t('air.f.dir.' + opt[0]));
+        a.href = opt[1];
+        a.rel = 'noopener noreferrer';
+        a.target = '_blank';
+        a.addEventListener('click', function () {
+          global.Track.send('directions_click', { site: s.id, via: opt[0] });
+        });
+        dirs.appendChild(a);
       });
-      c.appendChild(a);
+      c.appendChild(dirs);
     }
     return c;
   }

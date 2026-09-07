@@ -471,6 +471,25 @@ fieldset { border: 0; margin: 0; padding: 0; }
 .site-card dd { margin: 0; }
 .tags { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s3) 0 0; padding: 0; }
 .tags li { font-size: .76rem; background: var(--paper-3); border: 1px solid var(--line); border-radius: var(--r-pill); padding: .22rem .6rem; }
+
+/* Directions: the visitor chooses the map app they already have. A ruled row
+   of plain links, not three competing buttons - the branch name above is the
+   thing being scanned, and these are the follow-up. */
+.dirs {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 0 var(--s4); margin-top: var(--s3);
+  padding-top: var(--s3); border-top: 1px solid var(--line);
+}
+.dirs-label {
+  flex: 1 0 100%;
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--ink-3); margin-bottom: .1rem;
+}
+.dirs-link {
+  font-weight: 700; font-size: .92rem;
+  padding: .55rem 0; display: inline-block;
+  text-underline-offset: .18em;
+}
 #map { height: 340px; border-radius: var(--r); border: 1px solid var(--line); margin-bottom: var(--s4); background: var(--paper-3); }
 #map[hidden] { display: none; }
 
