@@ -86,7 +86,7 @@ whole point of the mirror being secondary.
 ### Checking it works
 
 ```bash
-curl -s -o /dev/null -w '%{http_code}\n' -X POST 'https://YOUR-SITE.vercel.app/api/track' -H 'Content-Type: text/plain' -d '{"event":"page_view","page":"test.html"}'
+curl -s -o /dev/null -w '%{http_code}\n' -X POST 'https://mrcmiracle.vercel.app/api/track' -H 'Content-Type: text/plain' -d '{"event":"page_view","page":"test.html"}'
 ```
 
 `200` means the row was written. Then check Supabase → **Table Editor → events**.
@@ -95,7 +95,7 @@ Anything else, read the response body — the function reports which of the two
 writes failed:
 
 ```bash
-curl -s -X POST 'https://YOUR-SITE.vercel.app/api/track' -H 'Content-Type: text/plain' -d '{"event":"page_view"}'
+curl -s -X POST 'https://mrcmiracle.vercel.app/api/track' -H 'Content-Type: text/plain' -d '{"event":"page_view"}'
 ```
 
 An `unknown event` error is the allow-list doing its job: only the event names
@@ -122,6 +122,72 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST 'https://script.google.com/macr
 Note the mirror is now **server-to-server**: the browser no longer calls Apps
 Script, so the previous "Anyone" requirement is about Vercel reaching it, not
 about library visitors.
+
+---
+
+## Step 4 — optional Google sign-in
+
+Sign-in is **optional** and exists only to carry checklist progress between a
+person's own devices. Every tool works without it. Until this is finished,
+`/api/config` returns `sign-in not configured` and the sign-in block hides
+itself — the site is fully functional in that state.
+
+### 4a. One more Vercel variable
+
+Supabase → **Project Settings → API** → copy the **anon / public** key.
+
+| Name | Value |
+|---|---|
+| `SUPABASE_ANON_KEY` | the anon (public) key |
+
+**This one is safe in the browser** — it is what every Supabase web app ships.
+It can do nothing on its own here: `events` has row level security on with no
+policies, and `progress` restricts every row to its own signed-in user. Do not
+confuse it with `service_role`, which must stay server-side only.
+
+### 4b. Google OAuth credentials
+
+1. <https://console.cloud.google.com> → create a project (or reuse one).
+2. **APIs & Services → OAuth consent screen**: External, app name
+   `MRC Miracle`, support email `northcreek.mrc@gmail.com`. Add the same as
+   developer contact. Save.
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID**
+   → Application type **Web application**.
+4. Under **Authorised redirect URIs** add exactly:
+
+   ```
+   https://fsbrpozjfsioxhsqznxw.supabase.co/auth/v1/callback
+   ```
+
+5. Create, then copy the **Client ID** and **Client secret**.
+
+### 4c. Turn the provider on in Supabase
+
+1. Supabase → **Authentication → Providers → Google** → enable.
+2. Paste the Client ID and Client secret. Save.
+3. Supabase → **Authentication → URL Configuration**:
+   - **Site URL**: `https://mrcmiracle.vercel.app`
+   - **Redirect URLs**: add `https://mrcmiracle.vercel.app/**`
+
+   Without the redirect URL entry, Google will send people back and Supabase
+   will refuse the hand-off.
+
+### 4d. Check it
+
+Open `https://mrcmiracle.vercel.app/api/config` — it should now return
+`{"ok":true,...}`. Then build a checklist, press **Continue with Google**,
+confirm the 13+ prompt, and sign in. Tick a few items, open the same page on
+another device signed into the same account, and the ticks should appear.
+
+Progress merges as a **union**: ticking something on your phone never un-ticks
+it on your laptop.
+
+### The 13+ check is not optional
+
+COPPA governs collecting personal information from children under 13, and an
+email address is personal information. Partner approval does not waive federal
+law. Anonymous use of every tool remains open to all ages and collects nothing
+personal, which is why it is the default.
 
 ---
 

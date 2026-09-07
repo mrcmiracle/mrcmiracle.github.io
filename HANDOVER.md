@@ -58,7 +58,7 @@ the Vercel + Supabase backend code. All pushed.
 
 ### Backend is LIVE and verified (2026-09-07)
 
-Deployed at **https://mrc-miracle.vercel.app** (a rename to `mrcmiracle.vercel.app`
+Deployed at **https://mrcmiracle.vercel.app** (a rename to `mrcmiracle.vercel.app`
 was recommended and is available — check which is actually in use).
 
 Measured, not assumed:
