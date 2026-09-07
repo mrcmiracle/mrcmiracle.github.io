@@ -81,6 +81,40 @@
     }, true);
   }
 
+  /* Scroll reveal. Purely decorative — elements are visible by default in CSS
+     for anyone with reduced motion, and if IntersectionObserver is missing we
+     just show everything immediately. */
+  function wireReveal() {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    var reduce = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in global)) {
+      els.forEach(function (e) { e.classList.add('is-in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (e) { io.observe(e); });
+  }
+
+  /* Landing-page counters come from a 52-byte file generated from the real
+     dataset, so the headline numbers cannot drift from data/clean-air-sites.json. */
+  function fillStats() {
+    var n = document.getElementById('stat-sites');
+    if (!n) return;
+    fetch('data/stats.json')
+      .then(function (r) { if (!r.ok) throw new Error('stats.json HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        if (d.sites) n.textContent = d.sites;
+        var c = document.getElementById('stat-counties');
+        if (c && d.counties) c.textContent = d.counties;
+      })
+      .catch(function (err) { console.warn('[stats] ' + err.message); });
+  }
+
   function stampYear() {
     document.querySelectorAll('[data-year]').forEach(function (e) {
       e.textContent = String(new Date().getFullYear());
@@ -96,6 +130,8 @@
     markNav(page);
     wireRightNow();
     wireOutbound();
+    wireReveal();
+    fillStats();
     stampYear();
   });
 }(window));

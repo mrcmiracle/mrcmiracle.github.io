@@ -7,6 +7,9 @@
 <meta name="description" content="Free emergency preparedness tools for King County households: clean air locations, a household kit calculator, and immediate steps for smoke and earthquakes.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f2b92">
+<link rel="preload" href="assets/fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -14,7 +17,13 @@
 
 <header class="site-head">
   <div class="wrap head-row">
-    <a class="brand" href="./">MRC Miracle<span data-i18n="site.tagline">Emergency preparedness for King County</span></a>
+    <a class="brand" href="./">
+      <img class="brand-mark" src="assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+      <span class="brand-text">
+        <span class="brand-name">MRC Miracle</span>
+        <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
+      </span>
+    </a>
     <div class="langswitch" role="group" aria-label="Language / Idioma">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="es" aria-pressed="false">ES</button>
@@ -33,7 +42,11 @@
 </nav>
 
 <main id="main">
-<div class="wrap">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="home.eyebrow">King County, Washington</p>
+    <h1 data-i18n="home.h1">Get ready for smoke and earthquakes</h1>
+    <p class="lede" data-i18n="home.intro">Free tools for King County households. Nothing to sign up for.</p>
 
   <section class="rn-zone" aria-labelledby="rn-h">
     <p class="rn-label" id="rn-h" data-i18n="home.rn.title">Right now</p>
@@ -48,6 +61,10 @@
       </button>
     </div>
   </section>
+  </div>
+</section>
+
+<div class="wrap">
 
   <section class="rn-panel smoke" id="rn-smoke" hidden aria-labelledby="rn-smoke-h">
     <h2 id="rn-smoke-h" tabindex="-1" data-i18n="rn.smoke.title">There&#39;s smoke today</h2>
@@ -86,32 +103,40 @@
     <p><button type="button" class="rn-close" data-rn-close data-i18n="common.close">Close</button></p>
   </section>
 
-  <h1 data-i18n="home.h1">Get ready for smoke and earthquakes</h1>
-  <p class="lede" data-i18n="home.intro">Free tools for King County households. Nothing to sign up for.</p>
+  <section class="stats reveal" aria-label="At a glance">
+    <div class="stat"><b id="stat-sites">344</b><span data-i18n="home.stat.sites">public library locations</span></div>
+    <div class="stat"><b id="stat-counties">39</b><span data-i18n="home.stat.counties">Washington counties</span></div>
+    <div class="stat"><b data-i18n="home.stat.free_n">Free</b><span data-i18n="home.stat.free">no account, no email</span></div>
+  </section>
 
   <h2 data-i18n="home.tools">Plan ahead</h2>
   <div class="cards">
-    <article class="card">
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M6 6h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><path d="m9 13 2 2 4-4"/></svg></div>
       <h3 data-i18n="home.card.kit.title">Build your household kit</h3>
       <p data-i18n="home.card.kit.body">Answer four questions, get a checklist sized to your household. Print it or save it.</p>
       <a class="btn btn-block" href="kit.html" data-i18n="home.card.kit.cta">Start the calculator</a>
     </article>
-    <article class="card">
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></div>
       <h3 data-i18n="home.card.air.title">Find clean air near you</h3>
       <p data-i18n="home.card.air.body">Search by zip code. See hours, transit, pet policy, and accessibility.</p>
       <a class="btn btn-block" href="clean-air.html" data-i18n="home.card.air.cta">Find a location</a>
     </article>
-    <article class="card">
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h3l2-6 4 13 3-9 2 4h6"/></svg></div>
       <h3 data-i18n="home.card.quake.title">Earthquake</h3>
       <p data-i18n="home.card.quake.body">What to do before, during, and after shaking.</p>
       <a class="btn btn-secondary btn-block" href="earthquake.html" data-i18n="nav.quake">Earthquake</a>
     </article>
-    <article class="card">
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s4 3.5 4 7a4 4 0 0 1-8 0c0-1.2.5-2.3 1-3"/><path d="M5 16h14"/><path d="M7 20h10"/></svg></div>
       <h3 data-i18n="home.card.smoke.title">Wildfire smoke</h3>
       <p data-i18n="home.card.smoke.body">How to keep the air in your home breathable.</p>
       <a class="btn btn-secondary btn-block" href="smoke.html" data-i18n="nav.smoke">Smoke</a>
     </article>
-    <article class="card card-wound card-wide">
+    <article class="card card-wound card-wide reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M12 10v4M10 12h4"/></svg></div>
       <h3 data-i18n="home.card.wound.title">Wound care guide</h3>
       <p data-i18n="home.card.wound.body">A companion tool from our team covering bleeding control and wound care.</p>
       <!-- PLACEHOLDER LINK: replace href with the real wound care tool URL when your teammate ships it. -->

@@ -281,5 +281,10 @@
   "footer.email": "northcreek.mrc@gmail.com",
   "footer.instagram": "@mrc.miracle.nchs",
   "footer.follow": "Síganos en Instagram",
-  "footer.email_label": "Escríbanos"
+  "footer.email_label": "Escríbanos",
+  "home.eyebrow": "Condado de King, Washington",
+  "home.stat.sites": "bibliotecas públicas",
+  "home.stat.counties": "condados de Washington",
+  "home.stat.free_n": "Gratis",
+  "home.stat.free": "sin cuenta, sin correo"
 }

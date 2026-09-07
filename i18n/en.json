@@ -281,5 +281,10 @@
   "footer.email": "northcreek.mrc@gmail.com",
   "footer.instagram": "@mrc.miracle.nchs",
   "footer.follow": "Follow us on Instagram",
-  "footer.email_label": "Email us"
+  "footer.email_label": "Email us",
+  "home.eyebrow": "King County, Washington",
+  "home.stat.sites": "public library locations",
+  "home.stat.counties": "Washington counties",
+  "home.stat.free_n": "Free",
+  "home.stat.free": "no account, no email"
 }
