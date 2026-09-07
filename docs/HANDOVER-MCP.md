@@ -133,6 +133,33 @@ volume; the counts are unindexed aggregates and will slow down eventually.
 
 ---
 
+## "This Connection Is Not Private" in Safari — not a site problem
+
+Reported 2026-09-07. The server was healthy at the time, measured from outside:
+
+```
+cert    CN=*.vercel.app, Google Trust Services, valid 29 Aug - 27 Nov 2026
+curl    HTTP 200, ssl_verify_result=0
+DNS     64.29.17.67 / 216.198.79.67  (Vercel)
+```
+
+The site also loaded fine in a different browser in the same session, so the
+fault was local to that Mac.
+
+**The address bar in the screenshot read `mrcmiracle.vercel.app.` with a
+trailing dot.** A trailing dot makes it a fully-qualified root-anchored name,
+and Safari matches that strictly against the certificate: `*.vercel.app` does
+not match `mrcmiracle.vercel.app.`, so it reports impersonation. curl is lenient
+here and accepts it, which is why the two disagreed. Retyping the URL without
+the trailing dot is the fix.
+
+**If it happens again and there is no trailing dot,** press *Show Details* and
+read who issued the certificate. `Google Trust Services` means the connection is
+genuine and it is a browser-side quirk. **Any other issuer** - a school or
+district appliance, Fortinet, Zscaler, a "security" proxy - means the network is
+intercepting TLS, which is common on school wifi and is not something this
+project can fix.
+
 ## Things that must not be undone
 
 - **Read `docs/DESIGN.md` before changing anything visual.** It carries the
@@ -153,6 +180,11 @@ volume; the counts are unindexed aggregates and will slow down eventually.
 - **No `ip`, `user_agent`, name, email or precise-location column exists** in
   `events`, so a future change cannot quietly start collecting them. The privacy
   policy is a public promise — keep it true.
+- **Directions offer Apple Maps, Google Maps and OpenStreetMap** on every clean
+  air result. Only the destination's coordinates and name go in the URL; the
+  page never has the visitor's location. `priv.s7.b` in both language files
+  describes this exactly - if you change what a directions tap sends, change
+  that text in the same commit. The privacy policy is a public promise.
 - **The site makes zero third-party runtime requests.** Fonts are self-hosted,
   auth is plain fetch rather than the Supabase library, and the map only loads
   when someone taps it. Do not add a CDN script or a Google Fonts link.
