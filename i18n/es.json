@@ -350,5 +350,6 @@
   "aqi.do.usg": "Si tiene asma, enfermedad del corazón o del pulmón, está embarazada, es niño o adulto mayor: reduzca el tiempo afuera y tenga su medicamento a la mano.",
   "aqi.do.unhealthy": "Todos deben reducir el tiempo al aire libre. Cierre ventanas, ponga la calefacción o el aire en recirculación y use su cuarto de aire limpio.",
   "aqi.do.very": "Quédese adentro con aire filtrado. Evite por completo el ejercicio al aire libre. Use una mascarilla N95 si tiene que salir.",
-  "aqi.do.hazardous": "Quédese adentro. Si no puede limpiar el aire de su casa, vaya a un lugar de aire limpio."
+  "aqi.do.hazardous": "Quédese adentro. Si no puede limpiar el aire de su casa, vaya a un lugar de aire limpio.",
+  "home.stat.kits": "kits de hogar planeados"
 }

@@ -114,6 +114,29 @@
         if (c && d.counties) c.textContent = d.counties;
       })
       .catch(function (err) { console.warn('[stats] ' + err.message); });
+
+    // Live impact counter. Deliberately hidden until there is enough real
+    // usage to be worth showing - "0 kits planned" reads worse than no
+    // counter at all, and an inflated number is not an option.
+    var MIN_TO_SHOW = 5;
+    fetch('/api/stats')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.ok || !d.kits || d.kits < MIN_TO_SHOW) return;
+        var strip = document.querySelector('.stats');
+        if (!strip) return;
+        var t = function (k) { return global.I18N ? global.I18N.t(k) : k; };
+        var cell = document.createElement('div');
+        cell.className = 'stat';
+        var b = document.createElement('b');
+        b.textContent = d.kits;
+        var span = document.createElement('span');
+        span.setAttribute('data-i18n', 'home.stat.kits');
+        span.textContent = t('home.stat.kits');
+        cell.appendChild(b); cell.appendChild(span);
+        strip.appendChild(cell);
+      })
+      .catch(function (err) { console.warn('[impact] ' + err.message); });
   }
 
   /* Air quality for the panel, loaded only when someone opens it. The landing

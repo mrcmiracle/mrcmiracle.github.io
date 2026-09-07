@@ -318,7 +318,7 @@ main { padding-bottom: var(--s8); }
 @media (prefers-color-scheme: dark) { .card-wound { border-color: var(--line-strong); } }
 
 /* stat strip */
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); margin: var(--s6) 0; text-align: center; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: var(--s3); margin: var(--s6) 0; text-align: center; }
 .stat { padding: var(--s4) var(--s2); background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-sm); }
 .stat b {
   display: block; font-family: var(--font-display); font-variation-settings: 'opsz' 40;

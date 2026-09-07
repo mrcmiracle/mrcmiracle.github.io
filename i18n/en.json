@@ -350,5 +350,6 @@
   "aqi.do.usg": "If you have asthma, heart or lung disease, are pregnant, young or older: shorten time outside and keep medication close.",
   "aqi.do.unhealthy": "Everyone should cut back outdoor time. Close windows, set heat or AC to recirculate, and run your clean air room.",
   "aqi.do.very": "Stay indoors with filtered air. Avoid outdoor exercise entirely. Wear an N95 if you must go out.",
-  "aqi.do.hazardous": "Stay inside. If your home cannot get clean, go to a clean air location."
+  "aqi.do.hazardous": "Stay inside. If your home cannot get clean, go to a clean air location.",
+  "home.stat.kits": "household kits planned"
 }
