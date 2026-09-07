@@ -72,6 +72,17 @@ Everything else is already written and committed.
 6. Under **Settings → Domains** you can change the subdomain. Pick the final
    one now and write it down — this is what goes on the posters.
 
+### Status: verified working 2026-09-07
+
+```
+POST /api/track  →  {"ok":true,"supabase":"ok","sheets":"HTTP 401"}
+GET  /api/stats  →  {"ok":true,"kits":0,"people":0,"lookups":1,"commits":0}
+```
+
+Supabase is receiving events. The Sheets mirror is still returning 401 until
+step 3 below is done — note the primary write succeeded anyway, which is the
+whole point of the mirror being secondary.
+
 ### Checking it works
 
 ```bash

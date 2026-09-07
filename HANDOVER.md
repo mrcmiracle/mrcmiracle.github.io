@@ -56,30 +56,58 @@ from the scratchpad copy. Every result below was observed, not assumed:
 **Done this session:** full visual redesign, per-device checklist progress, and
 the Vercel + Supabase backend code. All pushed.
 
-### Remaining — needs the user, I cannot create accounts
+### Backend is LIVE and verified (2026-09-07)
 
-1. **Supabase project** — sign up, run `supabase/schema.sql`, copy the URL and
-   service_role key. Full steps in `docs/BACKEND.md`.
-2. **Vercel project** — import the GitHub repo, set the three environment
-   variables, deploy. Steps in `docs/BACKEND.md`.
-3. **Set the `SITE_URL` repo variable** on GitHub so the keepalive workflow
-   works (Settings → Secrets and variables → Actions → Variables).
-4. **Fix the Apps Script 401** if the Sheets mirror is wanted — still returning
-   401 as of this session, so still zero rows ever collected.
+Deployed at **https://mrc-miracle.vercel.app** (a rename to `mrcmiracle.vercel.app`
+was recommended and is available — check which is actually in use).
 
-### Remaining — code, not yet built
+Measured, not assumed:
 
-5. **Optional Google sign-in** (user decided: optional, anonymous stays default).
-   Needs Supabase Auth + Google provider, an age gate for under-13s (COPPA), a
+```
+GET  /                → 200
+POST /api/track       → {"ok":true,"supabase":"ok","sheets":"HTTP 401"}
+GET  /api/stats       → {"ok":true,"kits":0,"people":0,"lookups":1,"commits":0}
+```
+
+Supabase schema ran successfully. Writes are landing. Real usage has begun —
+`lookups: 1` is a genuine `cleanair_lookup` from a visitor, not a test.
+
+**One synthetic row to delete:** a `page_view` with `visitor = "verifyabc1"`,
+`page = "verify.html"`. Written during verification. Remove it before pulling
+any numbers for the portfolio.
+
+### Remaining — needs the user
+
+1. **Sheets mirror still 401.** Apps Script → Deploy → Manage deployments →
+   pencil → Version: New version → Who has access: **Anyone** → Deploy.
+   The URL is now server-side only (Vercel env var), so "Anyone" no longer
+   exposes it publicly the way it did when it lived in js/track.js.
+2. **Turn off GitHub Pages** (repo Settings → Pages → Source: None). The old
+   copy at mrcmiracle.github.io still serves but its /api/track returns 405, so
+   visitors there are silently uncounted.
+3. **Decide the final domain before printing posters.**
+
+### Remaining — needs MCP (do these in a session where the connectors work)
+
+The user can connect the Vercel and Supabase MCP servers in a fresh session but
+not in the one where this was written. These tasks are much better with them:
+
+4. **Delete the verification row** and any other synthetic rows.
+5. **Confirm RLS actually blocks the anon key.** The design rests on this. Prove
+   it: with the anon key, `select` on `events` must return an error or zero rows,
+   and `insert` must be refused. Do not assume it from the schema.
+6. **Check indexes are being used** once there is real data (the postgres
+   best-practices skill in .agents/skills is installed for exactly this).
+7. **Live air quality** — the highest-value remaining feature. Verify a free
+   feed (AirNow needs a key; WAQI has a free token) actually covers King County
+   zips before promising it. Key goes in Vercel env, read by a new api/aqi.js.
+8. **Live impact counter** — api/stats.js and impact_stats() already work; just
+   wire the numbers into the landing page stats strip.
+9. **Optional Google sign-in** — the progress table and its RLS policies already
+   exist. Needs Supabase Auth + Google provider, an under-13 age gate (COPPA), a
    real privacy policy page, and written sign-off from the advisor and Unit 503.
-   The `progress` table and its RLS policies are already in the schema.
-6. **Live air quality** on the page — highest-value remaining feature. Verify a
-   free feed (AirNow / WAQI) actually covers King County zips before promising
-   it; the API key goes in Vercel env vars and is read by a new `api/aqi.js`.
-7. **Live impact counter** — `api/stats.js` and `impact_stats()` already exist;
-   just needs wiring into the landing page stats strip.
-8. **Partner-editable locations** — move sites to Supabase plus a small
-   password-protected admin page.
+10. **Partner-editable locations** — move sites into Supabase plus a small
+    password-protected admin page so Unit 503 can activate sites during an event.
 
 ### Hosting decision changed this session
 
