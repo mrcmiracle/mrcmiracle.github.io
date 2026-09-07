@@ -12,6 +12,12 @@
  * emails, addresses, phone numbers, precise location, or IP addresses.
  */
 
+/**
+ * NOTE: this sheet mirrors the RAW event payload, so the column here is
+ * `returning`, matching what the page sends. The Supabase column is called
+ * `is_returning`, because `returning` is a reserved word in Postgres. That
+ * difference is intentional — do not "fix" one to match the other.
+ */
 var SHEET_NAME = 'events';
 
 /* Fixed columns keep the sheet pivot-friendly. Anything the site sends that is
@@ -25,6 +31,7 @@ var COLUMNS = [
   'code', 'via',
   'selections', 'selection_count', 'offered_count',
   'section', 'mode', 'seconds', 'scroll_pct', 'to',
+  'done', 'total',
   'extra'
 ];
 
