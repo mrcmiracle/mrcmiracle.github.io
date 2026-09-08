@@ -111,7 +111,33 @@ Air quality and the map already show explicit loading text. Every new async surf
 three designed states: loading, empty, and failed. "Failed" must never be a blank space —
 on this site a blank space reads as "there is nothing near you", which could be false.
 
-### 7. Zero third-party runtime requests
+### 7. Every tap target is at least 24px
+
+Verified across all eight pages at 375px. The checklist checkboxes, the card
+call-to-action links and the live-source links on the clean air page have all
+been under this at some point. When a control looks too small, measure it:
+
+```js
+[...document.querySelectorAll('a,button,input,select')]
+  .filter(e => { const r = e.getBoundingClientRect(); return r.height > 0 && r.height < 24; })
+```
+
+### 8. Dynamic results are announced, not just rendered
+
+Building a checklist or searching for clean air changes the page without a
+navigation. Both move focus to the new heading, and the kit calculator also
+sets a short `role="status"` line carrying the numbers, because focusing a
+heading announces only the heading. Keep that status element **outside** the
+results region, or a screen reader reads it twice.
+
+### 9. Location never leaves the browser
+
+"Use my location" sorts the list client-side. The analytics call carries no
+coordinates, no zip and no city — only the result count and the nearest
+distance. `priv.s2.b` promises this in both languages. If you change what that
+call sends, change the policy in the same commit.
+
+### 10. Zero third-party runtime requests
 
 Fonts are self-hosted. Auth is plain `fetch`. The map loads only when tapped. **Do not add
 a Google Fonts link, a CDN script, or an icon font.** This is a privacy promise made in

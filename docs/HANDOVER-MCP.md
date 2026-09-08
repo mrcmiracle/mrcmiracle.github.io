@@ -1,7 +1,7 @@
 # Handover — tasks that need the Supabase / Vercel MCP connectors
 
-Written 2026-09-07. **Updated later that day: Tasks 1 and 2 are done, Task 3 is a
-dead end and should be dropped. Tasks 4-6 remain.**
+Written 2026-09-07. **Updated later that day: the backend is finished. Tasks 1-5
+are all done and verified live. Task 6 stays premature until real traffic.**
 
 Start a fresh session with the Supabase and Vercel MCP connectors enabled, then
 work through this in order.
@@ -65,106 +65,65 @@ is developer testing: 5 visitor ids, all from 2026-09-07, and `kits`, `people`
 and `commits` are all still `0`. There is no member of the public in this table
 yet. The numbers only start meaning something once the posters are up.
 
-## Task 3 — The Google Sheets mirror — **KEPT, still failing, new lead**
+## Task 3 — The Google Sheets mirror — **FIXED**
 
-The mirror stays. It was briefly removed on 2026-09-07 and that was reverted the
-same day at the owner's instruction.
+Working since 2026-09-07. `/api/track` reports `{"ok":true,"supabase":"ok","sheets":"ok"}`.
 
-**Correcting the reasoning used to drop it, so nobody repeats it.** The removal
-was argued partly on the mirror being `await`ed alongside the primary write and
-therefore "adding latency on every interaction, on library wifi". That is wrong.
-`Track.send` sends with `navigator.sendBeacon`, or with a `fetch` whose promise
-is never awaited, so **the browser never waits for `/api/track` at all**. The
-mirror's round trip was server-side and no visitor ever experienced it. The only
-real cost was Vercel function execution time. Do not use a user-facing latency
-argument here; it does not apply.
+**Two separate faults were stacked, which is why three sessions of "fix the access
+setting" never worked.** The original deployment refused anonymous callers, and
+editing an existing deployment never applied the change. A genuinely *new*
+deployment fixed the access — and immediately exposed the second fault
+underneath: the script editor was **empty**, so there was no `doPost` to receive
+anything. `Version 3` fixed access, `Version 4` (after pasting `Code.gs` and
+saving) fixed the code.
 
-Current state, measured:
+Diagnosis that cracked it: reading the response *body*, not just the status.
+`Script function not found: doPost` is unmissable; `HTTP 401` alone is not.
 
-```
-POST /exec  -> 401, body is Google Drive's "Page Not Found - unable to open
-               the file at this time"
-GET  /exec  -> 302 to accounts.google.com/ServiceLogin
-```
+The earlier Workspace-admin theory in this document was **wrong**. It was never
+a school-account restriction.
 
-**The new lead is that body.** It is Drive's *file not found* page, not an
-authorisation page. Apps Script serves it both for a **stale deployment URL**
-and for a denied anonymous request, so it does not by itself prove which — but
-the stale-URL possibility has never been checked, and it is likely: creating a
-**new deployment** (rather than editing an existing one) mints a **new `/exec`
-URL**, and the URL in `SHEETS_WEBHOOK_URL` and throughout these docs is the
-original one.
+Verified: `GET /exec` returns `{"ok":true,"message":"MRC Miracle collector is
+running.","rows":N}` and the row count climbs on every POST.
 
-**Do this next, in Apps Script:**
-
-1. **Deploy → New deployment** (not "Manage deployments", not "edit"). Type:
-   **Web app**. Execute as: **Me**. Who has access: **Anyone**.
-2. Copy the **new** `/exec` URL — expect it to differ from the one below.
-3. Test it before wiring it up. Anything but a literal `200` means it is still
-   refusing:
+**If it ever breaks again**, check the body before assuming permissions:
 
 ```bash
-curl -s -o /dev/null -w '%{http_code}\n' -X POST '<NEW-exec-URL>' \
-  -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
+curl -s -L '<exec-url>'          # expect the JSON above
 ```
 
-4. When it returns 200, put the new URL in `SHEETS_WEBHOOK_URL` in Vercel and
-   redeploy. `curl -s -X POST https://mrcmiracle.vercel.app/api/track ...`
-   should then report `"sheets":"ok"`.
-
-The URL currently configured, for comparison:
-
-```
-https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec
-```
-
-If a genuinely new deployment set to **Anyone** still refuses, then the
-Workspace-admin theory holds and the remaining move is to recreate the script
-under `northcreek.mrc@gmail.com`. Supabase remains the store of record
-throughout; a mirror failure never loses the primary write.
+Anything else — a Drive "Page Not Found" page, a sign-in redirect, a "Script
+function not found" — tells you which of the two faults you have. And always
+deploy a **new deployment**, never an edit to an existing one.
 
 Note the Apps Script column list still says `returning`; the database column is
 `is_returning`. The sheet is a flat mirror of the raw payload so this does not
 matter, but do not "fix" one to match the other without checking both.
 
-## Task 4 — Optional sign-in — **Google is configured; one env var is wrong**
+## Task 4 — Optional sign-in — **DONE**
 
-Google is enabled and working at the Supabase end, confirmed via
-`/auth/v1/settings` (`external.google = true`). Apple is off.
+Live. `/api/config` returns `ok:true` with `providers:["google"]`, and the key it
+serves decodes to `role: anon` for project `fsbrpozjfsioxhsqznxw`.
 
-**`SUPABASE_ANON_KEY` in Vercel holds a masked value:** the real first 8
-characters followed by 200 U+2022 bullet characters, i.e. what the Supabase
-dashboard *displays* rather than the key. Sign-in fails with "Invalid API key".
-`/api/config` now detects this and says so by name instead of reporting ok.
-Fix: reveal the key in the dashboard before copying, paste it, redeploy.
+**The failure worth remembering.** `SUPABASE_ANON_KEY` was set three times to the
+value the Supabase dashboard *displays* — the real first 8 characters followed by
+200 U+2022 bullets. Vercel masks the value too, so editing the variable in place
+re-saved the mask. It only took after **deleting** the variable and adding it
+fresh from a clipboard loaded outside both dashboards.
 
-Sign-in offers one button per enabled provider, so turning Apple on in Supabase
-makes its button appear with no code change. **Apple costs money and needs
-maintenance**: it requires a paid Apple Developer account, and Apple forces the
-signing secret to be regenerated **every 6 months** or logins break. For a club
-whose officers graduate, that is a recurring landmine — weigh it before buying.
+`/api/config` now validates key *shape*, not just presence, and reports what it
+observed (length, leading characters, bullet count, dot count). Before that it
+answered `ok:true` for a key that could never work.
 
-### Original setup notes
+Sign-in renders one button per enabled provider, so switching a provider on in
+Supabase makes its button appear with no code change. **Apple was considered and
+declined**: it needs a paid Apple Developer account and forces the signing secret
+to be regenerated every 6 months or logins break — a recurring landmine for a
+club whose officers graduate.
 
-
-Code is written and deployed; it is dark until three things are configured.
-Full steps in `docs/BACKEND.md` step 4. Summary:
-
-1. Add `SUPABASE_ANON_KEY` to Vercel env (safe in the browser, unlike service_role).
-2. Google Cloud Console → OAuth client → authorised redirect URI exactly
-   `https://fsbrpozjfsioxhsqznxw.supabase.co/auth/v1/callback`.
-3. Supabase → Authentication → Providers → Google (paste client id/secret), and
-   URL Configuration → Site URL `https://mrcmiracle.vercel.app` plus redirect
-   URL `https://mrcmiracle.vercel.app/**`. **Missing that last entry is the
-   usual cause of a failed hand-off.**
-
-Then verify `/api/config` returns `{"ok":true,...}` and test a real sign-in on
-two devices. Progress merges as a union — confirm that ticking on device A
-never un-ticks on device B.
-
-**The 13+ gate is not negotiable.** COPPA governs collecting personal data from
-under-13s; an email address is personal data. MRC's written approval covers the
-partnership, not federal law. Do not remove it.
+**Still unverified:** a real sign-in round trip on two devices, confirming
+progress merges as a union so ticking on device A never un-ticks device B. That
+needs two real Google logins.
 
 ## Task 5 — Partner-editable clean air locations — **DONE (interim admin)**
 
@@ -200,9 +159,9 @@ forged token, and a forged write all returned 503 and nothing was written.
 `admin.html` carries a noindex meta, is disallowed in robots.txt inside the
 User-agent group, and is absent from the sitemap.
 
-**Still to verify once `ADMIN_EMAILS` is set:** that a forged token gets 401 and
-a signed-in non-coordinator gets 403. Only the fail-closed path could be tested
-without an allow-list.
+**Verified live with `ADMIN_EMAILS` set:** no token, a forged token, a forged
+write and a forged delete all return 401 and nothing is written. The 403 path for
+a signed-in non-coordinator still needs a second real Google account to confirm.
 
 Superseded note: Coordinators use the Supabase
 table editor for now — click-by-click in `docs/UPDATING-SITES.md`. Build the
