@@ -8,9 +8,12 @@ for UI work so it does not hand you back generic output.
 
 ## First, what this site is
 
-Someone scans a QR code on a poster in a King County library. They are on a cheap phone,
-on library wifi. Sometimes they are browsing. Sometimes there is smoke outside, or the
-ground just moved.
+Someone scans a QR code on a poster in a King County library. Sometimes they are
+browsing. Sometimes there is smoke outside, or the ground just moved.
+
+Build for capable, modern devices. Do not water anything down for imagined slow
+hardware or slow connections - that is not a constraint on this project, and treating
+it as one has cost real design decisions.
 
 That reader decides everything below. This is **civic infrastructure**, not a product
 landing page. It sits closer to a transit sign, a public health notice, or a field
@@ -145,7 +148,7 @@ call sends, change the policy in the same commit.
 
 `body::before` is a fixed wash behind everything: `html` carries the base colour,
 `body` is transparent. It animates **only `transform`**, so it stays on the
-compositor and costs no layout or paint on an old phone, and it is switched off
+compositor and costs no layout or paint, and it is switched off
 entirely under `prefers-reduced-motion` and in print. Its tokens (`--veil-1`,
 `--veil-2`) are capped low enough that all text still clears WCAG AA over it -
 measured at 4.61 for secondary text and 15.7 for headings. If you strengthen
@@ -159,7 +162,7 @@ Every visible container uses a radius token. Nothing is square-cornered.
 
 Fonts are self-hosted. Auth is plain `fetch`. The map loads only when tapped. **Do not add
 a Google Fonts link, a CDN script, or an icon font.** This is a privacy promise made in
-`privacy.html` and a performance requirement on library wifi — not a preference.
+`privacy.html`. It is a privacy commitment, not a performance one.
 
 ---
 

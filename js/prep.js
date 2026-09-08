@@ -72,6 +72,7 @@
     var form = document.getElementById('prep-form');
     var done = document.getElementById('prep-done');
     var err = document.getElementById('prep-err');
+    var lastAnswers = null;
 
     if (phase === 'followup') {
       /* Swap the translation KEYS, not the text. I18N.apply reads data-i18n
@@ -87,9 +88,10 @@
     }
     box.hidden = false;
 
-    function finish(answers) {
+    function finish(answers, redrawOnly) {
+      lastAnswers = answers;
       var score = answers.water + answers.air + answers.plan;
-      global.Track.send('prep_check', {
+      if (!redrawOnly) global.Track.send('prep_check', {
         prep_phase: phase,
         prep_water: answers.water,
         prep_air: answers.air,
@@ -97,9 +99,11 @@
         prep_score: score
       });
 
-      var next = readState();
-      next[phase === 'baseline' ? 'baselineAt' : 'followupAt'] = Date.now();
-      writeState(next);
+      if (!redrawOnly) {
+        var next = readState();
+        next[phase === 'baseline' ? 'baselineAt' : 'followupAt'] = Date.now();
+        writeState(next);
+      }
 
       /* The useful half: point each gap at the tool that closes it. */
       form.hidden = true;
@@ -122,7 +126,8 @@
         done.appendChild(el('p', 'prep-allset', t('prep.allset')));
       }
       done.hidden = false;
-      document.getElementById('prep-h').focus();
+      // Only steal focus when the visitor actually submitted, never on a redraw.
+      if (!redrawOnly) document.getElementById('prep-h').focus();
     }
 
     form.addEventListener('submit', function (e) {
@@ -137,6 +142,12 @@
       if (missing) { err.hidden = false; return; }
       err.hidden = true;
       finish(answers);
+    });
+
+    /* The thank-you and the "start here" links are built in JavaScript, so they
+       need redrawing too. lastAnswers is only set once the form is submitted. */
+    document.addEventListener('i18n:changed', function () {
+      if (lastAnswers) finish(lastAnswers, true);
     });
 
     document.getElementById('prep-skip').addEventListener('click', function () {

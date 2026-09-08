@@ -10,6 +10,7 @@
   var MAX_RESULTS = 6;
 
   var sites = [], zips = {}, shown = [], map = null;
+  var lastLabel = '', lastOrigin = null;
 
   var $ = function (s) { return document.querySelector(s); };
   var t = function (k, v) { return global.I18N ? global.I18N.t(k, v) : k; };
@@ -139,6 +140,8 @@
 
   function render(entries, originLabel, origin) {
     shown = entries;
+    lastLabel = originLabel;
+    lastOrigin = origin;
     showAqi(origin);
     var host = $('#air-results');
     host.textContent = '';
@@ -240,6 +243,14 @@
         box.parentNode.insertBefore(p, box);
       });
   }
+
+  /* Results are built in JavaScript, so a language switch used to leave them in
+     the previous language until the page was reloaded. Redraw from what is
+     already on screen. The map is left alone on purpose: reopening it would
+     cost a fresh tile load and its own labels come from the tiles, not from us. */
+  document.addEventListener('i18n:changed', function () {
+    if (shown && shown.length) render(shown, lastLabel, lastOrigin);
+  });
 
   // ---- lookups ----
   function byZip() {

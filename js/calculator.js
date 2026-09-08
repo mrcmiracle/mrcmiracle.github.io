@@ -426,6 +426,27 @@
     };
   }
 
+  /* Re-draw everything this module built, in the language now selected.
+
+     I18N.apply only re-translates elements carrying data-i18n. The checklist,
+     the save box and the closing question are built in JavaScript, so their
+     strings are baked in at render time and a language switch left them in the
+     old language until the page was reloaded.
+
+     This redraws from the state already held. It deliberately does NOT re-send
+     kit_complete, does not move focus and does not re-announce: nothing has
+     happened for the visitor except the words changing. Ticked boxes survive
+     because renderChecklist restores them from saved progress. */
+  function redrawForLanguage() {
+    if (!lastState) return;
+    lastItems = selectItems(lastState);
+    renderChecklist(lastState, lastItems);
+    renderSave(lastState);
+    renderAsk(lastState, lastItems);
+  }
+
+  document.addEventListener('i18n:changed', redrawForLanguage);
+
   function build(state, source) {
     lastState = state;
     lastItems = selectItems(state);

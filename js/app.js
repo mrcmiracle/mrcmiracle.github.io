@@ -145,6 +145,7 @@
      the site is King County first, and no visitor location is involved. */
   var SEATTLE = { lat: 47.619335, lon: -122.351538 };
   var smokeAqiLoaded = false;
+  var lastAqiReading = null;
   function loadSmokeAqi() {
     if (smokeAqiLoaded || !global.AQI) return;
     smokeAqiLoaded = true;
@@ -159,10 +160,20 @@
     p.textContent = t('aqi.loading');
     host.appendChild(p);
     global.AQI.nearest(SEATTLE.lat, SEATTLE.lon).then(function (reading) {
+      lastAqiReading = reading;
       global.AQI.render(host, reading, t);
       if (reading) global.Track.send('aqi_lookup', { results: reading.area.aqi, city: reading.area.name, method: 'rightnow' });
     });
   }
+
+  /* The air quality panel is built in JavaScript, so redraw it in the new
+     language from the reading already held. No refetch: the numbers have not
+     changed, only the words around them. */
+  document.addEventListener('i18n:changed', function () {
+    var host = document.getElementById('aqi-smoke');
+    if (!host || host.hidden || !smokeAqiLoaded || !global.AQI || !lastAqiReading) return;
+    global.AQI.render(host, lastAqiReading, function (k, v) { return global.I18N ? global.I18N.t(k, v) : k; });
+  });
 
   function stampYear() {
     document.querySelectorAll('[data-year]').forEach(function (e) {

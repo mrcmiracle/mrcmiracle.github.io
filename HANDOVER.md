@@ -16,7 +16,7 @@ Task 2 is wired up in code but blocked on one Apps Script setting — read it fi
 
 A mobile-first static site (plain HTML/CSS/JS, no build step, no dependencies)
 reached by QR code from posters in King County Library System branches. It must load
-fast on library wifi and old phones. Landing page is ~20KB gzipped.
+quickly. Landing page is ~20KB gzipped.
 
 Read `README.md` first, then `docs/DEPLOY.md`. Those are current and accurate.
 
@@ -157,8 +157,7 @@ that currently makes none.
 
 **The user relaxed the bandwidth constraint** (KCLS wifi is strong). Fonts and
 graphics are fine to spend on. Still keep the two "Right now" panels inline with
-zero requests — old phones and cellular users outside the library are the real
-remaining constraint, not library wifi.
+zero requests.
 
 ## Data provenance (all public domain, all fetched and verified this session)
 

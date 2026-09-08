@@ -10,7 +10,7 @@ Seattle & King County, MRC Unit 503.
 **Contact:** northcreek.mrc@gmail.com · Instagram [@mrc.miracle.nchs](https://www.instagram.com/mrc.miracle.nchs/)
 
 Traffic arrives by QR code from posters in King County Library System branches, so the
-site is built to load fast on library wifi and older phones. The landing page is about
+site is built to load quickly. The landing page is about
 20KB compressed; the heaviest page is about 24KB.
 
 ---

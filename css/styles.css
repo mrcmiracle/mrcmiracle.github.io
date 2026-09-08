@@ -1,7 +1,7 @@
 /* ==========================================================================
    MRC Miracle design system
    Palette derived from the MRC Miracle seal (dominant ink #4F2B92).
-   Type: Fraunces (display) + Atkinson Hyperlegible (text), both self-hosted.
+   Type: Nunito (rounded display) + Atkinson Hyperlegible (text), both self-hosted.
    ========================================================================== */
 
 /* ---------- fonts ---------- */
@@ -16,10 +16,10 @@
   font-weight: 700; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: 'Fraunces';
-  src: url('../assets/fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('../assets/fonts/fraunces-var.woff2') format('woff2');
-  font-weight: 400 700; font-style: normal; font-display: swap;
+  font-family: 'Nunito';
+  src: url('../assets/fonts/nunito-var.woff2') format('woff2-variations'),
+       url('../assets/fonts/nunito-var.woff2') format('woff2');
+  font-weight: 400 800; font-style: normal; font-display: swap;
 }
 
 /* ---------- tokens ---------- */
@@ -63,7 +63,7 @@
   --ok-bg: #e9f6ef;
   --ok-line: #8ccbaa;
 
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-display: 'Nunito', ui-rounded, 'SF Pro Rounded', 'Segoe UI Rounded', system-ui, sans-serif;
   --font-text: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --step--1: .875rem;
@@ -137,7 +137,7 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
    it safe on the devices this site is built for:
 
    only `transform` is animated, so it stays on the compositor and costs no
-   layout or paint on an old phone; and it is switched off entirely under
+   layout or paint; and it is switched off entirely under
    prefers-reduced-motion, where it becomes a plain static wash. */
 html { background: var(--paper); }
 
@@ -179,8 +179,8 @@ body {
    same face as the body text, so a page reads as one voice instead of
    alternating between two. */
 h1, h2, h3 {
-  font-family: var(--font-text);
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 800;
   letter-spacing: -.012em;
   line-height: 1.2;
   color: var(--ink);
@@ -188,8 +188,7 @@ h1, h2, h3 {
 }
 h1 {
   font-family: var(--font-display);
-  font-variation-settings: 'opsz' 90;
-  font-weight: 600; letter-spacing: -.02em; line-height: 1.15;
+  font-weight: 800; letter-spacing: -.02em; line-height: 1.15;
   font-size: var(--step-4); margin: 0 0 var(--s3);
 }
 h2 { font-size: var(--step-3); margin: var(--s7) 0 var(--s3); }
@@ -233,7 +232,7 @@ a:hover { color: var(--brand-strong); }
 .brand-mark { width: 38px; height: 38px; flex: 0 0 auto; border-radius: 50%; }
 .brand-text { display: flex; flex-direction: column; min-width: 0; }
 .brand-name {
-  font-family: var(--font-display); font-variation-settings: 'opsz' 24;
+  font-family: var(--font-display);
   font-weight: 700; font-size: 1.08rem; line-height: 1.1; letter-spacing: -.01em;
 }
 .brand-sub { font-size: .68rem; color: var(--ink-3); line-height: 1.25; display: none; }
@@ -422,7 +421,7 @@ main { padding-bottom: var(--s8); }
 .stat { padding: var(--s4) var(--s3); background: none; border: 0; border-left: 1px solid var(--line); border-radius: var(--r-sm); }
 .stat:first-child { border-left: 0; padding-left: 0; }
 .stat b {
-  display: block; font-family: var(--font-display); font-variation-settings: 'opsz' 90;
+  display: block; font-family: var(--font-display);
   font-size: clamp(1.7rem, 8vw, 2.3rem); font-weight: 700; color: var(--brand);
   line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums;
 }
@@ -517,7 +516,7 @@ fieldset { border: 0; margin: 0; padding: 0; }
   letter-spacing: .06em; margin: 0 0 var(--s2); opacity: .85; }
 .aqi-row { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s2); }
 .aqi-num {
-  font-family: var(--font-display); font-variation-settings: 'opsz' 100;
+  font-family: var(--font-display);
   font-size: clamp(2.4rem, 12vw, 3.2rem); font-weight: 700; line-height: 1; letter-spacing: -.03em;
   font-variant-numeric: tabular-nums lining-nums;
 }
@@ -601,7 +600,7 @@ fieldset { border: 0; margin: 0; padding: 0; }
 @media (prefers-color-scheme: dark) { .water-box { border-color: var(--line-strong); } }
 .water-box h3 { margin: 0 0 var(--s2); font-size: var(--step-1); color: var(--ink-2); }
 .water-n {
-  font-family: var(--font-display); font-variation-settings: 'opsz' 100;
+  font-family: var(--font-display);
   font-size: clamp(2.6rem, 13vw, 3.6rem); font-weight: 700; line-height: 1;
   color: var(--brand); letter-spacing: -.03em;
   font-variant-numeric: tabular-nums lining-nums;

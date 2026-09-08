@@ -253,7 +253,7 @@ Work through this list. Several items need someone other than you.
 - [ ] Your MRC Unit 503 contact has read the earthquake and smoke text and approved it
 - [ ] The wound care link in `index.html` points at your teammate's real tool
 - [x] The footer logo is the team's own seal — **already done** (`assets/logo.png`)
-- [ ] You have opened the live URL on a real phone, on library wifi if you can
+- [ ] You have opened the live URL on a real phone
 - [ ] The QR code on the poster points to `https://mrcmiracle.github.io` and you have
       scanned the printed proof yourself
 - [ ] Data is arriving in your spreadsheet
