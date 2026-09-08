@@ -157,7 +157,7 @@ It was written without seeing the project. Scored against what is actually here:
 | Design empty and loading states | **Partly done** — worth extending, see rule 6 |
 | Bento-grid palette `#0F172A` / `#7C3AED` | **Rejected** — you said keep the palette, and the violet is taken from the unit's actual seal |
 | Neobrutalist cream / sage / terracotta | **Rejected** — same reason |
-| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 7 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
+| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 10 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
 | Thick 2px black borders, hard offset shadows | **Rejected** — a shop aesthetic; wrong register for a hazard notice |
 | Shift elements on hover to mimic a button press | **Use with care** — fine for planning content, never on the two emergency panels |
 
