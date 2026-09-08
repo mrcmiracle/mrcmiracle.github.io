@@ -65,35 +65,67 @@ is developer testing: 5 visitor ids, all from 2026-09-07, and `kits`, `people`
 and `commits` are all still `0`. There is no member of the public in this table
 yet. The numbers only start meaning something once the posters are up.
 
-## Task 3 — The Google Sheets mirror — **DROPPED**
+## Task 3 — The Google Sheets mirror — **KEPT, still failing, new lead**
 
-Removed on 2026-09-07 after failing across three sessions and two redeploys by
-the owner: `POST /exec` returned 401 and `GET` redirected to Google sign-in
-every time. The likely cause is a Workspace (school) account whose admin blocks
-publishing outside the domain, which cannot be overridden from this side.
+The mirror stays. It was briefly removed on 2026-09-07 and that was reverted the
+same day at the owner's instruction.
 
-There was a second cost nobody had noticed. The mirror was `await`ed alongside
-the primary Supabase write, so **every single tracked event paid for that
-doomed round trip** before `/api/track` could respond - latency on every
-interaction, on a site that has to be quick on library wifi.
+**Correcting the reasoning used to drop it, so nobody repeats it.** The removal
+was argued partly on the mirror being `await`ed alongside the primary write and
+therefore "adding latency on every interaction, on library wifi". That is wrong.
+`Track.send` sends with `navigator.sendBeacon`, or with a `fetch` whose promise
+is never awaited, so **the browser never waits for `/api/track` at all**. The
+mirror's round trip was server-side and no visitor ever experienced it. The only
+real cost was Vercel function execution time. Do not use a user-facing latency
+argument here; it does not apply.
 
-What changed:
+Current state, measured:
 
-- the mirror block and `SHEETS_WEBHOOK_URL` are gone from `api/track.js`
-- `SHEETS_WEBHOOK_URL` removed from `.env.example`
-- `priv.s7.b` no longer claims usage is copied to a Google Sheet, in **both**
-  languages. It was claiming a data flow that was not happening
-- `docs/DEPLOY.md` step 4 is marked superseded
-- `apps-script/Code.gs` is kept, headed NOT IN USE, with revival instructions
+```
+POST /exec  -> 401, body is Google Drive's "Page Not Found - unable to open
+               the file at this time"
+GET  /exec  -> 302 to accounts.google.com/ServiceLogin
+```
 
-Nothing was lost: Supabase is the store of record and exports CSV directly from
-the Table Editor, which is what the portfolio needs.
+**The new lead is that body.** It is Drive's *file not found* page, not an
+authorisation page. Apps Script serves it both for a **stale deployment URL**
+and for a denied anonymous request, so it does not by itself prove which — but
+the stale-URL possibility has never been checked, and it is likely: creating a
+**new deployment** (rather than editing an existing one) mints a **new `/exec`
+URL**, and the URL in `SHEETS_WEBHOOK_URL` and throughout these docs is the
+original one.
 
-**To revive it**, republish the script from an account that can set "Who has
-access: Anyone" (`northcreek.mrc@gmail.com`, not the school account), confirm a
-literal 200 from the curl in `Code.gs`, restore the mirror block from git
-history, and re-add the Google Sheet sentence to `priv.s7.b` in both language
-files. The privacy policy must describe where data actually goes.
+**Do this next, in Apps Script:**
+
+1. **Deploy → New deployment** (not "Manage deployments", not "edit"). Type:
+   **Web app**. Execute as: **Me**. Who has access: **Anyone**.
+2. Copy the **new** `/exec` URL — expect it to differ from the one below.
+3. Test it before wiring it up. Anything but a literal `200` means it is still
+   refusing:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' -X POST '<NEW-exec-URL>' \
+  -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
+```
+
+4. When it returns 200, put the new URL in `SHEETS_WEBHOOK_URL` in Vercel and
+   redeploy. `curl -s -X POST https://mrcmiracle.vercel.app/api/track ...`
+   should then report `"sheets":"ok"`.
+
+The URL currently configured, for comparison:
+
+```
+https://script.google.com/macros/s/AKfycbzcdC7ASSdjWLYF3zTWKMfxFcXv5n2M7KUvQRpbXQkBGdMj4eZFX7LRg_x246rnUUgs/exec
+```
+
+If a genuinely new deployment set to **Anyone** still refuses, then the
+Workspace-admin theory holds and the remaining move is to recreate the script
+under `northcreek.mrc@gmail.com`. Supabase remains the store of record
+throughout; a mirror failure never loses the primary write.
+
+Note the Apps Script column list still says `returning`; the database column is
+`is_returning`. The sheet is a flat mirror of the raw payload so this does not
+matter, but do not "fix" one to match the other without checking both.
 
 ## Task 4 — Optional sign-in — **Google is configured; one env var is wrong**
 

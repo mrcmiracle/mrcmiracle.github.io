@@ -1,24 +1,3 @@
-/* NOT IN USE as of 2026-09-07.
- *
- * This mirrored anonymous usage into a Google Sheet. It was removed from
- * api/track.js because the deployed web app refused anonymous callers with
- * HTTP 401 on every attempt, across three sessions and two redeploys by the
- * owner. The likely cause is a Google Workspace (school) account whose admin
- * blocks sharing outside the domain, which cannot be overridden from here.
- *
- * Supabase is the store of record and exports CSV directly, which is what the
- * portfolio actually needs, so nothing is lost.
- *
- * To revive it: republish this script from an account that can set
- * "Who has access: Anyone" (northcreek.mrc@gmail.com rather than the school
- * account), confirm with
- *   curl -s -o /dev/null -w '%{http_code}\n' -X POST '<exec-url>' \
- *     -H 'Content-Type: text/plain;charset=UTF-8' -d '{"event":"test"}'
- * returns a literal 200, then restore the mirror block in api/track.js from
- * git history and re-add the Google Sheet line to priv.s7.b in BOTH language
- * files - the privacy policy must describe where data actually goes.
- */
-
 /**
  * MRC Miracle — anonymous event collector.
  *
