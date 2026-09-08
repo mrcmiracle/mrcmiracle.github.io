@@ -155,7 +155,24 @@ Verified end to end on production with a temporary activated row: it appeared
 first, badged, above Bothell Library at the same distance, with the map links
 working. The row was then deleted; the table is empty.
 
-**The admin page is the one piece not built.** Coordinators use the Supabase
+**The admin page is now built** at `/admin.html` (`js/admin.js`,
+`api/admin-sites.js`). It needs **`ADMIN_EMAILS`** set in Vercel - a
+comma-separated list of coordinator addresses - and working sign-in.
+
+The security is entirely server-side. `/api/admin-sites` verifies the caller's
+access token by asking Supabase who it belongs to (never decoding it locally)
+and checks that verified address against `ADMIN_EMAILS`; the browser's claim
+about who it is is ignored. Only known columns are written. With `ADMIN_EMAILS`
+unset the endpoint refuses everything, which was verified live: no token, a
+forged token, and a forged write all returned 503 and nothing was written.
+`admin.html` carries a noindex meta, is disallowed in robots.txt inside the
+User-agent group, and is absent from the sitemap.
+
+**Still to verify once `ADMIN_EMAILS` is set:** that a forged token gets 401 and
+a signed-in non-coordinator gets 403. Only the fail-closed path could be tested
+without an allow-list.
+
+Superseded note: Coordinators use the Supabase
 table editor for now — click-by-click in `docs/UPDATING-SITES.md`. Build the
 page once sign-in works: gate it on Supabase Auth with an allow-list of
 coordinator emails, and have it write through a service_role API route rather
