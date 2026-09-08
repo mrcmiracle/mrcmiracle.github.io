@@ -57,7 +57,7 @@
 </nav>
 
 <main id="main">
-<div class="wrap">
+<div class="wrap kit-layout">
   <h1 data-i18n="kit.h1">Build your household kit</h1>
   <p class="lede" data-i18n="kit.intro">Four questions. You will get a checklist sized to your household that you can print or save.</p>
 
@@ -99,8 +99,15 @@
 
   <p class="sr-only" role="status" id="kit-announce"></p>
   <section id="kit-result" hidden></section>
-  <section id="kit-save" class="savebox no-print" hidden></section>
-  <section id="kit-ask" class="askbox no-print" hidden></section>
+
+  <!-- On a wide screen these become a sticky side panel beside the checklist,
+       so the save code and sign-in stay reachable instead of sitting far below
+       a long list. On a phone the DOM order is unchanged: form, checklist,
+       save, question. -->
+  <aside class="kit-side">
+    <section id="kit-save" class="savebox no-print" hidden></section>
+    <section id="kit-ask" class="askbox no-print" hidden></section>
+  </aside>
 
 </div>
 </main>

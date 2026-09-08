@@ -79,6 +79,7 @@
   "air.or": "or",
   "air.geo.button": "Use my location",
   "air.geo.note": "Your device will ask permission first. Your location is used in this browser only and is never sent to us.",
+  "air.geo.blocked": "Your browser is blocking location for this site, so it cannot ask you. To turn it back on, tap the icon at the left of the address bar and allow Location, or check Location Services in your device settings. Searching by zip code works either way.",
   "air.geo.finding": "Finding you…",
   "air.geo.yourlocation": "you",
   "air.geo.denied": "Location permission was declined, which is fine. Enter a zip code or pick a city instead.",

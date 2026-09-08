@@ -79,6 +79,7 @@
   "air.or": "o",
   "air.geo.button": "Usar mi ubicación",
   "air.geo.note": "Su dispositivo le pedirá permiso primero. Su ubicación se usa solo en este navegador y nunca se nos envía.",
+  "air.geo.blocked": "Su navegador está bloqueando la ubicación para este sitio, así que no puede preguntarle. Para reactivarla, toque el icono a la izquierda de la barra de direcciones y permita la Ubicación, o revise los Servicios de ubicación en los ajustes de su dispositivo. Buscar por código postal funciona de todos modos.",
   "air.geo.finding": "Buscándole…",
   "air.geo.yourlocation": "usted",
   "air.geo.denied": "No dio permiso de ubicación, y está bien. Escriba un código postal o elija una ciudad.",

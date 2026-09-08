@@ -292,6 +292,11 @@
       btn.disabled = false;
       btn.textContent = original;
       // 1 = permission denied, 2 = position unavailable, 3 = timeout
+      if (err.code === 1) {
+        $('#geo-btn').hidden = true;
+        $('#geo-note').hidden = true;
+        $('#geo-blocked').hidden = false;
+      }
       showNone(err.code === 1 ? 'air.geo.denied' : 'air.geo.failed');
       global.Track.send('cleanair_lookup', { results: 0, method: 'geolocation_failed' });
     }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
@@ -346,10 +351,30 @@
 
     /* Only offer the button if the browser can actually do it, so it is never
        shown as a control that does nothing. Secure contexts only - geolocation
-       is unavailable over plain http. */
+       is unavailable over plain http.
+
+       If the permission is ALREADY denied - because it was declined once and
+       the browser remembered, or location is switched off for the browser at
+       the operating system level - then tapping the button can never open a
+       prompt. Showing a live button in that state is the bug: it looks broken
+       rather than blocked. Say what is actually wrong and how to undo it. */
     if (navigator.geolocation && window.isSecureContext) {
-      $('#geo-field').hidden = false;
+      var field = $('#geo-field');
+      field.hidden = false;
       $('#geo-btn').addEventListener('click', byGeo);
+
+      if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then(function (status) {
+          function reflect() {
+            var blocked = status.state === 'denied';
+            $('#geo-btn').hidden = blocked;
+            $('#geo-blocked').hidden = !blocked;
+            $('#geo-note').hidden = blocked;
+          }
+          reflect();
+          status.onchange = reflect;
+        }).catch(function () { /* older browsers: leave the button as it is */ });
+      }
     }
 
     // Deep link from the "there's smoke today" panel.

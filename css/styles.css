@@ -652,6 +652,38 @@ details.sect[open] > summary { border-bottom: 1px solid var(--line); background:
 .reveal.is-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
+/* ---------- two-column layout on real screens ----------
+   The reading measure stays narrow, because long lines are harder to read and
+   this site is read under stress. What changes on a wide screen is that the
+   secondary panels move beside the content instead of far below it, so the
+   save code and sign-in are reachable without scrolling past a long checklist,
+   and the window is not mostly empty margin.
+
+   Below this width nothing applies: the aside is a plain block in DOM order. */
+@media (min-width: 64rem) {
+  .kit-layout {
+    max-width: 66rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    column-gap: var(--s7);
+    align-items: start;
+  }
+  .kit-layout > h1,
+  .kit-layout > .lede,
+  .kit-layout > #kit-load-err { grid-column: 1 / -1; }
+  .kit-layout > form,
+  .kit-layout > #kit-result { grid-column: 1; min-width: 0; }
+  .kit-layout > .kit-side {
+    grid-column: 2;
+    grid-row: 3 / span 2;
+    position: sticky;
+    /* clears the sticky site header */
+    top: 5.5rem;
+  }
+  .kit-side > section { margin-top: 0; }
+  .kit-side > section + section { margin-top: var(--s5); }
+}
+
 /* ---------- wider screens ---------- */
 @media (min-width: 40rem) {
   body { font-size: 1.125rem; }
