@@ -262,6 +262,41 @@
     });
   }
 
+  /* "Use my location". The coordinates are used to sort the list in this
+     browser and are never transmitted: the whole distance calculation already
+     happens client-side, and the analytics call below deliberately carries no
+     zip, no city and no coordinates - only how many results came back and how
+     far the nearest one was. Low accuracy is requested on purpose: a rough fix
+     is plenty for ranking buildings miles apart, and it is faster and more
+     private than a precise one. */
+  function byGeo() {
+    var btn = $('#geo-btn');
+    if (!navigator.geolocation) { showNone('air.geo.unsupported'); return; }
+    btn.disabled = true;
+    var original = btn.textContent;
+    btn.textContent = t('air.geo.finding');
+
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      btn.disabled = false;
+      btn.textContent = original;
+      var lat = pos.coords.latitude, lon = pos.coords.longitude;
+      var found = nearest(lat, lon);
+      if (!found.length) { showNone('air.results.none'); return; }
+      render(found, t('air.geo.yourlocation'), { lat: lat, lon: lon });
+      global.Track.send('cleanair_lookup', {
+        results: found.length,
+        nearest_mi: Number(found[0].dist.toFixed(1)),
+        method: 'geolocation'
+      });
+    }, function (err) {
+      btn.disabled = false;
+      btn.textContent = original;
+      // 1 = permission denied, 2 = position unavailable, 3 = timeout
+      showNone(err.code === 1 ? 'air.geo.denied' : 'air.geo.failed');
+      global.Track.send('cleanair_lookup', { results: 0, method: 'geolocation_failed' });
+    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+  }
+
   function byCity() {
     var city = $('#city').value;
     if (!city) return;
@@ -308,6 +343,14 @@
     fillCities();
     $('#zip-form').addEventListener('submit', function (e) { e.preventDefault(); byZip(); });
     $('#city').addEventListener('change', byCity);
+
+    /* Only offer the button if the browser can actually do it, so it is never
+       shown as a control that does nothing. Secure contexts only - geolocation
+       is unavailable over plain http. */
+    if (navigator.geolocation && window.isSecureContext) {
+      $('#geo-field').hidden = false;
+      $('#geo-btn').addEventListener('click', byGeo);
+    }
 
     // Deep link from the "there's smoke today" panel.
     var q = new URLSearchParams(location.search).get('zip');

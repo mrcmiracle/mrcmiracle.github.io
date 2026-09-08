@@ -77,6 +77,13 @@
   "air.zip.placeholder": "98101",
   "air.zip.button": "Buscar lugares",
   "air.or": "o",
+  "air.geo.button": "Usar mi ubicación",
+  "air.geo.note": "Su dispositivo le pedirá permiso primero. Su ubicación se usa solo en este navegador y nunca se nos envía.",
+  "air.geo.finding": "Buscándole…",
+  "air.geo.yourlocation": "usted",
+  "air.geo.denied": "No dio permiso de ubicación, y está bien. Escriba un código postal o elija una ciudad.",
+  "air.geo.failed": "No se pudo encontrar su ubicación ahora. Escriba un código postal o elija una ciudad.",
+  "air.geo.unsupported": "Este navegador no puede compartir una ubicación. Escriba un código postal o elija una ciudad.",
   "air.city.label": "Elija una ciudad",
   "air.city.any": "Elija una ciudad…",
   "air.results.count": "lugares cerca de",
@@ -116,6 +123,7 @@
   "kit.submit": "Crear mi lista",
   "kit.err.people": "Escriba un número entre 1 y 12.",
   "kit.result.h": "El kit de su hogar",
+  "kit.result.announce": "Lista lista. {n} personas, {gal} galones de agua, {items} artículos.",
   "kit.result.for": "Calculado para",
   "kit.result.people_one": "1 persona",
   "kit.result.people_other": "{n} personas",
@@ -302,7 +310,7 @@
   "priv.s1.h": "Qué recopilamos de todas las personas",
   "priv.s1.b": "Cuando usa las herramientas, registramos lo que pasó pero no quién lo hizo: qué páginas abrió, cuánto tiempo se quedó y hasta dónde bajó, qué secciones de referencia abrió, las respuestas que dio en la calculadora del kit, los códigos postales que buscó en el buscador de aire limpio, qué acciones dijo que haría esta semana y qué enlaces externos siguió.",
   "priv.s2.h": "Qué nunca recopilamos",
-  "priv.s2.b": "No recopilamos su nombre, su dirección, su teléfono, su ubicación exacta ni su dirección IP. No usamos rastreadores de publicidad y no vendemos ni compartimos nada con anunciantes. La base de datos no tiene ninguna columna para estos datos, así que un cambio futuro en este sitio no podría empezar a guardarlos sin que se note.",
+  "priv.s2.b": "No recopilamos su nombre, su dirección, su teléfono, su ubicación exacta ni su dirección IP. No usamos rastreadores de publicidad y no vendemos ni compartimos nada con anunciantes. La base de datos no tiene ninguna columna para estos datos, así que un cambio futuro en este sitio no podría empezar a guardarlos sin que se note. Si toca “Usar mi ubicación”, su dispositivo le pide permiso y las coordenadas se usan solo dentro de su navegador, para ordenar la lista por distancia. Nunca se nos envían ni se guardan. Solo registramos cuántos resultados aparecieron y a qué distancia estaba el más cercano.",
   "priv.s3.h": "Qué se guarda en su navegador",
   "priv.s3.b": "Dos cosas se guardan en su propio navegador y nunca salen de ahí, salvo lo descrito arriba. Un identificador al azar, que se ve así a7f3d9k2b1 y no contiene nada sobre usted, nos permite distinguir a un visitante que regresa de uno nuevo. Y su avance en la lista, para que los artículos que ya marcó sigan marcados cuando regrese. Puede borrar ambos en cualquier momento borrando los datos de este sitio en su navegador. No usamos cookies de publicidad ni de rastreo.",
   "priv.s4.h": "Si decide iniciar sesión",
@@ -359,5 +367,6 @@
   "aqi.do.hazardous": "Quédese adentro. Si no puede limpiar el aire de su casa, vaya a un lugar de aire limpio.",
   "home.stat.kits": "kits de hogar planeados",
   "nf.h1": "Esa página no existe",
-  "nf.b": "Puede que el enlace esté mal escrito o ya no sirva. Todo lo de abajo sí funciona."
+  "nf.b": "Puede que el enlace esté mal escrito o ya no sirva. Todo lo de abajo sí funciona.",
+  "nf.tools": "Pruebe una de estas"
 }

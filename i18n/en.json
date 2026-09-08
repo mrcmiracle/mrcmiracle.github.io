@@ -77,6 +77,13 @@
   "air.zip.placeholder": "98101",
   "air.zip.button": "Find locations",
   "air.or": "or",
+  "air.geo.button": "Use my location",
+  "air.geo.note": "Your device will ask permission first. Your location is used in this browser only and is never sent to us.",
+  "air.geo.finding": "Finding you…",
+  "air.geo.yourlocation": "you",
+  "air.geo.denied": "Location permission was declined, which is fine. Enter a zip code or pick a city instead.",
+  "air.geo.failed": "Your location could not be found right now. Enter a zip code or pick a city instead.",
+  "air.geo.unsupported": "This browser cannot share a location. Enter a zip code or pick a city instead.",
   "air.city.label": "Pick a city",
   "air.city.any": "Choose a city…",
   "air.results.count": "locations near",
@@ -116,6 +123,7 @@
   "kit.submit": "Build my checklist",
   "kit.err.people": "Enter a number between 1 and 12.",
   "kit.result.h": "Your household kit",
+  "kit.result.announce": "Checklist ready. {n} people, {gal} gallons of water, {items} items.",
   "kit.result.for": "Sized for",
   "kit.result.people_one": "1 person",
   "kit.result.people_other": "{n} people",
@@ -302,7 +310,7 @@
   "priv.s1.h": "What we collect from everyone",
   "priv.s1.b": "When you use the tools, we record what happened but not who did it: which pages you opened, how long you stayed and how far you scrolled, which reference sections you expanded, the answers you gave the kit calculator, the zip codes searched in the clean air finder, which actions you said you would take this week, and which outside links you followed.",
   "priv.s2.h": "What we never collect",
-  "priv.s2.b": "We do not collect your name, your address, your phone number, your precise location, or your IP address. We do not use advertising trackers, and we do not sell or share anything with advertisers. The database has no column for any of these, so a future change to this site cannot quietly start storing them.",
+  "priv.s2.b": "We do not collect your name, your address, your phone number, your precise location, or your IP address. We do not use advertising trackers, and we do not sell or share anything with advertisers. The database has no column for any of these, so a future change to this site cannot quietly start storing them. If you tap “Use my location”, your device asks your permission and the coordinates are used inside your browser only, to sort the list by distance. They are never sent to us and never stored. We record only how many results came back and how far the nearest one was.",
   "priv.s3.h": "What is stored in your browser",
   "priv.s3.b": "Two things are kept in your own browser and never leave it except as described above. A random identifier, which looks like a7f3d9k2b1 and contains nothing about you, lets us tell a returning visitor from a new one. And your checklist progress, so the items you have already ticked off are still ticked when you come back. You can erase both at any time by clearing your browser data for this site. We do not use advertising or tracking cookies.",
   "priv.s4.h": "If you choose to sign in",
@@ -359,5 +367,6 @@
   "aqi.do.hazardous": "Stay inside. If your home cannot get clean, go to a clean air location.",
   "home.stat.kits": "household kits planned",
   "nf.h1": "That page does not exist",
-  "nf.b": "The link may be mistyped or out of date. Everything below works."
+  "nf.b": "The link may be mistyped or out of date. Everything below works.",
+  "nf.tools": "Try one of these"
 }

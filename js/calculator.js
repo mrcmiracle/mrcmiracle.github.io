@@ -438,6 +438,21 @@
       item_count: lastItems.length,
       source: source
     });
+    /* Focus moves to the results heading, which announces the heading itself.
+       The numbers are the part someone actually came for, so say them too, in
+       one short line. Kept outside #kit-result so moving focus into the results
+       does not make a screen reader read it twice, and set on a tick so the
+       change is noticed as an update rather than as initial content. */
+    var say = $('#kit-announce');
+    if (say) {
+      var summary = t('kit.result.announce', {
+        n: state.people,
+        gal: waterGallons(state),
+        items: lastItems.length
+      });
+      say.textContent = '';
+      setTimeout(function () { say.textContent = summary; }, 60);
+    }
     $('#kit-result-h').focus();
     $('#kit-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     syncSignedInProgress();
