@@ -126,6 +126,16 @@
   }
 }
 
+/* Cross-document view transitions. Native, one declaration, and simply
+   ignored where unsupported - navigation still works exactly as before. */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
 /* ---------- base ---------- */
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -741,10 +751,52 @@ main p.small > a { display: inline-block; padding: .25rem 0; }
 .skip-link { position: absolute; left: -9999px; }
 .skip-link:focus { left: .5rem; top: .5rem; z-index: 100; background: var(--paper); padding: .6rem 1rem; border: 2px solid var(--focus); border-radius: var(--r-sm); }
 
-/* ---------- reveal on scroll ---------- */
+/* ---------- reveal on scroll ----------
+   Two implementations, in order of preference:
+
+   1. A native scroll-driven animation where the browser supports it. It runs
+      off the main thread and needs no JavaScript at all, so content is never
+      waiting on a script to become visible.
+   2. The IntersectionObserver path (`.is-in`) everywhere else.
+
+   Both start from opacity 0, so the noscript rule in every page's head remains
+   the backstop: if scripting is off AND scroll timelines are unsupported,
+   everything is simply visible. */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
 .reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+    transition: none;
+  }
+  /* If the observer got there first, do not fight it. */
+  .reveal.is-in { animation: none; opacity: 1; transform: none; }
+}
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; animation: none; }
+}
+
+/* ---------- offline ----------
+   A quiet, permanent marker rather than a dismissable toast: if the network is
+   down during an emergency, that fact should stay on screen. */
+.is-offline .site-head::after {
+  content: "Offline — showing your saved copy";
+  display: block;
+  margin-top: var(--s2);
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--smoke-ink); background: var(--smoke-bg);
+  border: 1px solid var(--smoke-line); border-radius: var(--r-pill);
+  padding: .25rem .7rem; text-align: center;
+}
+html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostrando su copia guardada"; }
 
 /* ---------- two-column layout on real screens ----------
    The reading measure stays narrow, because long lines are harder to read and

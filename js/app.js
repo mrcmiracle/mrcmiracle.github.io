@@ -175,6 +175,32 @@
     global.AQI.render(host, lastAqiReading, function (k, v) { return global.I18N ? global.I18N.t(k, v) : k; });
   });
 
+  /* Offline support. Registered after load so it never competes with the
+     first render, and wrapped so a failure is silent - the site works
+     perfectly well without it, this only adds working with no network.
+
+     Not registered on the coordinator page: that one edits live data and must
+     never be served from a cache. */
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator) || !window.isSecureContext) return;
+    if (location.pathname.indexOf('admin') !== -1) return;
+    navigator.serviceWorker.register('/sw.js').catch(function (err) {
+      console.warn('[sw] registration failed:', err.message);
+    });
+  }
+
+  /* A quiet marker when the network is gone, so nobody wonders whether the
+     numbers in front of them are live. Emergency panels and the checklist keep
+     working; only live air quality cannot. */
+  function wireOfflineFlag() {
+    function paint() {
+      document.documentElement.classList.toggle('is-offline', !navigator.onLine);
+    }
+    window.addEventListener('online', paint);
+    window.addEventListener('offline', paint);
+    paint();
+  }
+
   function stampYear() {
     document.querySelectorAll('[data-year]').forEach(function (e) {
       e.textContent = String(new Date().getFullYear());
@@ -184,6 +210,9 @@
   document.addEventListener('DOMContentLoaded', function () {
     var page = currentPage();
     loadAnalytics();
+    wireOfflineFlag();
+    if (document.readyState === 'complete') registerServiceWorker();
+    else window.addEventListener('load', registerServiceWorker);
     global.Track.init(page);
     // Other modules await this before rendering text built in JavaScript.
     global.I18N.ready = global.I18N.init();

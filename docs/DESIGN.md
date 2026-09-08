@@ -158,7 +158,27 @@ them, re-measure.
 
 Every visible container uses a radius token. Nothing is square-cornered.
 
-### 12. Zero third-party runtime requests
+### 12. Offline is a feature, and staleness is the risk
+
+`sw.js` makes the site work with no network - the point of which, on an
+emergency site, is that the network is the thing that fails during an
+emergency. The strategy is built around one rule: **serving stale emergency
+information is worse than serving none.**
+
+- HTML: network first, cache as fallback
+- CSS / JS / fonts / data / i18n: stale-while-revalidate
+- **`/api/aqi`: never cached.** A stale air quality reading could tell someone
+  the air is safe when it is not. Offline it fails, and the page has a designed
+  state for that
+- other `/api/`: network only, so no write is ever replayed
+- `/admin*`: excluded entirely - never precached, never written to a cache,
+  never served from one
+
+Bump `VERSION` in `sw.js` when precached files change, or people keep the old
+copies. Verified by stopping the server outright: all 344 library sites, the
+checklist and both translations still loaded, while `/api/aqi` correctly failed.
+
+### 13. Zero third-party runtime requests
 
 Fonts are self-hosted. Auth is plain `fetch`. The map loads only when tapped. **Do not add
 a Google Fonts link, a CDN script, or an icon font.** This is a privacy promise made in
@@ -178,7 +198,7 @@ It was written without seeing the project. Scored against what is actually here:
 | Design empty and loading states | **Partly done** — worth extending, see rule 6 |
 | Bento-grid palette `#0F172A` / `#7C3AED` | **Rejected** — you said keep the palette, and the violet is taken from the unit's actual seal |
 | Neobrutalist cream / sage / terracotta | **Rejected** — same reason |
-| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 12 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
+| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 13 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
 | Thick 2px black borders, hard offset shadows | **Rejected** — a shop aesthetic; wrong register for a hazard notice |
 | Shift elements on hover to mimic a button press | **Use with care** — fine for planning content, never on the two emergency panels |
 

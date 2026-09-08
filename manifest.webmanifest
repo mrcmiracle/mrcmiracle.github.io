@@ -1,0 +1,22 @@
+{
+  "name": "MRC Miracle — Emergency preparedness for King County",
+  "short_name": "MRC Miracle",
+  "description": "Clean air locations, a household kit calculator, and immediate steps for wildfire smoke and earthquakes. Works offline once opened.",
+  "start_url": "/?src=installed",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f2b92",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["health", "utilities", "education"],
+  "icons": [
+    { "src": "/assets/logo-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/logo.png", "sizes": "176x176", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Find clean air", "short_name": "Clean air", "url": "/clean-air.html?src=shortcut" },
+    { "name": "Build my kit", "short_name": "Kit", "url": "/kit.html?src=shortcut" }
+  ]
+}
