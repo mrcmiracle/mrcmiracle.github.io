@@ -214,6 +214,44 @@ district appliance, Fortinet, Zscaler, a "security" proxy - means the network is
 intercepting TLS, which is common on school wifi and is not something this
 project can fix.
 
+## Measuring impact (added 2026-09-07)
+
+The HOSA rubric never scores the website. It scores the portfolio and the
+presentation. The site's job is to **produce the evidence** those are judged on,
+which is what these three pieces are for.
+
+**Preparedness check** (`js/prep.js`, `#prep` on the landing page). The same
+three questions on a first visit and again on a later one, so impact is a change
+in behaviour rather than a scan count. Gated: baseline on the first check, a
+follow-up only once the visitor is on their **second session** and at least
+**20 hours** have passed, never both, and a skip is remembered. Every "Not yet"
+answer is answered with a link to the tool that closes that gap.
+
+**Poster attribution.** Each printed QR carries `?src=<label>` (for example
+`?src=kcls-bothell`). `js/track.js` sanitises it to `[A-Za-z0-9_-]`, caps it at
+40 characters, remembers it for the browser and attaches it to every event.
+It identifies a poster, not a person.
+
+**Public impact page** (`/impact.html`, `/api/impact`). Deliberately built to be
+checked:
+
+- before/after counts only visitors who answered **both** times, so the two
+  figures describe the same group
+- anyone who answered once is reported separately as `baseline_only`, never
+  folded into one side
+- sample sizes travel with every percentage
+- fewer than 10 pairs prints an explicit "too few to draw a conclusion from"
+- it says when there is nothing yet rather than printing a confident zero
+
+**Do not soften any of that to make the numbers look better.** A judge who finds
+one overstated figure discounts the whole portfolio, and the honesty is the
+point.
+
+`prep_impact()` and `src_reach()` have EXECUTE revoked from PUBLIC, anon and
+authenticated, like `impact_stats()`. Verified end to end on production: three
+synthetic visitors produced exactly the predicted paired counts, gains per
+question and per-poster reach, and the rows were then deleted.
+
 ## Things that must not be undone
 
 - **Read `docs/DESIGN.md` before changing anything visual.** It carries the
