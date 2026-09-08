@@ -465,6 +465,18 @@ fieldset { border: 0; margin: 0; padding: 0; }
   margin-bottom: var(--s3); background: var(--paper-2); box-shadow: none;
 }
 .site-card h3 { margin: 0 0 var(--s1); font-size: var(--step-1); }
+
+/* A site Unit 503 has switched on for the current smoke event. Amber is the
+   smoke channel and means only that - see docs/DESIGN.md rule 1. The badge
+   says so in words too, so the colour is never the only signal. */
+.site-card-active { border-color: var(--smoke-line); border-left: 4px solid var(--smoke-line); }
+.site-badge {
+  display: inline-block; margin: 0 0 var(--s2);
+  font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--smoke-ink); background: var(--smoke-bg);
+  border: 1px solid var(--smoke-line); border-radius: var(--r-pill);
+  padding: .2rem .6rem;
+}
 .site-dist { font-size: .82rem; color: var(--ink-3); font-weight: 600; margin: 0 0 var(--s3); }
 .site-card dl { margin: 0; font-size: .92rem; display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--s2) var(--s3); }
 .site-card dt { color: var(--ink-3); font-weight: 700; font-size: .82rem; }

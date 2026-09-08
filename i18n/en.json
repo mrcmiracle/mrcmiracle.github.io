@@ -272,6 +272,7 @@
   "item.pet_plan.note": "Not every shelter takes animals. Check which clean air locations allow pets before you need one.",
   "air.f.county": "County",
   "air.f.callahead": "Hours vary by location. Call before you go.",
+  "air.activated": "Open now for smoke",
   "air.kind.library": "Public library",
   "air.live.h": "Check what is open right now",
   "air.live.b": "Cleaner air sites are opened during smoke events, so the list changes each time. These sources are updated live:",

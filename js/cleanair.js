@@ -33,7 +33,14 @@
   function nearest(lat, lon) {
     return sites.map(function (s) {
       return { site: s, dist: haversine(lat, lon, s.lat, s.lon) };
-    }).sort(function (a, b) { return a.dist - b.dist; }).slice(0, MAX_RESULTS);
+    }).sort(function (a, b) {
+      // Sites Unit 503 has activated for the current smoke event come first;
+      // within each group, nearest wins. During an event an activated site is
+      // the answer to the question being asked, even if a library is closer.
+      var aa = a.site.activated ? 1 : 0, ba = b.site.activated ? 1 : 0;
+      if (aa !== ba) return ba - aa;
+      return a.dist - b.dist;
+    }).slice(0, MAX_RESULTS);
   }
 
   function localized(site, field) {
@@ -46,8 +53,10 @@
     var s = entry.site;
     var c = el('article', 'site-card');
 
+    if (s.activated) c.className += ' site-card-active';
     var head = el('h3', null, s.name);
     c.appendChild(head);
+    if (s.activated) c.appendChild(el('p', 'site-badge', t('air.activated')));
 
     var meta = el('p', 'site-dist');
     meta.textContent = t('air.kind.' + (s.kind || 'library')) + ' · ' + s.city +
@@ -277,8 +286,25 @@
     });
   }
 
-  function start(data) {
+  function start(data, activated) {
     sites = data.sites || [];
+
+    /* Merge the activated list over the baseline. An activated row sharing an
+       id with a library replaces it, so a branch can be switched on in place
+       rather than duplicated. */
+    if (activated && activated.length) {
+      var byId = {};
+      sites.forEach(function (s, i) { byId[s.id] = i; });
+      activated.forEach(function (a) {
+        a.activated = true;
+        if (a.access && typeof a.access === 'string') {
+          try { a.access = JSON.parse(a.access); } catch (e) { a.access = []; }
+        }
+        if (byId[a.id] !== undefined) sites[byId[a.id]] = a;
+        else sites.push(a);
+      });
+    }
+
     fillCities();
     $('#zip-form').addEventListener('submit', function (e) { e.preventDefault(); byZip(); });
     $('#city').addEventListener('change', byCity);
@@ -297,10 +323,20 @@
       fetch('data/zips.json').then(function (r) {
         if (!r.ok) throw new Error('zips.json HTTP ' + r.status);
         return r.json();
-      })
+      }),
+      /* Sites activated for a live smoke event. Deliberately cannot break the
+         page: any failure resolves to an empty list and the JSON baseline is
+         shown on its own. The 344 libraries are the offline fallback. */
+      fetch('/api/sites')
+        .then(function (r) { return r.ok ? r.json() : { sites: [] }; })
+        .then(function (d) { return (d && d.sites) || []; })
+        .catch(function (err) {
+          console.warn('[cleanair] activated sites unavailable:', err.message);
+          return [];
+        })
     ]).then(function (res) {
       res[1].forEach(function (z) { zips[z.z] = { lat: z.lat, lon: z.lon }; });
-      var go = function () { start(res[0]); };
+      var go = function () { start(res[0], res[2]); };
       if (global.I18N && global.I18N.ready) { global.I18N.ready.then(go, go); } else { go(); }
     }).catch(function (err) {
       console.error('[cleanair] could not load data:', err);
