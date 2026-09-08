@@ -29,12 +29,23 @@ export default async function handler(req, res) {
   const looksLegacyJwt = anon.split('.').length === 3;
   const looksPublishable = anon.startsWith('sb_publishable_');
   if (!looksLegacyJwt && !looksPublishable) {
-    const masked = anon.includes('\u2022') || anon.includes('*');
+    const bullets = (anon.match(/\u2022/g) || []).length;
+    const masked = bullets > 0 || anon.includes('*');
+    /* Report the shape of what is actually stored so the value can be checked
+       without guessing. Safe to show: this key is public by design, and a value
+       that fails these checks is not a working key anyway. */
     return res.status(200).json({
       ok: false,
       reason: masked
-        ? 'SUPABASE_ANON_KEY looks masked - it contains the bullet characters the dashboard displays instead of the key. Reveal the key before copying it.'
-        : 'SUPABASE_ANON_KEY is not a recognisable Supabase key (expected a JWT with two dots, or an sb_publishable_ key).'
+        ? 'SUPABASE_ANON_KEY looks masked - it holds the characters the dashboard displays, not the key. Reveal the key before copying it.'
+        : 'SUPABASE_ANON_KEY is not a recognisable Supabase key (expected a JWT with two dots, or an sb_publishable_ key).',
+      observed: {
+        length: anon.length,
+        startsWith: anon.slice(0, 8),
+        bulletChars: bullets,
+        dots: anon.split('.').length - 1,
+        expected: 'a JWT about 208 characters long with exactly 2 dots and 0 bullets'
+      }
     });
   }
   if (anon.startsWith('sb_secret_') || anon.includes('service_role')) {
