@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wildfire smoke — MRC Miracle</title>
-<meta name="description" content="How to keep the air in your home breathable during wildfire smoke in King County.">
+<title>Impact — MRC Miracle</title>
+<meta name="description" content="Live, anonymous numbers showing how MRC Miracle is used and whether it changes how prepared people are.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="canonical" href="https://mrcmiracle.vercel.app/smoke.html">
+<link rel="canonical" href="https://mrcmiracle.vercel.app/impact.html">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MRC Miracle">
-<meta property="og:title" content="Wildfire smoke — MRC Miracle">
-<meta property="og:description" content="How to keep the air in your home breathable during wildfire smoke in King County.">
-<meta property="og:url" content="https://mrcmiracle.vercel.app/smoke.html">
+<meta property="og:title" content="Impact — MRC Miracle">
+<meta property="og:description" content="Live, anonymous numbers showing how MRC Miracle is used and whether it changes how prepared people are.">
+<meta property="og:url" content="https://mrcmiracle.vercel.app/impact.html">
 <meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -58,33 +58,20 @@
 
 <main id="main">
 <div class="wrap">
-  <h1 data-i18n="smoke.h1">Wildfire smoke</h1>
-  <p class="lede" data-i18n="smoke.intro">Smoke season in King County generally runs through late summer and early fall. The particles in smoke are small enough to reach deep into your lungs.</p>
-  <details class="sect" data-sect="smoke-cleanroom">
-    <summary data-i18n="smoke.s1.h">Make one room breathable</summary>
-    <div class="sect-body"><p data-i18n="smoke.s1.b">You do not need to clean your whole home. Pick the room with the fewest windows and doors, close it off, and run an air cleaner there. This is where you sleep and spend the day when the air is bad. A box fan taped to a MERV-13 furnace filter works and costs far less than a purifier. Build it before smoke season starts.</p></div>
-  </details>
-  <details class="sect" data-sect="smoke-seal">
-    <summary data-i18n="smoke.s2.h">Keep outside air out</summary>
-    <div class="sect-body"><p data-i18n="smoke.s2.b">Close windows and doors. Set central heat or AC to recirculate. Close the fresh-air vent on a window unit. Use a damp towel along a drafty door. Do not run a whole-house or attic fan, and do not use a swamp cooler, since both pull outside air in.</p></div>
-  </details>
-  <details class="sect" data-sect="smoke-indoor">
-    <summary data-i18n="smoke.s3.h">Stop adding particles indoors</summary>
-    <div class="sect-body"><p data-i18n="smoke.s3.b">Vacuuming, candles, incense, frying, broiling, gas stoves, and smoking all add particles to air you are trying to clean. Skip them while smoke lasts. Use a microwave or an electric kettle instead of the stovetop.</p></div>
-  </details>
-  <details class="sect" data-sect="smoke-masks">
-    <summary data-i18n="smoke.s4.h">Masks</summary>
-    <div class="sect-body"><p data-i18n="smoke.s4.b">An N95 or KN95 that seals against your face filters smoke particles. Cloth masks, surgical masks, and bandanas do not. Facial hair breaks the seal. Masks do not fit small children, so keep them indoors instead.</p></div>
-  </details>
-  <details class="sect" data-sect="smoke-risk">
-    <summary data-i18n="smoke.s5.h">Who needs to be more careful</summary>
-    <div class="sect-body"><p data-i18n="smoke.s5.b">People with asthma, COPD, or heart disease, people who are pregnant, young children, and older adults feel effects sooner and more severely. If that is you or someone in your home, act at lower smoke levels rather than waiting to feel bad. Keep rescue medication where you can reach it.</p></div>
-  </details>
-  <details class="sect" data-sect="smoke-help">
-    <summary data-i18n="smoke.s6.h">When to get help</summary>
-    <div class="sect-body"><p data-i18n="smoke.s6.b">Trouble breathing, chest pain, a fast heartbeat, dizziness, or confusion means get medical help right away. Call 911 for anything life-threatening.</p></div>
-  </details>
-  <p style="margin-top:1.25rem"><a class="btn btn-block" href="clean-air.html" data-i18n="rn.smoke.cta">Find clean air near me</a></p>
+  <h1>Impact</h1>
+  <p class="lede">Live numbers from this site, updated automatically. Nothing here is typed in by hand.</p>
+
+  <p class="notice"><strong>How to read this.</strong> Everything is anonymous: no name, email, precise
+     location or IP is collected. Before-and-after figures count only people who answered the
+     preparedness questions <em>both</em> times, so the two numbers describe the same group. Sample
+     sizes are shown next to every figure, because a percentage without one means very little.</p>
+
+  <div id="impact-root">
+    <p class="small" id="impact-loading">Loading the current numbers&hellip;</p>
+  </div>
+
+  <p class="small" id="impact-generated"></p>
+  <p class="small"><a href="privacy.html">What we collect and what we never collect</a></p>
 </div>
 </main>
 
@@ -112,5 +99,6 @@
 <script src="js/i18n.js"></script>
 <script src="js/track.js"></script>
 <script src="js/app.js"></script>
+<script src="js/impact.js"></script>
 </body>
 </html>

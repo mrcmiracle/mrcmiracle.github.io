@@ -18,6 +18,7 @@
 
   var SITE_VERSION = '1.0.0';
   var VID_KEY = 'mrcm_vid';
+  var SRC_KEY = 'mrcm_src';
   var SEEN_KEY = 'mrcm_seen';
   var SID_KEY = 'mrcm_sid';
 
@@ -43,6 +44,7 @@
   var Track = {
     enabled: true,
     visitorId: '',
+    src: '',
     sessionId: '',
     visitNumber: 1,
     pageStart: 0,
@@ -52,6 +54,24 @@
     init: function (pageName) {
       this.page = pageName || (location.pathname.split('/').pop() || 'index.html');
       this.visitorId = store('localStorage', VID_KEY, function () { return rand(10); });
+
+      /* Which poster the visitor arrived from. Each printed QR carries its own
+         ?src= (for example ?src=kcls-bothell), so the team can see which
+         placements actually reach people instead of guessing.
+
+         It names a poster, not a person: it is the same value for everyone who
+         scans that sheet of paper, and it carries nothing about the device.
+         Remembered for this browser so later pages in the same visit are still
+         attributed to the poster that started it. */
+      try {
+        var fromUrl = new URLSearchParams(location.search).get('src');
+        if (fromUrl) {
+          // Keep it short and boring: a label, not a payload.
+          fromUrl = fromUrl.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
+          if (fromUrl) global.localStorage.setItem(SRC_KEY, fromUrl);
+        }
+        this.src = global.localStorage.getItem(SRC_KEY) || '';
+      } catch (e) { this.src = ''; }
       this.sessionId = store('sessionStorage', SID_KEY, function () { return rand(8); });
       this.pageStart = Date.now();
 
@@ -130,6 +150,7 @@
         event: event,
         page: this.page,
         lang: (global.I18N && global.I18N.lang) || document.documentElement.lang || 'en',
+        src: this.src || '',
         visitor: this.visitorId,
         session: this.sessionId,
         site_version: SITE_VERSION

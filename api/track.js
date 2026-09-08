@@ -26,7 +26,8 @@ const ALLOWED_EVENTS = new Set([
   'lang_switch', 'outbound_click',
   'progress_restored', 'progress_cleared', 'progress_synced',
   'plan_saved', 'signin_start', 'signin_success', 'signout', 'age_gate_blocked',
-  'aqi_lookup'
+  'aqi_lookup',
+  'prep_check', 'prep_skipped'
 ]);
 
 // Every column the events table has. Anything else the page sends is preserved
@@ -37,12 +38,15 @@ const COLUMNS = [
   'people', 'pets', 'meds', 'housing', 'water_gallons', 'item_count', 'source',
   'zip', 'city', 'results', 'nearest_mi', 'method', 'site',
   'code', 'via', 'selections', 'selection_count', 'offered_count',
-  'section', 'mode', 'seconds', 'scroll_pct', 'to', 'done', 'total'
+  'section', 'mode', 'seconds', 'scroll_pct', 'to', 'done', 'total',
+  // Which poster the visitor arrived from, and the preparedness check.
+  'src', 'prep_phase', 'prep_water', 'prep_air', 'prep_plan', 'prep_score'
 ];
 const INT_COLS = new Set([
   'returning', 'visit_number', 'new_session', 'people', 'pets', 'meds',
   'water_gallons', 'item_count', 'results', 'selection_count', 'offered_count',
-  'seconds', 'scroll_pct', 'done', 'total'
+  'seconds', 'scroll_pct', 'done', 'total',
+  'prep_water', 'prep_air', 'prep_plan', 'prep_score'
 ]);
 
 // The page sends `returning`, but that is a reserved word in Postgres and

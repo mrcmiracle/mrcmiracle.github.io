@@ -125,6 +125,44 @@
     <div class="stat"><b data-i18n="home.stat.free_n">Free</b><span data-i18n="home.stat.free">no account, no email</span></div>
   </section>
 
+  <!-- Preparedness check. Asked once on a first visit and again on a later one,
+       so impact can be reported as a change in what people have done rather
+       than a count of scans. Hidden by default and revealed by js/prep.js only
+       when there is a question to ask, so it never shows an empty box. -->
+  <section id="prep" class="prepbox no-print" hidden aria-labelledby="prep-h">
+    <h2 id="prep-h" tabindex="-1" data-i18n="prep.h">How ready are you right now?</h2>
+    <p class="small" id="prep-sub" data-i18n="prep.sub">Three quick questions. Anonymous, and it helps us show which parts of this actually help.</p>
+    <form id="prep-form">
+      <fieldset class="field">
+        <legend data-i18n="prep.q.water">Do you have two weeks of drinking water stored for everyone at home?</legend>
+        <div class="choices">
+          <label><input type="radio" name="water" value="1"><span data-i18n="prep.yes">Yes</span></label>
+          <label><input type="radio" name="water" value="0"><span data-i18n="prep.no">Not yet</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="field">
+        <legend data-i18n="prep.q.air">Do you know where you would go for cleaner air in heavy smoke?</legend>
+        <div class="choices">
+          <label><input type="radio" name="air" value="1"><span data-i18n="prep.yes">Yes</span></label>
+          <label><input type="radio" name="air" value="0"><span data-i18n="prep.no">Not yet</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="field">
+        <legend data-i18n="prep.q.plan">Has your household agreed what to do in an earthquake?</legend>
+        <div class="choices">
+          <label><input type="radio" name="plan" value="1"><span data-i18n="prep.yes">Yes</span></label>
+          <label><input type="radio" name="plan" value="0"><span data-i18n="prep.no">Not yet</span></label>
+        </div>
+      </fieldset>
+      <p class="err" id="prep-err" hidden data-i18n="prep.err">Answer all three, or skip.</p>
+      <div class="row">
+        <button type="submit" class="btn" data-i18n="prep.submit">Submit</button>
+        <button type="button" class="btn btn-secondary" id="prep-skip" data-i18n="prep.skip">Skip</button>
+      </div>
+    </form>
+    <div id="prep-done" hidden></div>
+  </section>
+
   <h2 data-i18n="home.tools">Plan ahead</h2>
   <div class="cards">
     <article class="card reveal">
@@ -179,7 +217,7 @@
     <details>
       <summary data-i18n="footer.privacy_h">Privacy</summary>
       <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
-      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a></p>
+      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a></p>
     </details>
     <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
   </div>
@@ -189,5 +227,6 @@
 <script src="js/track.js"></script>
 <script src="js/aqi.js"></script>
 <script src="js/app.js"></script>
+<script src="js/prep.js"></script>
 </body>
 </html>
