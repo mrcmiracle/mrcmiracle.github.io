@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site coordinator — MRC Miracle</title>
+<meta name="description" content="Internal tool for MRC Unit 503 coordinators to activate cleaner air sites during a smoke event.">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f2b92">
+<link rel="preload" href="assets/fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/styles.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="./">
+      <img class="brand-mark" src="assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+      <span class="brand-text">
+        <span class="brand-name">MRC Miracle</span>
+        <span class="brand-sub">Site coordinator</span>
+      </span>
+    </a>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+  <h1>Cleaner air sites</h1>
+  <p class="lede">Switch a site on and it appears at the top of the clean air finder, badged
+     &ldquo;Open now for smoke&rdquo;. Switch it off and it disappears within about a minute.</p>
+
+  <noscript>
+    <p class="notice"><strong>JavaScript is required here.</strong>
+       This page edits live data, so it cannot work without it. The public site works fine without JavaScript.</p>
+  </noscript>
+
+  <div id="admin-root">
+    <p class="small" id="admin-loading">Checking your sign-in&hellip;</p>
+  </div>
+
+  <details class="sect" style="margin-top:2rem">
+    <summary>How this works</summary>
+    <div class="sect-body">
+      <p class="small">The 344 libraries in the finder are the year-round baseline and are not
+         edited here &mdash; they come from the federal IMLS survey. This page is only for sites
+         your team activates during an actual smoke event.</p>
+      <p class="small">Give a site the <strong>same id as a library</strong> to switch that branch
+         on in place rather than listing it twice.</p>
+      <p class="small">Withdraw a site by switching it off, not by deleting it. Keeping the row
+         means you can reopen the same place next time without retyping it, and it preserves the
+         record of what you opened and when.</p>
+      <p class="small">Only accounts listed in <code>ADMIN_EMAILS</code> can save anything. That
+         check runs on the server, so it cannot be bypassed from a browser.</p>
+    </div>
+  </details>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p class="org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p class="small"><a href="./">Back to the public site</a></p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

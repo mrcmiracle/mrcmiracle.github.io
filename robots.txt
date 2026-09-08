@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# Internal coordinator tool: not for search engines.
+Disallow: /admin.html
 
 Sitemap: https://mrcmiracle.vercel.app/sitemap.xml
