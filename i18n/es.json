@@ -322,6 +322,8 @@
   "auth.h": "Úselo en sus otros dispositivos",
   "auth.b": "Opcional. Inicie sesión y los artículos que marcó lo acompañarán entre su teléfono, tableta y computadora. Todo aquí funciona sin esto.",
   "auth.signin": "Continuar con Google",
+  "auth.signin.google": "Continuar con Google",
+  "auth.signin.apple": "Continuar con Apple",
   "auth.age_h": "Una verificación rápida",
   "auth.age_b": "Debe tener 13 años o más para iniciar sesión, porque al hacerlo comparte su correo electrónico con nosotros. Todo en este sitio funciona sin cuenta, a cualquier edad.",
   "auth.age_yes": "Tengo 13 años o más",

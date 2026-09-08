@@ -274,13 +274,30 @@
       box.appendChild(el('h3', null, t('auth.h')));
       box.appendChild(el('p', 'small', t('auth.b')));
 
-      var go = el('button', 'btn btn-block', t('auth.signin'));
-      go.type = 'button';
-      go.addEventListener('click', function () {
-        if (A.ageConfirmed()) { start(); return; }
-        ageGate();
+      /* One button per provider the project actually has switched on, so a
+         provider that is off never shows a button that cannot work. Only
+         providers with their own wording are offered, so a newly enabled
+         provider can never surface a raw translation key. */
+      var KNOWN = ['google', 'apple'];
+      var chosen = 'google';
+      var buttons = el('div', 'auth-providers');
+      box.appendChild(buttons);
+
+      A.providers().then(function (list) {
+        var offer = list.filter(function (p) { return KNOWN.indexOf(p) !== -1; });
+        if (!offer.length) offer = ['google'];
+        buttons.textContent = '';
+        offer.forEach(function (p, i) {
+          var b = el('button', 'btn btn-block' + (i ? ' btn-secondary' : ''), t('auth.signin.' + p));
+          b.type = 'button';
+          b.addEventListener('click', function () {
+            chosen = p;
+            if (A.ageConfirmed()) { start(); return; }
+            ageGate();
+          });
+          buttons.appendChild(b);
+        });
       });
-      box.appendChild(go);
 
       var note = el('p', 'small');
       note.appendChild(document.createTextNode(t('auth.privacy_note') + ' '));
@@ -290,8 +307,8 @@
       box.appendChild(note);
 
       function start() {
-        global.Track.send('signin_start', {});
-        A.signIn().catch(function (err) {
+        global.Track.send('signin_start', { via: chosen });
+        A.signIn(chosen).catch(function (err) {
           console.warn('[auth] ' + err.message);
           box.appendChild(el('p', 'err', t('auth.error')));
         });

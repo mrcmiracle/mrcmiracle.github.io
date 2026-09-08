@@ -48,14 +48,25 @@
     ageConfirmed: function () { return read(AGE_KEY) === '1'; },
     confirmAge: function (ok) { store(AGE_KEY, ok ? '1' : '0'); },
 
-    /* Send the visitor to Google. Supabase handles the provider handshake and
-       returns them to this page with tokens in the URL fragment. */
-    signIn: function () {
+    /* Which providers the project has switched on, as reported by /api/config.
+       Defaults to Google so the button never disappears if the list is
+       unavailable. */
+    providers: function () {
+      return this.config().then(function (c) {
+        return (c && c.providers && c.providers.length) ? c.providers : ['google'];
+      });
+    },
+
+    /* Send the visitor to their chosen provider. Supabase handles the
+       handshake and returns them to this page with tokens in the fragment. */
+    signIn: function (provider) {
+      var name = provider || 'google';
       return this.config().then(function (c) {
         if (!c) throw new Error('sign-in is not configured');
         var back = location.origin + location.pathname;
         location.href = c.url.replace(/\/$/, '') +
-          '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(back);
+          '/auth/v1/authorize?provider=' + encodeURIComponent(name) +
+          '&redirect_to=' + encodeURIComponent(back);
       });
     },
 

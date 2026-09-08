@@ -322,6 +322,8 @@
   "auth.h": "Use this on your other devices",
   "auth.b": "Optional. Sign in and your ticked-off items follow you between your phone, tablet and computer. Everything here works without it.",
   "auth.signin": "Continue with Google",
+  "auth.signin.google": "Continue with Google",
+  "auth.signin.apple": "Continue with Apple",
   "auth.age_h": "Quick check first",
   "auth.age_b": "You need to be 13 or older to sign in, because signing in shares your email address with us. Everything on this site works without an account at any age.",
   "auth.age_yes": "I am 13 or older",
