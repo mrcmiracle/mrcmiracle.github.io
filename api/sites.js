@@ -11,9 +11,11 @@
  * Only rows with active = true are returned, and only the fields the card
  * renders; the internal note column is never exposed.
  *
- * Cached briefly at the edge. During a smoke event this is the fastest-moving
- * data on the site, so the window is short, but it must still absorb a rush of
- * visitors arriving from a poster QR code at once.
+ * Cached only briefly at the edge. This is the fastest-moving data on the site:
+ * when a coordinator withdraws a site, people must stop being sent there
+ * quickly, so the window is deliberately short. 30 seconds still absorbs a rush
+ * of visitors arriving from a poster QR code at once, while a withdrawal
+ * propagates in about a minute at worst.
  */
 const FIELDS = [
   'id', 'name', 'kind', 'city', 'county', 'address', 'zip', 'lat', 'lon', 'phone',
@@ -47,7 +49,7 @@ export default async function handler(req, res) {
       return res.status(502).json({ ok: false, error: 'upstream ' + r.status });
     }
     const rows = await r.json();
-    res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+    res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=30');
     return res.status(200).json({ ok: true, sites: Array.isArray(rows) ? rows : [] });
   } catch (err) {
     console.error('[sites] ' + err.message);

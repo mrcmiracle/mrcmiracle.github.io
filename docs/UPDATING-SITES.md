@@ -199,3 +199,55 @@ and delete the `_WARNING` line.
 
 If the page breaks, the cause is almost always a JSON punctuation error. Check
 <https://jsonlint.com>, or revert the commit from the repository's **Commits** list.
+
+---
+
+## Activating a cleaner air site during a smoke event
+
+The 344 libraries in `data/clean-air-sites.json` are the year-round baseline and
+never change during an event. When Public Health opens actual cleaner air sites,
+those go in the **`sites` table in Supabase**, and appear on `clean-air.html`
+above the libraries with an amber **"Open now for smoke"** badge.
+
+Until the admin page is built, you do this from Supabase directly.
+
+### To add and switch on a site
+
+1. Go to <https://supabase.com/dashboard> → the project → **Table Editor** → **sites**.
+2. **Insert → Insert row.** The only fields you must fill in are:
+
+   | Field | What to put |
+   |---|---|
+   | `id` | Any short unique label, e.g. `kent-commons-2026-09` |
+   | `name` | Shown as the heading |
+   | `city` | Spelled exactly as in other entries — the city dropdown is built from it |
+   | `lat` / `lon` | **Required.** Distance sorting and the map depend on them. Get them from <https://www.openstreetmap.org> — right-click the spot → Show address. Longitude keeps its minus sign; dropping it puts the site in China |
+   | `active` | Tick it |
+
+   Everything else has a sensible default. `hours` is worth filling in during an
+   event — that is exactly the thing people need and the libraries cannot give.
+   `note` is internal, for your team; it is never sent to the page.
+
+3. Save. It is live within about a minute.
+
+`activated_at` stamps itself. Do not set it by hand.
+
+### To withdraw a site
+
+Set `active` to false. Do **not** delete the row — keeping it means you can
+switch the same place on again next time without retyping it, and it preserves
+the record of what you opened and when, which is exactly the evidence a
+portfolio needs.
+
+A withdrawal reaches visitors in about a minute.
+
+### If a library itself is activated
+
+Give the row the **same `id` as the library** in `clean-air-sites.json` (for
+example `WA0061-013`). The activated row then replaces that library in the list
+rather than appearing twice, and it carries the badge and your event hours.
+
+### If the database is unreachable
+
+The page silently falls back to the 344 libraries on their own. Nothing breaks,
+and no error is shown, because a library is still a real public indoor space.

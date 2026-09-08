@@ -84,7 +84,25 @@ The portfolio needs CSV, which Supabase exports directly. Continuing to chase
 this spends the user's time on a redundant path. If they want it anyway, the
 only remaining move is to recreate the script under `northcreek.mrc@gmail.com`.
 
-## Task 4 — Finish optional Google sign-in
+## Task 4 — Optional sign-in — **Google is configured; one env var is wrong**
+
+Google is enabled and working at the Supabase end, confirmed via
+`/auth/v1/settings` (`external.google = true`). Apple is off.
+
+**`SUPABASE_ANON_KEY` in Vercel holds a masked value:** the real first 8
+characters followed by 200 U+2022 bullet characters, i.e. what the Supabase
+dashboard *displays* rather than the key. Sign-in fails with "Invalid API key".
+`/api/config` now detects this and says so by name instead of reporting ok.
+Fix: reveal the key in the dashboard before copying, paste it, redeploy.
+
+Sign-in offers one button per enabled provider, so turning Apple on in Supabase
+makes its button appear with no code change. **Apple costs money and needs
+maintenance**: it requires a paid Apple Developer account, and Apple forces the
+signing secret to be regenerated **every 6 months** or logins break. For a club
+whose officers graduate, that is a recurring landmine — weigh it before buying.
+
+### Original setup notes
+
 
 Code is written and deployed; it is dark until three things are configured.
 Full steps in `docs/BACKEND.md` step 4. Summary:
@@ -105,19 +123,36 @@ never un-ticks on device B.
 under-13s; an email address is personal data. MRC's written approval covers the
 partnership, not federal law. Do not remove it.
 
-## Task 5 — Partner-editable clean air locations
+## Task 5 — Partner-editable clean air locations — **DONE (interim admin)**
 
-The one remaining feature from the original brief. Today `data/clean-air-sites.json`
-holds 344 real libraries from the IMLS federal dataset, but cleaner air sites are
-**activated per smoke event** — so Unit 503 needs to add and activate sites live.
+`public.sites` mirrors the JSON entry shape plus `active`, `activated_at` and an
+internal `note`. `GET /api/sites` returns only activated rows, read with
+service_role; the table has RLS on with no policies and no anon grant, like
+`events`. Verified: anon gets 401 on read and on write, and `note` is never in
+the response.
 
-Suggested shape:
-- `sites` table in Supabase mirroring the JSON fields, plus `active boolean`
-  and `activated_at`.
-- A small admin page behind Supabase Auth, restricted to a list of allowed
-  emails, where a coordinator can add a site and flip `active`.
-- `js/cleanair.js` merges: activated sites first and badged, libraries after.
-- Keep the JSON file as the offline fallback if the database is unreachable.
+`js/cleanair.js` merges the two lists. An activated row sharing an id with a
+library **replaces** it, so a branch can be switched on in place. Activated
+sites sort ahead of the baseline and carry an amber badge reading "Open now for
+smoke" — the hazard colour is never the only signal.
+
+**Any failure of the `/api/sites` fetch resolves to an empty list**, so the 344
+libraries still render on their own. The JSON file remains the offline fallback
+and nothing about this feature can break the page.
+
+Verified end to end on production with a temporary activated row: it appeared
+first, badged, above Bothell Library at the same distance, with the map links
+working. The row was then deleted; the table is empty.
+
+**The admin page is the one piece not built.** Coordinators use the Supabase
+table editor for now — click-by-click in `docs/UPDATING-SITES.md`. Build the
+page once sign-in works: gate it on Supabase Auth with an allow-list of
+coordinator emails, and have it write through a service_role API route rather
+than granting the browser any access to the table.
+
+The `/api/sites` cache window is deliberately short (30s). This is the
+fastest-moving data on the site — when a coordinator withdraws a site people
+must stop being sent there quickly. Do not lengthen it for performance.
 
 ## Task 6 — Check indexes once there is real traffic — **premature, do not start**
 
