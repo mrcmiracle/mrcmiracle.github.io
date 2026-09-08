@@ -145,6 +145,20 @@ From here on, any change you commit is live in about a minute.
 
 ## Step 4 — Connect the data collection
 
+> **Superseded as of 2026-09-07. Do not follow this step.**
+>
+> Data collection now runs through Supabase via `/api/track`, configured with
+> `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel — see `docs/BACKEND.md`.
+> The Google Sheets mirror described below was removed: the Apps Script refused
+> anonymous callers with HTTP 401 on every attempt, and because it was awaited
+> alongside the primary write, every event paid for that doomed round trip.
+>
+> Supabase exports CSV directly (Table Editor → the `events` table → Export),
+> which is what the portfolio needs, so nothing was lost. The steps below are
+> kept only as a record, and `apps-script/Code.gs` carries revival instructions
+> if it is ever republished from an account that can make it public.
+
+
 This is what fills your spreadsheet. Until you finish it, the site works fine but
 records nothing.
 

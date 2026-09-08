@@ -8,7 +8,6 @@
  * Environment variables (set these in Vercel → Settings → Environment Variables):
  *   SUPABASE_URL               https://xxxx.supabase.co
  *   SUPABASE_SERVICE_ROLE_KEY  the service_role key (NEVER put this in the page)
- *   SHEETS_WEBHOOK_URL         the Apps Script /exec URL   (optional mirror)
  *
  * No npm dependencies: it talks to Supabase over its REST API with fetch, so
  * the project still has no build step and no node_modules.
@@ -122,9 +121,9 @@ export default async function handler(req, res) {
   // Deliberately NOT stored: no IP address, no user agent, no geolocation.
   // The site's privacy notice promises this, so do not add them here.
 
-  const results = { supabase: 'skipped', sheets: 'skipped' };
+  const results = { supabase: 'skipped' };
 
-  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SHEETS_WEBHOOK_URL } = process.env;
+  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
 
   const jobs = [];
 
@@ -145,28 +144,21 @@ export default async function handler(req, res) {
     );
   }
 
-  if (SHEETS_WEBHOOK_URL) {
-    jobs.push(
-      fetch(SHEETS_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify(data)
-      }).then((r) => { results.sheets = r.ok ? 'ok' : 'HTTP ' + r.status; })
-        .catch((e) => { results.sheets = 'error: ' + e.message; })
-    );
-  }
-
   await Promise.all(jobs);
 
-  // The mirror failing must never lose the primary write, and neither failing
-  // should ever break the page. Report status, log the detail.
+  /* A failed write must never break the page. Report status, log the detail.
+
+     The Google Sheets mirror that used to run here was removed: the Apps Script
+     refused anonymous callers with HTTP 401 across every attempt, and because
+     the mirror was awaited alongside the primary write, every single event paid
+     for that doomed round trip before this function could answer. Supabase is
+     the store of record and exports CSV directly, which is what the portfolio
+     needs. apps-script/Code.gs is kept in the repo if it is ever revived under
+     an account that can publish it. */
   if (results.supabase !== 'ok' && results.supabase !== 'skipped') {
     console.error('[track] supabase write failed:', results.supabase);
   }
-  if (results.sheets !== 'ok' && results.sheets !== 'skipped') {
-    console.warn('[track] sheets mirror failed:', results.sheets);
-  }
 
-  const primaryOk = results.supabase === 'ok' || (results.supabase === 'skipped' && results.sheets === 'ok');
+  const primaryOk = results.supabase === 'ok';
   return res.status(primaryOk ? 200 : 502).json({ ok: primaryOk, ...results });
 }

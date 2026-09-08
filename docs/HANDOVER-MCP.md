@@ -65,24 +65,35 @@ is developer testing: 5 visitor ids, all from 2026-09-07, and `kits`, `people`
 and `commits` are all still `0`. There is no member of the public in this table
 yet. The numbers only start meaning something once the posters are up.
 
-## Task 3 — The Google Sheets mirror — **STOP; recommend dropping it**
+## Task 3 — The Google Sheets mirror — **DROPPED**
 
-Still failing after the redeploy. Measured again:
+Removed on 2026-09-07 after failing across three sessions and two redeploys by
+the owner: `POST /exec` returned 401 and `GET` redirected to Google sign-in
+every time. The likely cause is a Workspace (school) account whose admin blocks
+publishing outside the domain, which cannot be overridden from this side.
 
-```
-POST /exec  -> 401
-GET  /exec  -> 302 to accounts.google.com/ServiceLogin
-```
+There was a second cost nobody had noticed. The mirror was `await`ed alongside
+the primary Supabase write, so **every single tracked event paid for that
+doomed round trip** before `/api/track` could respond - latency on every
+interaction, on a site that has to be quick on library wifi.
 
-That is the third session in a row this has failed, across two separate
-redeploys by the user. Per this document's own guidance, the remaining
-explanation is that the script is owned by a Workspace (school) account whose
-admin blocks sharing outside the domain — which the user cannot override.
+What changed:
 
-**Recommendation: drop the mirror.** Supabase is the primary store and works.
-The portfolio needs CSV, which Supabase exports directly. Continuing to chase
-this spends the user's time on a redundant path. If they want it anyway, the
-only remaining move is to recreate the script under `northcreek.mrc@gmail.com`.
+- the mirror block and `SHEETS_WEBHOOK_URL` are gone from `api/track.js`
+- `SHEETS_WEBHOOK_URL` removed from `.env.example`
+- `priv.s7.b` no longer claims usage is copied to a Google Sheet, in **both**
+  languages. It was claiming a data flow that was not happening
+- `docs/DEPLOY.md` step 4 is marked superseded
+- `apps-script/Code.gs` is kept, headed NOT IN USE, with revival instructions
+
+Nothing was lost: Supabase is the store of record and exports CSV directly from
+the Table Editor, which is what the portfolio needs.
+
+**To revive it**, republish the script from an account that can set "Who has
+access: Anyone" (`northcreek.mrc@gmail.com`, not the school account), confirm a
+literal 200 from the curl in `Code.gs`, restore the mirror block from git
+history, and re-add the Google Sheet sentence to `priv.s7.b` in both language
+files. The privacy policy must describe where data actually goes.
 
 ## Task 4 — Optional sign-in — **Google is configured; one env var is wrong**
 
