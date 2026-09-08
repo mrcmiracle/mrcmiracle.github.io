@@ -142,6 +142,9 @@
       bar.setAttribute('aria-valuemin', '0');
       bar.setAttribute('aria-valuemax', String(boxes.length));
       clear.hidden = done === 0;
+      // Green is the "prepared" channel: it appears only when the kit is
+      // genuinely complete, never as decoration along the way.
+      prog.classList.toggle('is-complete', boxes.length > 0 && done === boxes.length);
     }
 
     lastBoxes = boxes;

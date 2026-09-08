@@ -56,7 +56,12 @@
   --quake-line: #eeaaa6;
 
   --focus: #1568d4;
+  /* Green is the "done / prepared" channel, the counterpart to the amber smoke
+     and red earthquake channels. It never appears as decoration - see
+     docs/DESIGN.md rule 1. */
   --ok: #1c6b45;
+  --ok-bg: #e9f6ef;
+  --ok-line: #8ccbaa;
 
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-text: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -77,6 +82,11 @@
   --shadow-1: 0 1px 2px rgba(42,21,80,.06), 0 1px 3px rgba(42,21,80,.05);
   --shadow-2: 0 4px 10px rgba(42,21,80,.07), 0 12px 28px rgba(42,21,80,.06);
   --shadow-brand: 0 6px 18px rgba(79,43,146,.22);
+
+  /* Fixed backdrop wash. Deliberately faint: it must never come near the
+     contrast of text sitting on top of it. */
+  --veil-1: rgba(79, 43, 146, .07);
+  --veil-2: rgba(28, 107, 69, .05);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -105,10 +115,14 @@
 
     --focus: #7ab6ff;
     --ok: #63c99a;
+    --ok-bg: #10251a;
+    --ok-line: #2f7d55;
 
     --shadow-1: 0 1px 2px rgba(0,0,0,.4);
     --shadow-2: 0 6px 20px rgba(0,0,0,.45);
     --shadow-brand: 0 6px 18px rgba(0,0,0,.5);
+    --veil-1: rgba(155, 131, 212, .10);
+    --veil-2: rgba(99, 201, 154, .06);
   }
 }
 
@@ -117,29 +131,67 @@
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
+/* ---------- fixed backdrop ----------
+   A still wash that does not scroll, with one very slow drift on top of it, so
+   the page has depth while the content is what actually moves. Two rules keep
+   it safe on the devices this site is built for:
+
+   only `transform` is animated, so it stays on the compositor and costs no
+   layout or paint on an old phone; and it is switched off entirely under
+   prefers-reduced-motion, where it becomes a plain static wash. */
+html { background: var(--paper); }
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 28rem at 18% 14%, var(--veil-1), transparent 62%),
+    radial-gradient(34rem 26rem at 82% 78%, var(--veil-2), transparent 62%);
+  animation: veil-drift 72s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes veil-drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+  to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; transform: none; }
+}
+
 body {
   margin: 0;
+  background: transparent;
   font-family: var(--font-text);
   font-size: var(--step-0);
   line-height: 1.6;
   color: var(--ink);
-  background: var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--s4); }
 
+/* The serif is now reserved for display moments - the one h1 per page, the
+   wordmark and the big numbers. Section headings run in the sans, which is the
+   same face as the body text, so a page reads as one voice instead of
+   alternating between two. */
 h1, h2, h3 {
-  font-family: var(--font-display);
-  font-variation-settings: 'opsz' 40;
-  font-weight: 600;
-  letter-spacing: -.015em;
-  line-height: 1.15;
+  font-family: var(--font-text);
+  font-weight: 700;
+  letter-spacing: -.012em;
+  line-height: 1.2;
   color: var(--ink);
   text-wrap: balance;
 }
-h1 { font-size: var(--step-4); margin: 0 0 var(--s3); font-variation-settings: 'opsz' 90; }
+h1 {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 90;
+  font-weight: 600; letter-spacing: -.02em; line-height: 1.15;
+  font-size: var(--step-4); margin: 0 0 var(--s3);
+}
 h2 { font-size: var(--step-3); margin: var(--s7) 0 var(--s3); }
 h3 { font-size: var(--step-2); margin: var(--s5) 0 var(--s2); }
 
@@ -316,7 +368,7 @@ main { padding-bottom: var(--s8); }
   display: grid; grid-template-columns: 2.75rem 1fr;
   column-gap: var(--s4); row-gap: 0;
   align-items: start;
-  border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: var(--r);
   background: none; box-shadow: none;
   padding: var(--s5) var(--s3);
   margin: 0 calc(var(--s3) * -1);
@@ -333,7 +385,7 @@ main { padding-bottom: var(--s8); }
 
 /* A drawn keyline mark, not a filled app tile. */
 .card-icon {
-  width: 2.75rem; height: 2.75rem; border-radius: 2px; display: grid; place-items: center;
+  width: 2.75rem; height: 2.75rem; border-radius: var(--r-sm); display: grid; place-items: center;
   background: none; border: 1.5px solid var(--brand); color: var(--brand); margin: .1rem 0 0;
 }
 .card-icon svg { width: 22px; height: 22px; }
@@ -367,7 +419,7 @@ main { padding-bottom: var(--s8); }
   gap: 0; margin: var(--s6) 0; text-align: left;
   border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--line-strong);
 }
-.stat { padding: var(--s4) var(--s3); background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0; }
+.stat { padding: var(--s4) var(--s3); background: none; border: 0; border-left: 1px solid var(--line); border-radius: var(--r-sm); }
 .stat:first-child { border-left: 0; padding-left: 0; }
 .stat b {
   display: block; font-family: var(--font-display); font-variation-settings: 'opsz' 90;
@@ -397,11 +449,15 @@ main { padding-bottom: var(--s8); }
 .prep-fixes { margin: var(--s2) 0 0; padding-left: 1.1rem; }
 .prep-fixes li { margin-bottom: var(--s2); }
 .prep-fixes a { font-weight: 700; display: inline-block; padding: .25rem 0; }
+.prep-allset {
+  border: 1px solid var(--ok-line); background: var(--ok-bg); color: var(--ok);
+  border-radius: var(--r-sm); padding: var(--s3) var(--s4); font-weight: 700; margin: 0;
+}
 
 /* ---------- impact tables ----------
    Wide content must scroll inside its own container, never make the page
    scroll sideways. */
-.impact-table { width: 100%; border-collapse: collapse; margin: var(--s3) 0 var(--s5); font-size: .92rem; }
+.impact-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: var(--s3) 0 var(--s5); font-size: .92rem; }
 .impact-table th, .impact-table td { text-align: left; padding: var(--s3) var(--s2); border-bottom: 1px solid var(--line); vertical-align: top; }
 .impact-table thead th { font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3); border-bottom: 1.5px solid var(--ink); }
 .impact-table tbody th { font-weight: 700; }
@@ -568,6 +624,12 @@ fieldset { border: 0; margin: 0; padding: 0; }
 @media (prefers-color-scheme: dark) { .ck-qty { color: var(--brand-strong); } }
 .ck-note { display: block; font-size: .86rem; color: var(--ink-3); font-weight: 400; margin-top: .1rem; }
 
+/* A ticked item is a thing this household now has. Green says so, and the
+   strikethrough says it again without relying on colour. */
+.checklist label:has(input:checked) { background: var(--ok-bg); }
+.checklist label:has(input:checked) .ck-name { color: var(--ok); text-decoration: line-through; text-decoration-thickness: .08em; }
+.checklist label:has(input:checked) .ck-qty { color: var(--ok); }
+
 /* ---------- checklist progress ---------- */
 .progress { margin: 0 0 var(--s5); }
 .progress-text { font-size: .9rem; font-weight: 700; color: var(--ink-2); margin: 0 0 var(--s2); }
@@ -584,6 +646,9 @@ fieldset { border: 0; margin: 0; padding: 0; }
   .progress-bar span { background: linear-gradient(90deg, var(--violet-400), var(--brand)); }
 }
 @media (prefers-reduced-motion: reduce) { .progress-bar span { transition: none; } }
+.progress.is-complete .progress-bar span { background: linear-gradient(90deg, var(--ok), var(--ok)); }
+.progress.is-complete .progress-text { color: var(--ok); }
+
 .progress-clear {
   font: inherit; font-size: .82rem; font-weight: 700; color: var(--ink-3);
   background: none; border: 0; padding: var(--s2) 0 0; cursor: pointer; text-decoration: underline;
@@ -641,8 +706,7 @@ details.sect {
   background: var(--paper-2); overflow: hidden;
 }
 details.sect > summary {
-  font-family: var(--font-display); font-variation-settings: 'opsz' 30;
-  font-weight: 600; font-size: var(--step-1);
+  font-weight: 700; font-size: var(--step-1);
   padding: var(--s4); cursor: pointer; list-style: none; min-height: 54px;
   display: flex; align-items: center; justify-content: space-between; gap: var(--s3);
 }
@@ -668,6 +732,7 @@ details.sect[open] > summary { border-bottom: 1px solid var(--line); background:
 .footer-contact { margin-bottom: var(--s3); }
 .footer-contact a { font-weight: 700; display: inline-block; padding: .3rem 0; }
 .site-foot details a, .site-foot p a { display: inline-block; padding: .25rem 0; }
+main p.small > a { display: inline-block; padding: .25rem 0; }
 .footer-contact span { margin: 0 .35rem; color: var(--ink-3); }
 .site-foot details { margin-top: var(--s3); border-top: 1px solid var(--line); padding-top: var(--s3); }
 .site-foot summary { cursor: pointer; font-weight: 700; padding: var(--s2) 0; min-height: 34px; color: var(--ink-2); }
@@ -726,6 +791,7 @@ details.sect[open] > summary { border-bottom: 1px solid var(--line); background:
 
 /* ---------- print ---------- */
 @media print {
+  body::before { display: none !important; }
   :root {
     --paper: #fff; --paper-2: #fff; --paper-3: #fff; --ink: #000; --ink-2: #222; --ink-3: #444;
     --line: #999; --line-strong: #666; --brand: #000; --brand-tint: #fff; --brand-soft: #fff;

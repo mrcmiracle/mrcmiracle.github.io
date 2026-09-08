@@ -24,12 +24,13 @@ almanac than to a SaaS dashboard or a shop.
 > the visual language of public works — transit signage, public health notices, field
 > guides — where being read correctly under stress matters more than being admired.
 >
-> **Typography.** A variable serif with real optical sizing (Fraunces) carries every
-> heading and every large number, its `opsz` axis tuned per size so display text is tight
-> and characterful while small text stays open. All running text, controls and anything a
-> frightened person must read is set in Atkinson Hyperlegible, a face drawn by the Braille
-> Institute to disambiguate letterforms for low vision. The serif supplies warmth and
-> institutional authority; the sans supplies legibility that is not negotiable.
+> **Typography.** A variable serif with real optical sizing (Fraunces) is reserved for
+> display moments only - the single page title, the wordmark, and the large numbers -
+> its `opsz` axis tuned per size. Everything else, including every section heading, runs
+> in Atkinson Hyperlegible, a face drawn by the Braille Institute to disambiguate
+> letterforms for low vision, so a page reads as one voice rather than alternating
+> between two. The serif supplies warmth at the top of a page; the sans supplies
+> legibility that is not negotiable.
 >
 > **Colour is meaning, never decoration.** A single institutional violet, taken from the
 > unit's own seal, marks the organisation and the primary path. Two hazard channels exist —
@@ -62,9 +63,12 @@ These are enforceable. A change that breaks one is wrong even if it looks better
 | `--brand` (violet) | the organisation, the primary path | nav, primary buttons, links |
 | `--smoke-*` (amber) | wildfire smoke | **only** smoke content |
 | `--quake-*` (red) | earthquake | **only** earthquake content |
-| `--ok` (green) | a confirmed good state | success messages |
+| `--ok` (green) | done, prepared | ticked items, a completed kit, "you are already prepared" |
 
-Never introduce a fourth accent for visual interest. Never use amber or red because a
+Green is a channel like the others, not decoration: it appears when something is
+genuinely finished and never to brighten a section up. A ticked item is also struck
+through, so colour is never the only signal. Never introduce a fifth accent for visual
+interest. Never use amber or red because a
 card looked plain. This is the single rule most likely to be broken by an AI tool, and
 the one that costs the most when broken.
 
@@ -137,7 +141,21 @@ coordinates, no zip and no city — only the result count and the nearest
 distance. `priv.s2.b` promises this in both languages. If you change what that
 call sends, change the policy in the same commit.
 
-### 10. Zero third-party runtime requests
+### 10. The backdrop is fixed, faint, and cheap
+
+`body::before` is a fixed wash behind everything: `html` carries the base colour,
+`body` is transparent. It animates **only `transform`**, so it stays on the
+compositor and costs no layout or paint on an old phone, and it is switched off
+entirely under `prefers-reduced-motion` and in print. Its tokens (`--veil-1`,
+`--veil-2`) are capped low enough that all text still clears WCAG AA over it -
+measured at 4.61 for secondary text and 15.7 for headings. If you strengthen
+them, re-measure.
+
+### 11. Rounded, not sharp
+
+Every visible container uses a radius token. Nothing is square-cornered.
+
+### 12. Zero third-party runtime requests
 
 Fonts are self-hosted. Auth is plain `fetch`. The map loads only when tapped. **Do not add
 a Google Fonts link, a CDN script, or an icon font.** This is a privacy promise made in
@@ -157,7 +175,7 @@ It was written without seeing the project. Scored against what is actually here:
 | Design empty and loading states | **Partly done** — worth extending, see rule 6 |
 | Bento-grid palette `#0F172A` / `#7C3AED` | **Rejected** — you said keep the palette, and the violet is taken from the unit's actual seal |
 | Neobrutalist cream / sage / terracotta | **Rejected** — same reason |
-| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 10 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
+| Inter, Plus Jakarta Sans, Playfair, Space Mono | **Rejected** — all need Google Fonts, which rule 12 forbids; and Atkinson Hyperlegible is a *better* choice here because it was drawn for low vision |
 | Thick 2px black borders, hard offset shadows | **Rejected** — a shop aesthetic; wrong register for a hazard notice |
 | Shift elements on hover to mimic a button press | **Use with care** — fine for planning content, never on the two emergency panels |
 

@@ -119,7 +119,7 @@
         });
         done.appendChild(ul);
       } else {
-        done.appendChild(el('p', 'small', t('prep.allset')));
+        done.appendChild(el('p', 'prep-allset', t('prep.allset')));
       }
       done.hidden = false;
       document.getElementById('prep-h').focus();
