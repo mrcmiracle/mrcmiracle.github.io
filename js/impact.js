@@ -145,6 +145,36 @@
           'This compares those answers.'));
         root.appendChild(prepTable(d.preparedness || {}));
 
+        var w = d.wound || {};
+        if (w.checks) {
+          root.appendChild(el('h2', null, 'Wound check'));
+          root.appendChild(statBlock([
+            { value: w.checks || 0, label: 'photos checked' },
+            { value: w.declined || 0, label: 'times it said "not sure"' },
+            { value: w.avg_confidence == null ? '—' : w.avg_confidence + '%', label: 'average confidence when it did answer' }
+          ]));
+          root.appendChild(el('p', 'small',
+            'A tool that declines to guess when it is unsure is behaving correctly, so the ' +
+            '"not sure" count is reported here rather than hidden. The photos themselves are ' +
+            'never stored — only the category returned and how confident the model was.'));
+          if (w.by_label && w.by_label.length) {
+            var tb = el('table', 'impact-table');
+            var th = el('thead'), hr = el('tr');
+            ['Category', 'Times', 'Average confidence'].forEach(function (h) { hr.appendChild(el('th', null, h)); });
+            th.appendChild(hr); tb.appendChild(th);
+            var body = el('tbody');
+            w.by_label.forEach(function (r) {
+              var tr = el('tr');
+              tr.appendChild(el('th', null, String(r.label).replace(/_/g, ' ')));
+              tr.appendChild(el('td', null, String(r.n)));
+              tr.appendChild(el('td', null, r.avg_confidence == null ? '—' : r.avg_confidence + '%'));
+              body.appendChild(tr);
+            });
+            tb.appendChild(body);
+            root.appendChild(tb);
+          }
+        }
+
         root.appendChild(el('h2', null, 'Which posters reach people'));
         root.appendChild(reachTable(d.reach));
 

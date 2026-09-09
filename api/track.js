@@ -27,7 +27,8 @@ const ALLOWED_EVENTS = new Set([
   'progress_restored', 'progress_cleared', 'progress_synced',
   'plan_saved', 'signin_start', 'signin_success', 'signout', 'age_gate_blocked',
   'aqi_lookup',
-  'prep_check', 'prep_skipped'
+  'prep_check', 'prep_skipped',
+  'wound_check', 'wound_result', 'wound_check_failed'
 ]);
 
 // Every column the events table has. Anything else the page sends is preserved
@@ -40,7 +41,9 @@ const COLUMNS = [
   'code', 'via', 'selections', 'selection_count', 'offered_count',
   'section', 'mode', 'seconds', 'scroll_pct', 'to', 'done', 'total',
   // Which poster the visitor arrived from, and the preparedness check.
-  'src', 'prep_phase', 'prep_water', 'prep_air', 'prep_plan', 'prep_score'
+  'src', 'prep_phase', 'prep_water', 'prep_air', 'prep_plan', 'prep_score',
+  // Wound check: the category and the confidence, never the image.
+  'wound_label', 'wound_confidence'
 ];
 const INT_COLS = new Set([
   'returning', 'visit_number', 'new_session', 'people', 'pets', 'meds',
@@ -112,6 +115,10 @@ export default async function handler(req, res) {
     if (!Object.prototype.hasOwnProperty.call(data, c)) continue;
     const col = RENAME[c] || c;
     row[col] = INT_COLS.has(c) ? toInt(data[c]) : clampStr(data[c]);
+  }
+  if (data.wound_confidence !== undefined && data.wound_confidence !== '') {
+    const c = parseFloat(data.wound_confidence);
+    row.wound_confidence = Number.isFinite(c) ? Math.min(100, Math.max(0, c)) : null;
   }
   if (data.nearest_mi !== undefined && data.nearest_mi !== '') {
     const f = parseFloat(data.nearest_mi);

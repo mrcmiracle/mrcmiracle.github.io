@@ -85,8 +85,10 @@
 
   /* Fixed backdrop wash. Deliberately faint: it must never come near the
      contrast of text sitting on top of it. */
-  --veil-1: rgba(79, 43, 146, .07);
-  --veil-2: rgba(28, 107, 69, .05);
+  --veil-1: rgba(79, 43, 146, .20);
+  --veil-2: rgba(28, 107, 69, .13);
+  --veil-3: rgba(155, 131, 212, .18);
+  --veil-grain: rgba(42, 21, 80, .035);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -121,8 +123,10 @@
     --shadow-1: 0 1px 2px rgba(0,0,0,.4);
     --shadow-2: 0 6px 20px rgba(0,0,0,.45);
     --shadow-brand: 0 6px 18px rgba(0,0,0,.5);
-    --veil-1: rgba(155, 131, 212, .10);
-    --veil-2: rgba(99, 201, 154, .06);
+    --veil-1: rgba(155, 131, 212, .17);
+    --veil-2: rgba(99, 201, 154, .10);
+    --veil-3: rgba(79, 43, 146, .30);
+    --veil-grain: rgba(255, 255, 255, .022);
   }
 }
 
@@ -154,21 +158,45 @@ html { background: var(--paper); }
 body::before {
   content: "";
   position: fixed;
-  inset: -25%;
-  z-index: -1;
+  inset: -30%;
+  z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(38rem 28rem at 18% 14%, var(--veil-1), transparent 62%),
-    radial-gradient(34rem 26rem at 82% 78%, var(--veil-2), transparent 62%);
-  animation: veil-drift 72s ease-in-out infinite alternate;
+    radial-gradient(46rem 34rem at 12% 8%,  var(--veil-1), transparent 60%),
+    radial-gradient(40rem 30rem at 88% 26%, var(--veil-3), transparent 58%),
+    radial-gradient(44rem 32rem at 72% 88%, var(--veil-2), transparent 60%);
+  animation: veil-drift 64s ease-in-out infinite alternate;
   will-change: transform;
 }
+
+/* A second layer, drifting the other way at a different speed, so the movement
+   never looks like one sheet sliding about. Grain on top keeps the gradients
+   from banding on a wide screen. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .85;
+  background-image:
+    radial-gradient(30rem 24rem at 30% 72%, var(--veil-3), transparent 62%),
+    radial-gradient(var(--veil-grain) 1px, transparent 1px);
+  background-size: auto, 3px 3px;
+  animation: veil-drift-2 91s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
 @keyframes veil-drift {
-  from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
-  to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.04); }
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to   { transform: translate3d(3%, 2.5%, 0) scale(1.08); }
+}
+@keyframes veil-drift-2 {
+  from { transform: translate3d(2.5%, 1.5%, 0) scale(1.05); }
+  to   { transform: translate3d(-2.5%, -2%, 0) scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
-  body::before { animation: none; transform: none; }
+  body::before, body::after { animation: none; transform: none; }
 }
 
 body {
@@ -471,6 +499,42 @@ main { padding-bottom: var(--s8); }
 .impact-table thead th { font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3); border-bottom: 1.5px solid var(--ink); }
 .impact-table tbody th { font-weight: 700; }
 .impact-table td { font-variant-numeric: tabular-nums lining-nums; }
+
+/* ---------- wound check ---------- */
+.notice-strong { border-width: 2px; border-left-width: 5px; font-weight: 600; }
+
+#wound-file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+#wound-file:focus-visible + * , label[for="wound-file"]:focus-within { outline: 3px solid var(--focus); }
+.wound-preview-img {
+  display: block; width: 100%; max-height: 18rem; object-fit: contain;
+  border-radius: var(--r); border: 1px solid var(--line); background: var(--paper-3);
+  margin: var(--s4) 0 var(--s2);
+}
+.wound-red { margin: 0 0 var(--s4); padding-left: 1.2rem; }
+.wound-red li { margin-bottom: var(--s2); font-weight: 600; }
+
+.wound-answer {
+  border: 2px solid var(--brand); border-radius: var(--r);
+  background: var(--brand-soft); padding: var(--s4); margin: var(--s4) 0;
+}
+.wound-answer.is-unsure { border-color: var(--line-strong); background: var(--paper-3); }
+.wound-eyebrow {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-3); margin: 0 0 var(--s2);
+}
+.wound-label {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.5rem, 7vw, 2rem); line-height: 1.15; margin: 0;
+  color: var(--brand);
+}
+@media (prefers-color-scheme: dark) { .wound-label { color: var(--brand-strong); } }
+.is-unsure .wound-label { color: var(--ink-2); }
+.wound-confidence {
+  margin: var(--s2) 0 0; font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums; color: var(--ink-2);
+}
+.wound-tips { margin: 0 0 var(--s4); padding-left: 1.2rem; }
+.wound-tips li { margin-bottom: var(--s2); }
 
 /* ---------- forms ---------- */
 .field { margin-bottom: var(--s5); }
@@ -842,7 +906,7 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 
 /* ---------- print ---------- */
 @media print {
-  body::before { display: none !important; }
+  body::before, body::after { display: none !important; }
   :root {
     --paper: #fff; --paper-2: #fff; --paper-3: #fff; --ink: #000; --ink-2: #222; --ink-3: #444;
     --line: #999; --line-strong: #666; --brand: #000; --brand-tint: #fff; --brand-soft: #fff;

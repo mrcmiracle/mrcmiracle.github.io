@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wound check — MRC Miracle</title>
+<meta name="description" content="Photograph a wound and get general first aid information, plus the signs that mean you should get medical care now. Not a diagnosis.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://mrcmiracle.vercel.app/wound.html">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MRC Miracle">
+<meta property="og:title" content="Wound check — MRC Miracle">
+<meta property="og:description" content="Photograph a wound and get general first aid information, plus the signs that mean you should get medical care now. Not a diagnosis.">
+<meta property="og:url" content="https://mrcmiracle.vercel.app/wound.html">
+<meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MRC Miracle — get ready for smoke and earthquakes. Free preparedness tools for King County households.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f2b92">
+<link rel="preload" href="assets/fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/styles.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+<script type="speculationrules">
+{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/api/*"}},{"not":{"href_matches":"/admin.html"}}]},"eagerness":"moderate"}]}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="./">
+      <img class="brand-mark" src="assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+      <span class="brand-text">
+        <span class="brand-name">MRC Miracle</span>
+        <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
+      </span>
+    </a>
+    <div class="langswitch" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav" aria-label="Main">
+  <ul>
+    <li><a href="./" data-i18n="nav.home">Home</a></li>
+    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
+    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
+    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+<div class="wrap">
+  <h1 data-i18n="wound.h1">Wound check</h1>
+  <p class="lede" data-i18n="wound.intro">Take or upload a photo and get general first aid information for that kind of wound.</p>
+
+  <p class="notice notice-strong" data-i18n="wound.notdiagnosis"><strong>This is not a diagnosis and not medical advice.</strong> It is a student project that guesses what kind of wound a photo shows, and it can be wrong. It cannot see infection, depth, or anything under the skin. If you are worried about an injury, see a medical professional, whatever this page says.</p>
+
+  <section id="wound-tool" class="savebox">
+    <h2 data-i18n="wound.tool.h">Check a photo</h2>
+    <p class="small" data-i18n="wound.tool.privacy">Your photo is sent for analysis and is not saved anywhere — not by us, and not in the tool. It is not stored, not logged, and nobody on our team ever sees it.</p>
+    <p>
+      <label class="btn btn-block" for="wound-file" data-i18n="wound.tool.choose">Take or choose a photo</label>
+      <input type="file" id="wound-file" accept="image/jpeg,image/png" capture="environment" class="sr-only">
+    </p>
+    <div id="wound-preview" hidden></div>
+    <p class="err" id="wound-err" hidden></p>
+    <div id="wound-result" hidden></div>
+  </section>
+
+  <section class="rn-panel quake" aria-labelledby="wound-red-h">
+    <h2 id="wound-red-h" data-i18n="wound.red.h">Get medical care now if any of these are true</h2>
+    <ul class="wound-red">
+      <li data-i18n="wound.red.1">Bleeding that will not stop after 10 minutes of firm pressure</li>
+      <li data-i18n="wound.red.2">The wound is deep or gaping, or you can see fat, muscle or bone</li>
+      <li data-i18n="wound.red.3">Spreading redness, warmth, pus, or a fever — these are signs of infection</li>
+      <li data-i18n="wound.red.4">Numbness, or you cannot move the part normally</li>
+      <li data-i18n="wound.red.5">An animal or human bite, or a dirty puncture wound</li>
+      <li data-i18n="wound.red.6">A burn that is large, or on the face, hands, feet, genitals, or across a joint</li>
+      <li data-i18n="wound.red.7">A burn that looks white, leathery or charred, or that does not hurt</li>
+      <li data-i18n="wound.red.8">You are not up to date on tetanus</li>
+    </ul>
+    <p class="call911" data-i18n="wound.red.911">Call 911 for heavy bleeding that will not stop, a severe burn, or if someone is confused, pale and breathing fast.</p>
+  </section>
+
+  <p class="small"><a href="privacy.html" data-i18n="wound.privacylink">How this site handles your data</a></p>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
+         alt="MRC Miracle seal — King County MRC — HOSA, North Creek High School">
+    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p class="small footer-contact">
+      <a href="mailto:northcreek.mrc@gmail.com" data-i18n="footer.email">northcreek.mrc@gmail.com</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="https://www.instagram.com/mrc.miracle.nchs/" target="_blank" rel="noopener noreferrer"
+         data-i18n="footer.instagram">@mrc.miracle.nchs</a>
+    </p>
+    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <details>
+      <summary data-i18n="footer.privacy_h">Privacy</summary>
+      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
+      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a></p>
+    </details>
+    <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/app.js"></script>
+<script src="js/wound.js"></script>
+</body>
+</html>
