@@ -6,3 +6,4 @@
 .vercel
 node_modules/
 .agents/node_modules/
+.env*

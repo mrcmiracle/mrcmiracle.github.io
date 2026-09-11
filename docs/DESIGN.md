@@ -205,3 +205,54 @@ It was written without seeing the project. Scored against what is actually here:
 So the four "design skills" were largely already implemented, and the two aesthetic
 directions were both retail/product aesthetics aimed at a different reader. The prompt
 above is the replacement: the same rigour, pointed at this audience.
+
+---
+
+## Amendment — the wound-first home (2026-09-10)
+
+The home page was doing seven things at once: a hero, two emergency buttons,
+two inline panels of 8 and 10 numbered steps, a stats strip, a three-question
+form and five cards. A visitor met all of it before learning what the site was
+for. It now does one thing first.
+
+**Rule 14 — the home page leads with the wound check.** The file input is in
+the hero itself, not behind a link, so the tool is one tap from landing. Its
+disclaimer and its "get medical care now" link sit inside the same panel:
+a tool that can be confidently wrong carries its warning where the warning
+cannot be scrolled past.
+
+**Rule 15 — do not duplicate a page inside the home page.** The smoke and
+earthquake step lists live on `smoke.html` and `earthquake.html`. They were
+also inlined on the home page, which doubled the page's length and split the
+maintenance. They are links now; the speculation rules prerender both, so
+opening one is effectively instant.
+
+**Rule 16 — a checklist nobody finishes is worse than a short one they do.**
+The kit rules hold 43 items. Rendered as one wall of checkboxes that reads as
+homework. The default list is now the ~10 things that matter in the first 72
+hours (`"core": true` in `data/kit-rules.json`); the rest sits behind a toggle.
+The progress bar counts only the essentials, because a bar that cannot reach
+the end is not a motivator. Adding `core` to an item lengthens the default
+list — do it deliberately.
+
+**Rule 17 — emphasis inside a translated string does not survive.**
+`I18N.apply()` assigns `textContent`, so a `<strong>` nested inside a
+`data-i18n` element is erased the moment a language is applied. This was live
+on the wound page's medical disclaimer: the bold vanished for every visitor
+once translations ran. Emphasis needs its own element with its own key.
+
+**Rule 18 — the seal is artwork, not a favicon.** The MRC Miracle seal carries
+two rings of text that turn to mush below ~48px. `assets/favicon.svg` draws the
+seal's geometry only — disc, ring, star — with the fill inverted so it does not
+disappear into a light browser tab strip. The real artwork is used at 48px and
+above.
+
+### The standalone Wound Analyzer
+
+The classifier also has its own site at **wound-analyzer-vercel.vercel.app**,
+which is deliberately NOT in this palette or these fonts — it is a different
+product for a different reader, and dressing it as MRC Miracle would imply the
+MRC endorses its output. It reports to this site's `/api/track` with
+`site: 'wound-analyzer'` so both front ends land in one dataset; `impact.html`
+breaks the wound figures out by site rather than letting one borrow the other's
+numbers.

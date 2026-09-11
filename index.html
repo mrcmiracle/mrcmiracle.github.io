@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MRC Miracle — Emergency preparedness for King County</title>
-<meta name="description" content="Free emergency preparedness tools for King County households: clean air locations, a household kit calculator, and immediate steps for smoke and earthquakes.">
+<title>MRC Miracle — AI wound check and emergency preparedness for King County</title>
+<meta name="description" content="Photograph a wound and get first aid guidance in seconds. Plus a household kit calculator and clean air locations for King County. Free, no account.">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/icon-32.png" sizes="32x32" type="image/png">
 <link rel="canonical" href="https://mrcmiracle.vercel.app/">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MRC Miracle">
-<meta property="og:title" content="MRC Miracle — Emergency preparedness for King County">
-<meta property="og:description" content="Free emergency preparedness tools for King County households: clean air locations, a household kit calculator, and immediate steps for smoke and earthquakes.">
+<meta property="og:title" content="MRC Miracle — AI wound check and emergency preparedness">
+<meta property="og:description" content="Photograph a wound and get first aid guidance in seconds. Plus a household kit calculator and clean air locations for King County.">
 <meta property="og:url" content="https://mrcmiracle.vercel.app/">
 <meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="MRC Miracle — get ready for smoke and earthquakes. Free preparedness tools for King County households.">
+<meta property="og:image:alt" content="MRC Miracle — free preparedness tools for King County households.">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="es_US">
 <meta name="twitter:card" content="summary_large_image">
@@ -55,86 +57,98 @@
 <nav class="subnav" aria-label="Main">
   <ul>
     <li><a href="./" data-i18n="nav.home">Home</a></li>
+    <li><a href="wound.html" data-i18n="nav.wound">Wound check</a></li>
     <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
     <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
-    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
-    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
   </ul>
 </nav>
 
 <main id="main">
-<section class="hero">
-  <div class="wrap">
-    <p class="eyebrow" data-i18n="home.eyebrow">King County, Washington</p>
-    <h1 data-i18n="home.h1">Get ready for smoke and earthquakes</h1>
-    <p class="lede" data-i18n="home.intro">Free tools for King County households. Nothing to sign up for.</p>
 
-  <section class="rn-zone" aria-labelledby="rn-h">
-    <p class="rn-label" id="rn-h" data-i18n="home.rn.title">Right now</p>
-    <div class="rn-row">
-      <button type="button" class="rn-btn rn-smoke" data-rn-open="smoke">
-        <span data-i18n="home.rn.smoke">There&#39;s smoke today</span>
-        <small data-i18n="home.rn.hint">Immediate steps. Opens instantly.</small>
-      </button>
-      <button type="button" class="rn-btn rn-quake" data-rn-open="quake">
-        <span data-i18n="home.rn.quake">There was just an earthquake</span>
-        <small data-i18n="home.rn.hint">Immediate steps. Opens instantly.</small>
-      </button>
+<!-- ============================================================
+     THE WOUND CHECK IS THE PAGE.
+     The file input is here rather than behind a link on purpose: the tool is
+     one tap from landing, with no navigation in between. js/wound.js binds to
+     these exact ids (#wound-file / #wound-preview / #wound-err /
+     #wound-result), which is why the same markup appears on wound.html - one
+     implementation, two entry points.
+
+     The disclaimer and the "get care now" link sit INSIDE the hero, above the
+     fold, because a tool that can be confidently wrong must carry its warning
+     where the warning cannot be scrolled past.
+     ============================================================ -->
+<section class="hero hero-wound">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="home.hero.eyebrow">King County MRC · free, no account</p>
+    <h1 data-i18n="home.hero.h1">Check a wound with AI</h1>
+    <p class="lede" data-i18n="home.hero.lede">Photograph a cut, scrape, bruise or burn and get first aid guidance in seconds. Your photo is never saved.</p>
+
+    <div class="wound-stage">
+      <p class="wound-cta-row">
+        <label class="btn btn-hero" for="wound-file" data-i18n="wound.tool.choose">Take or choose a photo</label>
+        <input type="file" id="wound-file" accept="image/jpeg,image/png" capture="environment" class="sr-only">
+      </p>
+      <p class="wound-privacy small" data-i18n="home.hero.privacy">Nothing is stored — not the photo, not by us, not by the model.</p>
+
+      <div id="wound-preview" hidden></div>
+      <p class="err" id="wound-err" hidden></p>
+      <div id="wound-result" hidden></div>
+
+      <!-- The emphasis is a separate element with its own key on purpose:
+           I18N.apply() sets textContent, so a <strong> nested inside a
+           data-i18n element is erased the moment a language is applied. -->
+      <p class="hero-disclaim"><strong data-i18n="home.hero.note_b">Not a diagnosis.</strong> <span data-i18n="home.hero.note">This is a student project and it can be wrong. It cannot see infection, depth, or anything under the skin. If you are worried about an injury, see a medical professional.</span></p>
+      <!-- No inline separator between these: on a narrow screen they wrap to
+           their own lines and a middot is left orphaned at the end of the
+           first one. Spacing does the separating instead. -->
+      <p class="hero-links small">
+        <a href="wound.html#wound-red-h" data-i18n="home.hero.redlink">When to get medical care now</a>
+        <a href="wound.html" data-i18n="home.hero.about">How the model works</a>
+      </p>
     </div>
-  </section>
   </div>
 </section>
 
 <div class="wrap">
 
-  <section class="rn-panel smoke" id="rn-smoke" hidden aria-labelledby="rn-smoke-h">
-    <h2 id="rn-smoke-h" tabindex="-1" data-i18n="rn.smoke.title">There&#39;s smoke today</h2>
-    <p class="sub" data-i18n="rn.smoke.sub">Do these now.</p>
-    <div id="aqi-smoke" class="aqi" hidden aria-live="polite"></div>
-    <ol>
-      <li data-i18n="rn.smoke.1">Go inside and close all windows and doors.</li>
-      <li data-i18n="rn.smoke.2">Set your heat or AC to recirculate so it stops pulling outside air in. If you have a window unit, close its fresh-air vent.</li>
-      <li data-i18n="rn.smoke.3">Pick one room with the fewest windows. Put your air cleaner there and keep the door shut.</li>
-      <li data-i18n="rn.smoke.4">Do not vacuum, burn candles, fry food, or smoke indoors. All of it adds particles to air you are trying to clean.</li>
-      <li data-i18n="rn.smoke.5">Skip outdoor exercise. Skip indoor exercise too if you can smell smoke inside.</li>
-      <li data-i18n="rn.smoke.6">Asthma, COPD, or a heart condition? Keep your inhaler or medication within reach and follow your action plan.</li>
-      <li data-i18n="rn.smoke.7">Wear an N95 or KN95 if you must go out. Cloth and surgical masks do not filter smoke.</li>
-      <li data-i18n="rn.smoke.8">If your home cannot get clean, go to a clean air location.</li>
-    </ol>
-    <p class="call911" data-i18n="rn.smoke.911">Trouble breathing, chest pain, or confusion is an emergency. Call 911.</p>
-    <a class="btn" href="clean-air.html" data-i18n="rn.smoke.cta">Find clean air near me</a>
-    <p style="margin-top:.75rem"><button type="button" class="rn-close" data-rn-close data-i18n="common.close">Close</button></p>
+  <!-- Emergency routes. These were 18 lines of inline steps duplicating
+       smoke.html and earthquake.html; they are links now. The pages are
+       prerendered by the speculation rules above, so opening one is
+       effectively instant. -->
+  <section class="rn-zone" aria-labelledby="rn-h">
+    <h2 class="rn-label" id="rn-h" data-i18n="home.rn.title">Right now</h2>
+    <div class="rn-row">
+      <a class="rn-btn rn-smoke" href="smoke.html">
+        <span data-i18n="home.rn.smoke">There&#39;s smoke today</span>
+        <small data-i18n="home.rn.hint2">Immediate steps</small>
+      </a>
+      <a class="rn-btn rn-quake" href="earthquake.html">
+        <span data-i18n="home.rn.quake">There was just an earthquake</span>
+        <small data-i18n="home.rn.hint2">Immediate steps</small>
+      </a>
+    </div>
   </section>
 
-  <section class="rn-panel quake" id="rn-quake" hidden aria-labelledby="rn-quake-h">
-    <h2 id="rn-quake-h" tabindex="-1" data-i18n="rn.quake.title">There was just an earthquake</h2>
-    <p class="sub" data-i18n="rn.quake.sub">Do these now.</p>
-    <ol>
-      <li data-i18n="rn.quake.1">Check yourself, then the people near you. For serious bleeding, press hard on the wound and keep pressing.</li>
-      <li data-i18n="rn.quake.2">Put shoes on before you walk anywhere. Broken glass causes most injuries after a quake.</li>
-      <li data-i18n="rn.quake.3">Expect aftershocks. When one starts: Drop, Cover, and Hold On.</li>
-      <li data-i18n="rn.quake.4">Smell gas or hear hissing? Get everyone outside first. Shut the gas off only if you know how. Once it is off, the utility must turn it back on.</li>
-      <li data-i18n="rn.quake.5">No candles, no matches, no lighters. Use a flashlight. Do not flip light switches if you suspect a gas leak.</li>
-      <li data-i18n="rn.quake.6">If your building is damaged, get out and stay out. Do not go back inside for belongings.</li>
-      <li data-i18n="rn.quake.7">Text instead of calling. Texts get through when networks are jammed. Contact your out-of-area person.</li>
-      <li data-i18n="rn.quake.8">Turn on a battery or hand-crank radio for official instructions.</li>
-      <li data-i18n="rn.quake.9">Near Puget Sound or the coast? If shaking was long or violent, move to high ground on foot right away. Do not wait for an official warning.</li>
-      <li data-i18n="rn.quake.10">Fill your bathtub and containers while water is still running.</li>
-    </ol>
-    <p class="call911" data-i18n="rn.quake.911">Call 911 only for a life-threatening emergency. Lines will be overwhelmed.</p>
-    <p><button type="button" class="rn-close" data-rn-close data-i18n="common.close">Close</button></p>
-  </section>
+  <h2 data-i18n="home.tools">Plan ahead</h2>
+  <div class="cards cards-2">
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M6 6h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><path d="m9 13 2 2 4-4"/></svg></div>
+      <h3 data-i18n="home.card.kit.title">Build your household kit</h3>
+      <p data-i18n="home.card.kit.body2">Four questions. You get the essentials for your household, sized and ready to print.</p>
+      <a class="btn btn-block" href="kit.html" data-i18n="home.card.kit.cta">Start the calculator</a>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></div>
+      <h3 data-i18n="home.card.air.title">Find clean air near you</h3>
+      <p data-i18n="home.card.air.body">Search by zip code. See hours, transit, pet policy, and accessibility.</p>
+      <a class="btn btn-block" href="clean-air.html" data-i18n="home.card.air.cta">Find a location</a>
+    </article>
+  </div>
 
-  <section class="stats reveal" aria-label="At a glance">
-    <div class="stat"><b id="stat-sites">344</b><span data-i18n="home.stat.sites">public library locations</span></div>
-    <div class="stat"><b id="stat-counties">39</b><span data-i18n="home.stat.counties">Washington counties</span></div>
-    <div class="stat"><b data-i18n="home.stat.free_n">Free</b><span data-i18n="home.stat.free">no account, no email</span></div>
-  </section>
-
-  <!-- Preparedness check. Asked once on a first visit and again on a later one,
-       so impact can be reported as a change in what people have done rather
-       than a count of scans. Hidden by default and revealed by js/prep.js only
-       when there is a question to ask, so it never shows an empty box. -->
+  <!-- Preparedness check. Hidden by default and revealed by js/prep.js only
+       when there is a question to ask, so it never shows an empty box. It sits
+       below the tools rather than above them: it measures impact, it is not
+       what a visitor came for. -->
   <section id="prep" class="prepbox no-print reveal" hidden aria-labelledby="prep-h">
     <h2 id="prep-h" tabindex="-1" data-i18n="prep.h">How ready are you right now?</h2>
     <p class="small" id="prep-sub" data-i18n="prep.sub">Three quick questions. Anonymous, and it helps us show which parts of this actually help.</p>
@@ -169,40 +183,6 @@
     <div id="prep-done" hidden></div>
   </section>
 
-  <h2 data-i18n="home.tools">Plan ahead</h2>
-  <div class="cards">
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M6 6h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><path d="m9 13 2 2 4-4"/></svg></div>
-      <h3 data-i18n="home.card.kit.title">Build your household kit</h3>
-      <p data-i18n="home.card.kit.body">Answer four questions, get a checklist sized to your household. Print it or save it.</p>
-      <a class="btn btn-block" href="kit.html" data-i18n="home.card.kit.cta">Start the calculator</a>
-    </article>
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></div>
-      <h3 data-i18n="home.card.air.title">Find clean air near you</h3>
-      <p data-i18n="home.card.air.body">Search by zip code. See hours, transit, pet policy, and accessibility.</p>
-      <a class="btn btn-block" href="clean-air.html" data-i18n="home.card.air.cta">Find a location</a>
-    </article>
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h3l2-6 4 13 3-9 2 4h6"/></svg></div>
-      <h3 data-i18n="home.card.quake.title">Earthquake</h3>
-      <p data-i18n="home.card.quake.body">What to do before, during, and after shaking.</p>
-      <a class="btn btn-secondary btn-block" href="earthquake.html" data-i18n="nav.quake">Earthquake</a>
-    </article>
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s4 3.5 4 7a4 4 0 0 1-8 0c0-1.2.5-2.3 1-3"/><path d="M5 16h14"/><path d="M7 20h10"/></svg></div>
-      <h3 data-i18n="home.card.smoke.title">Wildfire smoke</h3>
-      <p data-i18n="home.card.smoke.body">How to keep the air in your home breathable.</p>
-      <a class="btn btn-secondary btn-block" href="smoke.html" data-i18n="nav.smoke">Smoke</a>
-    </article>
-    <article class="card card-wound card-wide reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M12 10v4M10 12h4"/></svg></div>
-      <h3 data-i18n="home.card.wound.title">Wound care guide</h3>
-      <p data-i18n="home.card.wound.body">A companion tool from our team covering bleeding control and wound care.</p>
-      <a class="btn btn-block" href="wound.html" id="wound-link" data-i18n="home.card.wound.cta">Open the guide</a>
-    </article>
-  </div>
-
 </div>
 </main>
 
@@ -218,19 +198,23 @@
          data-i18n="footer.instagram">@mrc.miracle.nchs</a>
     </p>
     <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
-    <details>
-      <summary data-i18n="footer.privacy_h">Privacy</summary>
-      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
-      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a></p>
-    </details>
+    <p class="small footer-links">
+      <a href="privacy.html" data-i18n="priv.h1">Privacy</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="impact.html" data-i18n="footer.impact">Impact</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="smoke.html" data-i18n="nav.smoke">Smoke</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="earthquake.html" data-i18n="nav.quake">Earthquake</a>
+    </p>
     <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
   </div>
 </footer>
 
 <script src="js/i18n.js"></script>
 <script src="js/track.js"></script>
-<script src="js/aqi.js"></script>
 <script src="js/app.js"></script>
 <script src="js/prep.js"></script>
+<script src="js/wound.js"></script>
 </body>
 </html>

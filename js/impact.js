@@ -157,6 +157,32 @@
             'A tool that declines to guess when it is unsure is behaving correctly, so the ' +
             '"not sure" count is reported here rather than hidden. The photos themselves are ' +
             'never stored — only the category returned and how confident the model was.'));
+
+          /* The same classifier is reachable two ways: the tool on this site's
+             home page, and the standalone Wound Analyzer. Both write to one
+             dataset, so the totals above are the project-wide figure - and this
+             says which product produced them, rather than letting one borrow
+             the other's numbers. */
+          if (w.by_site && w.by_site.length > 1) {
+            var st = el('table', 'impact-table');
+            var sth = el('thead'), shr = el('tr');
+            ['Where it was used', 'Photos checked', 'Answers given', 'Said "not sure"']
+              .forEach(function (h) { shr.appendChild(el('th', null, h)); });
+            sth.appendChild(shr); st.appendChild(sth);
+            var sb = el('tbody');
+            w.by_site.forEach(function (r) {
+              var tr = el('tr');
+              tr.appendChild(el('th', null,
+                r.site === 'wound-analyzer' ? 'Wound Analyzer (standalone site)'
+                                            : 'This site'));
+              tr.appendChild(el('td', null, String(r.checks)));
+              tr.appendChild(el('td', null, String(r.results)));
+              tr.appendChild(el('td', null, String(r.declined)));
+              sb.appendChild(tr);
+            });
+            st.appendChild(sb);
+            root.appendChild(st);
+          }
           if (w.by_label && w.by_label.length) {
             var tb = el('table', 'impact-table');
             var th = el('thead'), hr = el('tr');

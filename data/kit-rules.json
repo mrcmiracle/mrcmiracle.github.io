@@ -1,5 +1,5 @@
 {
-  "_README": "Checklist rules. Item names/notes live in i18n/en.json + i18n/es.json under keys item.<id>.name and item.<id>.note. See docs/UPDATING-SITES.md.",
+  "_README": "Checklist rules. Item names/notes live in i18n/en.json + i18n/es.json under keys item.<id>.name and item.<id>.note. See docs/UPDATING-SITES.md.  ITEMS MARKED \"core\": true ARE SHOWN BY DEFAULT; everything else is folded behind a \"show the rest\" toggle and is excluded from the progress bar. A 43-item wall of checkboxes reads as homework and gets abandoned, so the default list is the ~10 things that matter in the first 72 hours. Adding \"core\" to an item makes the default list longer - do that deliberately.",
   "version": "2026-09-06",
   "review_required": true,
   "water": {
@@ -26,7 +26,8 @@
       "when": [
         "always"
       ],
-      "qty": "water"
+      "qty": "water",
+      "core": true
     },
     {
       "id": "water_storage",
@@ -52,7 +53,8 @@
         "pets"
       ],
       "qty": "petwater",
-      "review": true
+      "review": true,
+      "core": true
     },
     {
       "id": "food_supply",
@@ -60,7 +62,8 @@
       "when": [
         "always"
       ],
-      "qty": "none"
+      "qty": "none",
+      "core": true
     },
     {
       "id": "can_opener",
@@ -79,7 +82,8 @@
       ],
       "qty": "fixed",
       "n": 14,
-      "unit": "days"
+      "unit": "days",
+      "core": true
     },
     {
       "id": "rx_buffer",
@@ -88,7 +92,8 @@
         "meds"
       ],
       "qty": "meddays",
-      "review": true
+      "review": true,
+      "core": true
     },
     {
       "id": "med_list",
@@ -114,7 +119,8 @@
         "always"
       ],
       "qty": "fixed",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "otc_meds",
@@ -132,7 +138,8 @@
       ],
       "qty": "perPerson",
       "n": 3,
-      "review": true
+      "review": true,
+      "core": true
     },
     {
       "id": "box_fan_filter",
@@ -158,7 +165,8 @@
         "always"
       ],
       "qty": "perPerson",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "batteries",
@@ -175,7 +183,8 @@
         "always"
       ],
       "qty": "fixed",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "power_bank",
@@ -184,7 +193,8 @@
         "always"
       ],
       "qty": "fixed",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "doc_copies",
@@ -209,7 +219,8 @@
         "always"
       ],
       "qty": "perPerson",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "blanket",
@@ -218,7 +229,8 @@
         "always"
       ],
       "qty": "perPerson",
-      "n": 1
+      "n": 1,
+      "core": true
     },
     {
       "id": "clothes",
@@ -283,7 +295,8 @@
       "when": [
         "apartment"
       ],
-      "qty": "none"
+      "qty": "none",
+      "core": true
     },
     {
       "id": "apt_storage",
@@ -348,7 +361,8 @@
       "when": [
         "house"
       ],
-      "qty": "none"
+      "qty": "none",
+      "core": true
     },
     {
       "id": "pet_carrier",
@@ -356,7 +370,8 @@
       "when": [
         "pets"
       ],
-      "qty": "none"
+      "qty": "none",
+      "core": true
     },
     {
       "id": "pet_records",

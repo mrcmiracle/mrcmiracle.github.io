@@ -929,3 +929,96 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ==========================================================================
+   Wound-first home
+   The wound check is the landing page's whole reason to exist, so it gets the
+   hero rather than a card. The tool sits on a paper panel INSIDE the violet
+   hero: the surrounding field stays brand-dark, while the thing you actually
+   operate reads as ordinary page furniture at full text contrast.
+   ========================================================================== */
+.hero-wound { padding-bottom: var(--s7); }
+.hero-wound h1 { margin-bottom: var(--s3); }
+.hero-wound .lede { margin-bottom: var(--s5); max-width: 34rem; }
+
+.wound-stage {
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--r-lg);
+  padding: var(--s5) var(--s4) var(--s4);
+  box-shadow: var(--shadow-2);
+}
+/* Everything inside the stage is on paper, so inherit page ink rather than
+   the hero's white-on-violet. */
+.wound-stage .small { color: var(--ink-3); }
+
+.wound-cta-row { margin: 0 0 var(--s2); }
+.btn-hero {
+  width: 100%;
+  font-size: var(--step-2);
+  padding: var(--s4) var(--s5);
+  min-height: 60px;
+  border-radius: var(--r);
+  box-shadow: var(--shadow-brand);
+}
+.wound-privacy { margin: 0 0 var(--s4); text-align: center; }
+
+/* Focus ring for the photo button.
+   The input is visually hidden, so the ring has to be drawn on the label. The
+   previous rule used "#wound-file:focus-visible + *", which matches the
+   element AFTER the input - but the label comes BEFORE it, so nothing was
+   ever highlighted and keyboard users got no focus indicator at all.
+   :has() makes this independent of source order. */
+:has(> #wound-file:focus-visible) > label[for="wound-file"] {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.hero-disclaim {
+  margin: var(--s5) 0 var(--s3);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+  font-size: .92rem;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.hero-disclaim strong { color: var(--ink); }
+.hero-links { margin: 0; display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; align-items: center; }
+.hero-links a { white-space: nowrap; }
+.hero-links a { color: var(--brand); font-weight: 700; }
+
+/* Two tools rather than five cards. On a wide screen they sit side by side;
+   the hairline register from .cards still carries the structure. */
+@media (min-width: 40rem) {
+  .cards-2 { grid-template-columns: 1fr 1fr; column-gap: var(--s6); }
+  .cards-2 .card { margin-inline: 0; }
+}
+
+.footer-links { display: flex; flex-wrap: wrap; gap: .45rem; justify-content: center; }
+
+/* The hero panel must not glow through the fixed backdrop when printing. */
+@media print {
+  .hero-wound { background: none; color: #000; padding: 0; }
+  .hero-wound h1, .hero-wound .lede, .hero-wound .eyebrow { color: #000; }
+  .wound-stage { box-shadow: none; border: 1px solid #999; }
+}
+
+/* The folded remainder of the kit list. Styled as a quiet secondary block so
+   it reads as "there is more if you want it", not as unfinished work. */
+.kit-extras {
+  margin: var(--s5) 0 0;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--paper-2);
+}
+.kit-extras > summary {
+  cursor: pointer; font-weight: 700; font-family: var(--font-display);
+  color: var(--brand); min-height: 24px; padding: var(--s1) 0;
+}
+.kit-extras > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.kit-extras[open] > summary { margin-bottom: var(--s3); }
+.kit-extras > p.small { margin: 0 0 var(--s3); }
+.kit-extras h3:first-of-type { margin-top: 0; }
+@media (prefers-color-scheme: dark) { .kit-extras > summary { color: var(--brand-strong); } }

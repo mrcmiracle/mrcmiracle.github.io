@@ -93,37 +93,72 @@
     box.appendChild(el('p', 'small', t('kit.result.water_note')));
     host.appendChild(box);
 
-    rules.categories.forEach(function (cat) {
-      var inCat = items.filter(function (i) { return i.cat === cat; });
-      if (!inCat.length) return;
-      host.appendChild(el('h3', null, t('kit.cat.' + cat)));
-      var ul = el('ul', 'checklist');
-      inCat.forEach(function (it) {
-        var li = el('li');
-        var label = el('label');
-        var cb = el('input');
-        cb.type = 'checkbox';
-        cb.value = it.id;
-        var span = el('span');
-        var name = el('span', 'ck-name', t('item.' + it.id + '.name'));
-        var q = quantityLabel(it, state);
-        if (q) {
-          name.appendChild(document.createTextNode(' — '));
-          name.appendChild(el('span', 'ck-qty', q));
-        }
-        span.appendChild(name);
-        span.appendChild(el('span', 'ck-note', t('item.' + it.id + '.note')));
-        label.appendChild(cb);
-        label.appendChild(span);
-        li.appendChild(label);
-        ul.appendChild(li);
+    function buildItem(it) {
+      var li = el('li');
+      var label = el('label');
+      var cb = el('input');
+      cb.type = 'checkbox';
+      cb.value = it.id;
+      var span = el('span');
+      var name = el('span', 'ck-name', t('item.' + it.id + '.name'));
+      var q = quantityLabel(it, state);
+      if (q) {
+        name.appendChild(document.createTextNode(' — '));
+        name.appendChild(el('span', 'ck-qty', q));
+      }
+      span.appendChild(name);
+      span.appendChild(el('span', 'ck-note', t('item.' + it.id + '.note')));
+      label.appendChild(cb);
+      label.appendChild(span);
+      li.appendChild(label);
+      return li;
+    }
+
+    function renderGroups(target, list, listClass) {
+      rules.categories.forEach(function (cat) {
+        var inCat = list.filter(function (i) { return i.cat === cat; });
+        if (!inCat.length) return;
+        target.appendChild(el('h3', null, t('kit.cat.' + cat)));
+        var ul = el('ul', 'checklist ' + listClass);
+        inCat.forEach(function (it) { ul.appendChild(buildItem(it)); });
+        target.appendChild(ul);
       });
-      host.appendChild(ul);
-    });
+    }
+
+    /* Essentials first, everything else folded away.
+       The full rule set is 43 items. Rendered as one wall of checkboxes it
+       reads as homework and gets abandoned, which is worse than a shorter list
+       someone actually finishes - so the default is the ~10 things that matter
+       in the first 72 hours (data/kit-rules.json, "core": true) and the rest
+       sits behind a toggle.
+       The progress bar deliberately counts ONLY the essentials: a bar that can
+       never reach the end is not a motivator. */
+    var coreItems = items.filter(function (i) { return i.core; });
+    var extraItems = items.filter(function (i) { return !i.core; });
+    // If a rules file ever ships with nothing marked core, show everything
+    // rather than an empty checklist.
+    if (!coreItems.length) { coreItems = items; extraItems = []; }
+
+    renderGroups(host, coreItems, 'checklist-core');
+
+    if (extraItems.length) {
+      var det = el('details', 'kit-extras');
+      det.appendChild(el('summary', null, t('kit.extras.summary', { n: extraItems.length })));
+      det.appendChild(el('p', 'small', t('kit.extras.note')));
+      renderGroups(det, extraItems, 'checklist-extra');
+      host.appendChild(det);
+
+      /* A collapsed <details> prints as just its summary, so someone who opens
+         the extras, prints, and expects the full sheet would lose them. Open it
+         for the print and put it back afterwards. */
+      var wasOpen = det.open;
+      global.addEventListener('beforeprint', function () { wasOpen = det.open; det.open = true; });
+      global.addEventListener('afterprint', function () { det.open = wasOpen; });
+    }
 
     // Progress meter, wired to the checkboxes above.
     var saved = loadTicks(state);
-    var boxes = Array.prototype.slice.call(host.querySelectorAll('.checklist input[type=checkbox]'));
+    var boxes = Array.prototype.slice.call(host.querySelectorAll('.checklist-core input[type=checkbox]'));
     var prog = el('div', 'progress no-print');
     var bar = el('div', 'progress-bar');
     var fill = el('span');
