@@ -241,11 +241,22 @@ list — do it deliberately.
 on the wound page's medical disclaimer: the bold vanished for every visitor
 once translations ran. Emphasis needs its own element with its own key.
 
-**Rule 18 — the seal is artwork, not a favicon.** The MRC Miracle seal carries
-two rings of text that turn to mush below ~48px. `assets/favicon.svg` draws the
-seal's geometry only — disc, ring, star — with the fill inverted so it does not
-disappear into a light browser tab strip. The real artwork is used at 48px and
-above.
+**Rule 18 — the tab icon is the seal itself, not an interpretation of it.**
+The first attempt at this shipped a simplified SVG - disc, ring, star - on the
+reasoning that the seal's two rings of text blur below ~48px. That reasoning
+was fine and the conclusion was wrong: Chrome prefers an SVG icon whenever one
+is offered, so the simplified mark was the ONLY thing anyone ever saw, and the
+site's tab did not carry the organisation's logo. Blurry text at 16px still
+reads as the seal; an abstract star does not read as anything.
+
+Only PNGs of the real artwork are offered now, at 16/32/48/96, cropped to the
+seal's bounding box and mildly unsharp-masked so the ring survives the
+downscale. They come from `logo.png`, which has transparent corners and a white
+disc, so the icon sits correctly on both light and dark tab strips.
+
+Favicon URLs carry `?v=N`. Chrome keeps favicons in its own icon database and
+will serve a stale one straight through a hard reload; changing the URL is what
+actually forces a refetch. Bump N when the artwork changes.
 
 ### The standalone Wound Analyzer
 
