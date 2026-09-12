@@ -1065,7 +1065,10 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 
 /* The header (brand, language, toolbar) is one sticky box. */
 .site-head { padding: 0; }
-.head-row { padding: var(--s2) 0; }
+/* Vertical padding only. .wrap makes the side gutters with horizontal
+   padding, and an earlier `padding: var(--s2) 0` here zeroed them - the
+   logo and the sign-in pill were pressed against the edges of the screen. */
+.head-row { padding-block: var(--s2); }
 .head-actions { display: flex; align-items: center; gap: var(--s2); flex: 0 0 auto; }
 
 /* 4. Name the header so a cross-document view transition captures it as its
@@ -1091,7 +1094,7 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2px;
-  padding: 4px 0;
+  padding-block: 4px;               /* block only - keep .wrap's side gutters */
   margin-inline: auto;
 }
 .site-head .subnav a {
@@ -1202,3 +1205,88 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 #smoke, #earthquake { scroll-margin-top: 130px; }
 .emerg-more { margin: var(--s5) 0 var(--s3); font-size: var(--step-1); color: var(--ink-2); }
 #earthquake { margin-top: var(--s7); }
+
+/* ---------- account: sign-in pill, signed-in initial, panel ---------- */
+.account { position: relative; flex: 0 0 auto; display: flex; }
+.account:empty { display: none; }
+
+/* Same height and radius as the EN/ES switch beside it, so the two read as
+   one control group rather than two unrelated widgets. */
+.signin-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font: inherit; font-size: .8rem; font-weight: 700;
+  min-height: 38px; padding: 0 .75rem 0 .55rem;
+  border: 1.5px solid var(--line-strong); border-radius: var(--r-pill);
+  background: var(--paper); color: var(--ink); cursor: pointer;
+  white-space: nowrap;
+}
+.signin-pill:hover { border-color: var(--brand); }
+.signin-pill:focus-visible, .account-dot:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.g-mark { width: 18px; height: 18px; flex: 0 0 auto; }
+
+.account-dot {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 0; cursor: pointer;
+  background: var(--brand); color: var(--on-brand);
+  font: inherit; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem;
+}
+.account-panel {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 60;
+  min-width: 15rem; max-width: calc(100vw - 1.5rem);
+  background: var(--paper); border: 1px solid var(--line-strong);
+  border-radius: var(--r); box-shadow: var(--shadow-2);
+  padding: var(--s2);
+}
+.account-panel[hidden] { display: none; }
+.account-email {
+  margin: 0; padding: var(--s2) var(--s3) var(--s3);
+  font-size: .82rem; color: var(--ink-3);
+  border-bottom: 1px solid var(--line); overflow-wrap: anywhere;
+}
+.account-link {
+  display: flex; align-items: center; width: 100%; min-height: 44px;
+  padding: 0 var(--s3); margin-top: 2px;
+  font: inherit; font-size: .95rem; font-weight: 600; text-align: left;
+  color: var(--ink); text-decoration: none;
+  background: none; border: 0; border-radius: var(--r-sm); cursor: pointer;
+}
+.account-link:hover, .account-link:focus-visible { background: var(--paper-3); }
+.account-signout { color: var(--quake-ink); }
+
+/* On the narrowest phones the tagline is already hidden; also tighten the
+   header gap so brand + language + sign-in fit side by side at 320px. */
+@media (max-width: 22rem) {
+  .head-row { gap: var(--s2); }
+  .brand-name { font-size: .98rem; }
+  .brand-mark { width: 32px; height: 32px; }
+  .langswitch button { padding: .3rem .45rem; }
+  .signin-pill { padding: 0 .55rem 0 .45rem; }
+}
+
+/* ---------- age check ---------- */
+.age-dialog {
+  border: 0; border-radius: var(--r-lg); padding: var(--s5);
+  max-width: min(26rem, calc(100vw - 2rem));
+  box-shadow: var(--shadow-2); background: var(--paper); color: var(--ink);
+}
+.age-dialog::backdrop { background: rgba(23, 19, 31, .55); }
+.age-dialog h2 { margin: 0 0 var(--s2); font-size: var(--step-2); }
+.age-dialog p { margin: 0 0 var(--s4); color: var(--ink-2); }
+
+/* ---------- wound history ---------- */
+.wound-history {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--paper-2); padding: var(--s4); margin: 0 0 var(--s5);
+}
+.wound-history h2 { margin: 0 0 var(--s1); font-size: var(--step-2); }
+.wound-history > .small { margin: 0 0 var(--s3); }
+.history-list { list-style: none; margin: 0 0 var(--s4); padding: 0; }
+.history-list li {
+  display: grid; grid-template-columns: 1fr auto; gap: 0 var(--s3);
+  padding: var(--s3) 0; border-bottom: 1px solid var(--line);
+}
+.history-list li:last-child { border-bottom: 0; }
+.h-label { font-weight: 700; text-transform: capitalize; }
+.h-conf { color: var(--ink-2); font-size: .9rem; text-align: right; }
+.h-date { grid-column: 1 / -1; color: var(--ink-3); font-size: .82rem; }
+.saved-note { color: var(--ok); font-weight: 700; margin-top: var(--s3); }

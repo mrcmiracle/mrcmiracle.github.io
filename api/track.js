@@ -99,6 +99,26 @@ function toInt(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+/* Who a Supabase access token belongs to, asked of Supabase itself. Returns
+   the account id, or null for a missing, forged or expired token. */
+async function verifiedAccount(req) {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
+  if (!token || !SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+  try {
+    const r = await fetch(SUPABASE_URL.replace(/\/$/, '') + '/auth/v1/user', {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + token }
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return u && u.id ? u.id : null;
+  } catch (e) {
+    console.warn('[track] could not verify token:', e.message);
+    return null;
+  }
+}
+
 async function readBody(req) {
   // The page posts text/plain to avoid a CORS preflight, so the body may
   // arrive unparsed. Handle both shapes.
@@ -137,6 +157,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'unknown event' });
   }
 
+  // An account id is NEVER taken from the body - anyone could send any id and
+  // attach answers to someone else's account. It is removed here, before the
+  // `extra` copy is built, and set below only from a token Supabase verifies.
+  delete data.account;
+
   // Build the row. Only known columns; everything else goes to `extra`.
   const row = {};
   for (const c of COLUMNS) {
@@ -169,6 +194,16 @@ export default async function handler(req, res) {
   }
   if (Object.keys(extra).length) row.extra = extra;
 
+  // Signed-in survey answers carry the person's token in the Authorization
+  // HEADER, never the body. That matters beyond verification: the body is
+  // mirrored verbatim to the Google Sheet below, so a token placed in the body
+  // would be copied into a spreadsheet. A header is never mirrored.
+  // A token that fails to verify still records the event - anonymously.
+  if (req.headers.authorization) {
+    const account = await verifiedAccount(req);
+    if (account) row.account = account;
+  }
+
   // Deliberately NOT stored: no IP address, no user agent, no geolocation.
   // The site's privacy notice promises this, so do not add them here.
 
@@ -179,20 +214,45 @@ export default async function handler(req, res) {
   const jobs = [];
 
   if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-    jobs.push(
-      fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: SUPABASE_SERVICE_ROLE_KEY,
-          Authorization: 'Bearer ' + SUPABASE_SERVICE_ROLE_KEY,
-          Prefer: 'return=minimal'
-        },
-        body: JSON.stringify(row)
-      }).then(async (r) => {
-        results.supabase = r.ok ? 'ok' : 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200);
-      }).catch((e) => { results.supabase = 'error: ' + e.message; })
-    );
+    /* Retried, with an idempotency key.
+       The REST gateway intermittently answers 504 on the first insert after a
+       quiet spell - logged four times in one day, three of them ~33 minutes
+       apart - and a 504 that was checked had NOT committed: that response was
+       lost. So a 5xx or network failure is retried. Every attempt carries the
+       SAME event_uid and asks the database to ignore a duplicate, so if a
+       timed-out attempt did commit after all, the retry is a no-op rather than
+       a second copy of someone's survey answers. 4xx is never retried: that is
+       a bad row, and sending it again will not help. */
+    row.event_uid = crypto.randomUUID();
+    const insertUrl = SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/events?on_conflict=event_uid';
+    const insertOpts = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: 'Bearer ' + SUPABASE_SERVICE_ROLE_KEY,
+        Prefer: 'resolution=ignore-duplicates,return=minimal'
+      },
+      body: JSON.stringify(row)
+    };
+    const DELAYS = [0, 400, 1200];
+    jobs.push((async () => {
+      for (let i = 0; i < DELAYS.length; i++) {
+        if (DELAYS[i]) await new Promise((r) => setTimeout(r, DELAYS[i]));
+        try {
+          const r = await fetch(insertUrl, insertOpts);
+          if (r.ok) {
+            results.supabase = 'ok';
+            if (i > 0) console.warn('[track] supabase write succeeded on attempt ' + (i + 1));
+            return;
+          }
+          results.supabase = 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200);
+          if (r.status < 500) return;
+        } catch (e) {
+          results.supabase = 'error: ' + e.message;
+        }
+      }
+    })());
   }
 
   if (SHEETS_WEBHOOK_URL) {

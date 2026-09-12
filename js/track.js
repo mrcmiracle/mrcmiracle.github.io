@@ -143,7 +143,11 @@
     },
 
     /* props values must be plain strings/numbers — never personal information. */
-    send: function (event, props, useBeacon) {
+    /* `token` is optional: a signed-in person's access token, passed so the
+       server can verify who they are and link the event to their account. It
+       goes in the Authorization HEADER, never the body - the body is mirrored
+       verbatim to the Google Sheet, and a token must never end up there. */
+    send: function (event, props, useBeacon, token) {
       if (!this.enabled) return;
       var body = {
         ts: new Date().toISOString(),
@@ -165,7 +169,9 @@
       var payload = JSON.stringify(body);
       try {
         // text/plain avoids a CORS preflight, which Apps Script does not answer.
-        if (useBeacon && global.navigator.sendBeacon) {
+        // sendBeacon cannot carry an Authorization header, so a signed-in send
+        // always goes by fetch.
+        if (useBeacon && !token && global.navigator.sendBeacon) {
           global.navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
           return;
         }
@@ -175,7 +181,9 @@
         fetch(ENDPOINT, {
           method: 'POST',
           keepalive: true,
-          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          headers: token
+            ? { 'Content-Type': 'text/plain;charset=UTF-8', Authorization: 'Bearer ' + token }
+            : { 'Content-Type': 'text/plain;charset=UTF-8' },
           body: payload
         }).then(function (r) {
           if (!r.ok) console.warn('[track] "' + event + '" rejected: HTTP ' + r.status);

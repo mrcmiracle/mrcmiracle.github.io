@@ -211,6 +211,7 @@
           wound_label: res.d.label,
           wound_confidence: res.d.confidence == null ? '' : res.d.confidence
         });
+        saveToHistory(res.d);
       }).catch(function (e) {
         var p = preview.querySelector('.small');
         if (p) p.remove();
@@ -218,6 +219,85 @@
         fail(e.message === 'decode' ? 'wound.err.decode' : 'wound.err.failed');
       });
     }
+
+    /* ---------------- history (signed in only) ----------------
+       Saved automatically while signed in (approved). It is never silent: the
+       result says "Saved to your history" every time, and the list below has a
+       Clear button. Category and confidence only - never the photo. */
+    var histBox = document.getElementById('history');
+    var histList = document.getElementById('history-list');
+    var histClear = document.getElementById('history-clear');
+    var accountReady = (global.Account && global.Account.ready) || Promise.resolve(null);
+
+    function fmtDate(iso) {
+      try {
+        return new Date(iso).toLocaleString((global.I18N && global.I18N.lang) || undefined,
+          { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      } catch (e) { return iso; }
+    }
+
+    function paintHistory() {
+      if (!histBox || !global.Auth || !global.Auth.user) return;
+      global.Auth.listWounds().then(function (rows) {
+        histList.textContent = '';
+        if (!rows.length) {
+          histList.appendChild(el('p', 'small', t('wound.history.empty')));
+          histClear.hidden = true;
+        } else {
+          var ul = el('ul', 'history-list');
+          rows.forEach(function (r) {
+            var li = el('li');
+            li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure') : labelText(r.label)));
+            li.appendChild(el('span', 'h-conf', r.confidence == null ? '' : t('wound.result.confidence', { pct: r.confidence })));
+            li.appendChild(el('span', 'h-date', fmtDate(r.created_at)));
+            ul.appendChild(li);
+          });
+          histList.appendChild(ul);
+          histClear.hidden = false;
+        }
+        histBox.hidden = false;
+      }).catch(function (e) {
+        console.warn('[wound] history unavailable:', e.message);
+      });
+    }
+
+    function saveToHistory(d) {
+      accountReady.then(function (acct) {
+        if (!acct || !global.Auth || !global.Auth.user) return;
+        global.Auth.saveWound(d.label, d.confidence).then(function (ok) {
+          var note = el('p', ok ? 'small saved-note' : 'small', t(ok ? 'wound.saved' : 'wound.save_failed'));
+          result.appendChild(note);
+          if (ok) paintHistory();
+        });
+      });
+    }
+
+    if (histClear) {
+      var armed = false;
+      histClear.addEventListener('click', function () {
+        // Two taps, not a browser confirm(): deleting a health record is not
+        // something one stray tap should do.
+        if (!armed) {
+          armed = true;
+          histClear.textContent = t('wound.history.confirm');
+          setTimeout(function () { armed = false; histClear.textContent = t('wound.history.clear'); }, 5000);
+          return;
+        }
+        armed = false;
+        global.Auth.clearWounds().then(function (ok) {
+          histClear.textContent = t('wound.history.clear');
+          if (ok) paintHistory();
+        });
+      });
+    }
+    /* Wait for BOTH the account and the dictionary. The account can resolve
+       before translations load, and painting then printed raw keys such as
+       "wound.result.confidence" into the list. */
+    var i18nReady = (global.I18N && global.I18N.ready) || Promise.resolve();
+    Promise.all([accountReady, i18nReady]).then(function (r) { if (r[0]) paintHistory(); });
+    document.addEventListener('i18n:changed', function () {
+      if (histBox && !histBox.hidden) paintHistory();
+    });
 
     // 1. the native picker
     input.addEventListener('change', function () {

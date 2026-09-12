@@ -46,10 +46,18 @@
     catch (e) { return 1; }
   }
 
-  /* Which half to ask, or '' to stay hidden. */
-  function phaseToAsk(s) {
-    if (!s.baselineDone) return s.baselineSkipped ? '' : 'baseline';
-    if (s.followupDone || s.followupSkipped) return '';
+  /* Which half to ask, or '' to stay hidden.
+     `server` is the signed-in account's verified status from /api/me, or null.
+     When someone is signed in, what their ACCOUNT has answered wins over what
+     this browser remembers - that is what stops a second device asking the
+     first half again. And a first half answered on another device counts as a
+     "later visit" here: a different device is, by definition, a later visit. */
+  function phaseToAsk(s, server) {
+    var baselineDone = !!s.baselineDone || !!(server && server.baseline);
+    var followupDone = !!s.followupDone || !!(server && server.followup);
+    if (!baselineDone) return s.baselineSkipped ? '' : 'baseline';
+    if (followupDone || s.followupSkipped) return '';
+    if (!s.baselineDone && server && server.baseline) return 'followup';   // answered elsewhere
     return currentVisit() > (s.baselineVisit || 1) ? 'followup' : '';
   }
 
@@ -300,8 +308,13 @@
     var box = document.getElementById('survey');
     if (!box) return;
 
+    var accountReady = (global.Account && global.Account.ready) || Promise.resolve(null);
+    accountReady.then(function (acct) { start(acct); });
+
+    function start(acct) {
     var state = readState();
-    var phase = phaseToAsk(state);
+    var server = acct && acct.me ? acct.me.survey : null;
+    var phase = phaseToAsk(state, server);
     if (!phase) return;                    // nothing to ask: stays hidden, no empty box
 
     var form = document.getElementById('survey-form');
@@ -318,6 +331,8 @@
        asynchronously; revealing the box before then would flash a survey of
        blank labels. app.js exposes the load as I18N.ready for exactly this. */
     var ready = (global.I18N && global.I18N.ready) || Promise.resolve();
+    var privacy = box.querySelector('.sv-privacy');
+    if (privacy && acct) privacy.setAttribute('data-i18n', 'survey.privacy_signedin');
     ready.then(function () {
       if (global.I18N && global.I18N.apply) global.I18N.apply(box);
       box.hidden = false;
@@ -331,7 +346,9 @@
         return;
       }
       err.hidden = true;
-      global.Track.send('prep_check', fields);
+      // Signed in: the token goes along (in a header) so the server can link
+      // these answers to the account. Signed out: exactly as before.
+      global.Track.send('prep_check', fields, false, acct ? acct.token : undefined);
 
       var s = readState();
       if (phase === 'baseline') { s.baselineDone = Date.now(); s.baselineVisit = currentVisit(); }
@@ -349,5 +366,6 @@
       global.Track.send('prep_skipped', { prep_phase: phase });
       box.hidden = true;
     });
+    }
   });
 }(window));

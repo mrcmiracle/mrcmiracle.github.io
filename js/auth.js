@@ -1,5 +1,9 @@
-/* auth.js — optional Google sign-in, used only to sync checklist progress
-   between a person's own devices.
+/* auth.js — optional Google sign-in.
+
+   What signing in does (approved scope):
+     - coordinator access to /admin.html (checked on the server, ADMIN_EMAILS)
+     - links a person's survey answers across their own devices (api/me.js)
+     - keeps their wound-check history (category and confidence only)
 
    Deliberately written without the Supabase JavaScript library. Supabase's
    auth and REST endpoints are plain HTTP, so doing it with fetch keeps this
@@ -166,7 +170,7 @@
       });
     },
 
-    // ---- progress, guarded by row level security to this user's own row ----
+    // ---- requests as this user, guarded by row level security ----
 
     rest: function (path, opts) {
       opts = opts || {};
@@ -178,38 +182,42 @@
       return fetch(cfg.url.replace(/\/$/, '') + '/rest/v1' + path, opts);
     },
 
-    getProgress: function () {
-      if (!this.user) return Promise.resolve(null);
-      return this.rest('/progress?select=code,ticked&user_id=eq.' + this.user.id)
-        .then(function (r) {
-          if (!r.ok) throw new Error('progress HTTP ' + r.status);
-          return r.json();
+    /* Wound-check history. The table's row level security allows a person to
+       read, add and delete only rows whose user_id is their own - that policy,
+       not this code, is what keeps one account out of another's history. */
+    saveWound: function (label, confidence) {
+      if (!this.user) return Promise.resolve(false);
+      return this.rest('/wound_history', {
+        method: 'POST',
+        headers: { Prefer: 'return=minimal' },
+        body: JSON.stringify({
+          user_id: this.user.id,
+          label: label,
+          confidence: confidence == null ? null : Number(confidence)
         })
-        .then(function (rows) { return rows && rows.length ? rows[0] : null; })
-        .catch(function (err) {
-          console.warn('[auth] could not read progress:', err.message);
-          return null;
+      }).then(function (r) {
+        if (!r.ok) console.warn('[auth] could not save wound result: HTTP ' + r.status);
+        return r.ok;
+      }).catch(function (err) {
+        console.warn('[auth] could not save wound result:', err.message);
+        return false;
+      });
+    },
+
+    listWounds: function () {
+      if (!this.user) return Promise.resolve([]);
+      return this.rest('/wound_history?select=id,label,confidence,created_at&order=created_at.desc&limit=50')
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
         });
     },
 
-    saveProgress: function (code, ticked) {
+    clearWounds: function () {
       if (!this.user) return Promise.resolve(false);
-      return this.rest('/progress', {
-        method: 'POST',
-        headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({
-          user_id: this.user.id,
-          code: code,
-          ticked: ticked,
-          updated_at: new Date().toISOString()
-        })
-      }).then(function (r) {
-        if (!r.ok) console.warn('[auth] could not save progress: HTTP ' + r.status);
-        return r.ok;
-      }).catch(function (err) {
-        console.warn('[auth] could not save progress:', err.message);
-        return false;
-      });
+      // user_id filter is belt-and-braces: RLS already limits DELETE to own rows.
+      return this.rest('/wound_history?user_id=eq.' + encodeURIComponent(this.user.id), { method: 'DELETE' })
+        .then(function (r) { return r.ok; });
     }
   };
 
