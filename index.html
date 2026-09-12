@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MRC Miracle — AI wound check and emergency preparedness for King County</title>
-<meta name="description" content="Photograph a wound and get first aid guidance in seconds. Plus a household kit calculator and clean air locations for King County. Free, no account.">
+<title>MRC Miracle — Emergency tools for King County</title>
+<meta name="description" content="Free emergency tools for King County: check a wound, find clean air, and what to do in smoke or an earthquake. No sign-up.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/assets/icon-32.png?v=2" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/icon-16.png?v=2" sizes="16x16" type="image/png">
@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MRC Miracle">
-<meta property="og:title" content="MRC Miracle — AI wound check and emergency preparedness">
-<meta property="og:description" content="Photograph a wound and get first aid guidance in seconds. Plus a household kit calculator and clean air locations for King County.">
+<meta property="og:title" content="MRC Miracle — Emergency tools for King County">
+<meta property="og:description" content="Free emergency tools for King County: check a wound, find clean air, and what to do in smoke or an earthquake. No sign-up.">
 <meta property="og:url" content="https://mrcmiracle.vercel.app/">
 <meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
 <meta property="og:image:width" content="1200">
@@ -39,170 +39,71 @@
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
+<!-- Site chrome. GENERATED - identical on every page except aria-current.
+     Do not hand-edit one page: that is exactly how the toolbar drifted before,
+     when Home got a different menu from every other page. -->
 <header class="site-head">
   <div class="wrap head-row">
-    <a class="brand" href="./">
-      <img class="brand-mark" src="assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+    <a class="brand" href="/">
+      <img class="brand-mark" src="/assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-name">MRC Miracle</span>
         <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
       </span>
     </a>
-    <div class="langswitch" role="group" aria-label="Language / Idioma">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    <div class="head-actions">
+      <div class="langswitch" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
     </div>
   </div>
+  <nav class="subnav" aria-label="Main">
+    <ul class="wrap">
+      <li><a href="/" data-i18n="nav.home" aria-current="page">Home</a></li>
+      <li><a href="/wound.html" data-i18n="nav.wound">Wound check</a></li>
+      <li><a href="/clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+      <li><a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a></li>
+    </ul>
+  </nav>
 </header>
 
-<nav class="subnav" aria-label="Main">
-  <ul>
-    <li><a href="./" data-i18n="nav.home">Home</a></li>
-    <li><a href="wound.html" data-i18n="nav.wound">Wound check</a></li>
-    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
-    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
-  </ul>
-</nav>
-
 <main id="main">
+<div class="wrap home">
+  <h1 data-i18n="home.h1b">Emergency tools for King County</h1>
+  <p class="lede" data-i18n="home.ledeb">Free, and nothing to sign up for. Pick what you need.</p>
 
-<!-- ============================================================
-     THE WOUND CHECK IS THE PAGE.
-     The file input is here rather than behind a link on purpose: the tool is
-     one tap from landing, with no navigation in between. js/wound.js binds to
-     these exact ids (#wound-file / #wound-preview / #wound-err /
-     #wound-result), which is why the same markup appears on wound.html - one
-     implementation, two entry points.
+  <nav class="bigbtns" aria-label="Tools">
+    <a class="bigbtn" href="/wound.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M12 10v4M10 12h4"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.wound">Check a wound</b><small data-i18n="home.btn.wound_s">Photo-based first aid guidance</small></span>
+    </a>
+    <a class="bigbtn" href="/clean-air.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.air">Find clean air</b><small data-i18n="home.btn.air_s">Libraries and cooling sites near your zip code</small></span>
+    </a>
+    <a class="bigbtn bigbtn-alert" href="/emergencies.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.emerg">Smoke or earthquake right now</b><small data-i18n="home.btn.emerg_s">What to do in the next few minutes</small></span>
+    </a>
+  </nav>
 
-     The disclaimer and the "get care now" link sit INSIDE the hero, above the
-     fold, because a tool that can be confidently wrong must carry its warning
-     where the warning cannot be scrolled past.
-     ============================================================ -->
-<section class="hero hero-wound">
-  <div class="wrap">
-    <p class="eyebrow" data-i18n="home.hero.eyebrow">King County MRC · free, no account</p>
-    <h1 data-i18n="home.hero.h1">Check a wound with AI</h1>
-    <p class="lede" data-i18n="home.hero.lede">Photograph a cut, scrape, bruise or burn and get first aid guidance in seconds. Your photo is never saved.</p>
-
-    <div class="wound-stage" id="wound-stage">
-      <p class="wound-cta-row">
-        <label class="btn btn-hero" for="wound-file" data-i18n="wound.tool.choose">Take a photo or choose a file</label>
-        <!-- No `capture` attribute. See the header of js/wound.js: it forces
-             iOS straight to the camera and leaves macOS on the file dialog,
-             which is exactly the "camera only on iPhone, files only on Mac"
-             behaviour. accept is image/* because shrink() re-encodes to JPEG,
-             so narrowing it only hid valid photos such as iPhone HEIC. -->
-        <input type="file" id="wound-file" accept="image/*" class="sr-only">
-      </p>
-      <p class="wound-alt">
-        <button type="button" class="btn btn-secondary" id="wound-camera" hidden data-i18n="wound.tool.camera">Use this computer&#39;s camera</button>
-      </p>
-      <!-- Filled by js/wound.js, which knows which routes this device has.
-           No data-i18n: the text depends on the device, not just the language. -->
-      <p class="picker-hint small" id="wound-hint"></p>
-
-      <div class="wound-cam" id="wound-cam" hidden>
-        <video id="wound-video" playsinline muted></video>
-        <p class="wound-cam-row">
-          <button type="button" class="btn" id="wound-shutter" data-i18n="wound.cam.shutter">Take the photo</button>
-          <button type="button" class="btn btn-secondary" id="wound-cam-cancel" data-i18n="wound.cam.cancel">Cancel</button>
-        </p>
-      </div>
-      <p class="wound-privacy small" data-i18n="home.hero.privacy">Nothing is stored — not the photo, not by us, not by the model.</p>
-
-      <div id="wound-preview" hidden></div>
-      <p class="err" id="wound-err" hidden></p>
-      <div id="wound-result" hidden></div>
-
-      <!-- The emphasis is a separate element with its own key on purpose:
-           I18N.apply() sets textContent, so a <strong> nested inside a
-           data-i18n element is erased the moment a language is applied. -->
-      <p class="hero-disclaim"><strong data-i18n="home.hero.note_b">Not a diagnosis.</strong> <span data-i18n="home.hero.note">This is a student project and it can be wrong. It cannot see infection, depth, or anything under the skin. If you are worried about an injury, see a medical professional.</span></p>
-      <!-- No inline separator between these: on a narrow screen they wrap to
-           their own lines and a middot is left orphaned at the end of the
-           first one. Spacing does the separating instead. -->
-      <p class="hero-links small">
-        <a href="wound.html#wound-red-h" data-i18n="home.hero.redlink">When to get medical care now</a>
-        <a href="wound.html" data-i18n="home.hero.about">How the model works</a>
-      </p>
-    </div>
-  </div>
-</section>
-
-<div class="wrap">
-
-  <!-- Emergency routes. These were 18 lines of inline steps duplicating
-       smoke.html and earthquake.html; they are links now. The pages are
-       prerendered by the speculation rules above, so opening one is
-       effectively instant. -->
-  <section class="rn-zone" aria-labelledby="rn-h">
-    <h2 class="rn-label" id="rn-h" data-i18n="home.rn.title">Right now</h2>
-    <div class="rn-row">
-      <a class="rn-btn rn-smoke" href="smoke.html">
-        <span data-i18n="home.rn.smoke">There&#39;s smoke today</span>
-        <small data-i18n="home.rn.hint2">Immediate steps</small>
-      </a>
-      <a class="rn-btn rn-quake" href="earthquake.html">
-        <span data-i18n="home.rn.quake">There was just an earthquake</span>
-        <small data-i18n="home.rn.hint2">Immediate steps</small>
-      </a>
-    </div>
-  </section>
-
-  <h2 data-i18n="home.tools">Plan ahead</h2>
-  <div class="cards cards-2">
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M6 6h12a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><path d="m9 13 2 2 4-4"/></svg></div>
-      <h3 data-i18n="home.card.kit.title">Build your household kit</h3>
-      <p data-i18n="home.card.kit.body2">Four questions. You get the essentials for your household, sized and ready to print.</p>
-      <a class="btn btn-block" href="kit.html" data-i18n="home.card.kit.cta">Start the calculator</a>
-    </article>
-    <article class="card reveal">
-      <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></div>
-      <h3 data-i18n="home.card.air.title">Find clean air near you</h3>
-      <p data-i18n="home.card.air.body">Search by zip code. See hours, transit, pet policy, and accessibility.</p>
-      <a class="btn btn-block" href="clean-air.html" data-i18n="home.card.air.cta">Find a location</a>
-    </article>
-  </div>
-
-  <!-- Preparedness check. Hidden by default and revealed by js/prep.js only
-       when there is a question to ask, so it never shows an empty box. It sits
-       below the tools rather than above them: it measures impact, it is not
-       what a visitor came for. -->
-  <section id="prep" class="prepbox no-print reveal" hidden aria-labelledby="prep-h">
-    <h2 id="prep-h" tabindex="-1" data-i18n="prep.h">How ready are you right now?</h2>
-    <p class="small" id="prep-sub" data-i18n="prep.sub">Three quick questions. Anonymous, and it helps us show which parts of this actually help.</p>
-    <form id="prep-form">
-      <fieldset class="field">
-        <legend data-i18n="prep.q.water">Do you have two weeks of drinking water stored for everyone at home?</legend>
-        <div class="choices">
-          <label><input type="radio" name="water" value="1"><span data-i18n="prep.yes">Yes</span></label>
-          <label><input type="radio" name="water" value="0"><span data-i18n="prep.no">Not yet</span></label>
-        </div>
-      </fieldset>
-      <fieldset class="field">
-        <legend data-i18n="prep.q.air">Do you know where you would go for cleaner air in heavy smoke?</legend>
-        <div class="choices">
-          <label><input type="radio" name="air" value="1"><span data-i18n="prep.yes">Yes</span></label>
-          <label><input type="radio" name="air" value="0"><span data-i18n="prep.no">Not yet</span></label>
-        </div>
-      </fieldset>
-      <fieldset class="field">
-        <legend data-i18n="prep.q.plan">Has your household agreed what to do in an earthquake?</legend>
-        <div class="choices">
-          <label><input type="radio" name="plan" value="1"><span data-i18n="prep.yes">Yes</span></label>
-          <label><input type="radio" name="plan" value="0"><span data-i18n="prep.no">Not yet</span></label>
-        </div>
-      </fieldset>
-      <p class="err" id="prep-err" hidden data-i18n="prep.err">Answer all three, or skip.</p>
+  <!-- The 5 + 5 survey. Hidden by default; js/survey.js reveals it only when
+       this browser has a question to answer, so there is never an empty box. -->
+  <section id="survey" class="survey no-print" hidden aria-labelledby="survey-h">
+    <h2 id="survey-h"></h2>
+    <p class="small" id="survey-sub"></p>
+    <form id="survey-form" novalidate>
+      <div id="survey-qs"></div>
+      <p class="err" id="survey-err" hidden data-i18n="survey.err">Answer at least one question, or skip.</p>
       <div class="row">
-        <button type="submit" class="btn" data-i18n="prep.submit">Submit</button>
-        <button type="button" class="btn btn-secondary" id="prep-skip" data-i18n="prep.skip">Skip</button>
+        <button type="submit" class="btn" data-i18n="survey.submit">Submit</button>
+        <button type="button" class="btn btn-secondary" id="survey-skip" data-i18n="survey.skip">Skip</button>
       </div>
     </form>
-    <div id="prep-done" hidden></div>
+    <div id="survey-done" hidden aria-live="polite"></div>
+    <p class="small sv-privacy" data-i18n="survey.privacy">Anonymous. We never ask for your name, email, address or location.</p>
   </section>
-
 </div>
 </main>
 
@@ -223,9 +124,7 @@
       <span aria-hidden="true">&middot;</span>
       <a href="impact.html" data-i18n="footer.impact">Impact</a>
       <span aria-hidden="true">&middot;</span>
-      <a href="smoke.html" data-i18n="nav.smoke">Smoke</a>
-      <span aria-hidden="true">&middot;</span>
-      <a href="earthquake.html" data-i18n="nav.quake">Earthquake</a>
+      <a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a>
     </p>
     <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
   </div>
@@ -234,7 +133,6 @@
 <script src="js/i18n.js"></script>
 <script src="js/track.js"></script>
 <script src="js/app.js"></script>
-<script src="js/prep.js"></script>
-<script src="js/wound.js"></script>
+<script src="js/survey.js"></script>
 </body>
 </html>

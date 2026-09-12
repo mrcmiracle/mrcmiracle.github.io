@@ -1051,3 +1051,154 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 }
 .wound-cam-row { display: flex; flex-wrap: wrap; gap: var(--s3); margin: var(--s3) 0 0; }
 .wound-cam-row .btn { width: auto; flex: 1 1 auto; }
+
+/* ==========================================================================
+   Site chrome v2 — a toolbar that does not move.
+   Four separate things made the toolbar look like it changed on every click:
+     1. every page had a different menu            (fixed in the HTML)
+     2. the active tab was highlighted by JS late  (fixed in the HTML + app.js)
+     3. the header was sticky but the toolbar was not, so scrolling slid it
+        away under the header                      (toolbar now inside header)
+     4. the page-wide view transition cross-faded the header along with the
+        content                                    (fixed below)
+   ========================================================================== */
+
+/* The header (brand, language, toolbar) is one sticky box. */
+.site-head { padding: 0; }
+.head-row { padding: var(--s2) 0; }
+.head-actions { display: flex; align-items: center; gap: var(--s2); flex: 0 0 auto; }
+
+/* 4. Name the header so a cross-document view transition captures it as its
+   own group. Its old and new snapshots are identical on every page, so it
+   stays exactly where it is while only the content transitions underneath. */
+.site-head { view-transition-name: site-head; }
+::view-transition-group(site-head) { animation: none; }
+::view-transition-old(site-head),
+::view-transition-new(site-head) { animation: none; mix-blend-mode: normal; }
+
+/* The toolbar sits inside the header now, so it inherits the stickiness and
+   drops its own border/background. */
+.site-head .subnav {
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+  background: transparent;
+  overflow: visible;
+}
+/* Four equal slots that ALWAYS fit - no sideways scroll, which on a phone was
+   another way the bar appeared to shift. Measured to fit at 320px in English
+   and Spanish ("Revisar herida" is the longest label). */
+.site-head .subnav ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+  padding: 4px 0;
+  margin-inline: auto;
+}
+.site-head .subnav a {
+  text-align: center;
+  white-space: normal;
+  line-height: 1.15;
+  font-size: clamp(.74rem, 2.9vw, .9rem);
+  padding: .5rem .25rem;
+  min-height: 44px;                 /* comfortable tap target */
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm);
+}
+
+/* ---------- home: big buttons ---------- */
+.home h1 { margin: var(--s6) 0 var(--s2); }
+.home .lede { margin: 0 0 var(--s5); }
+.bigbtns { display: grid; gap: var(--s3); margin: 0 0 var(--s7); }
+@media (min-width: 46rem) { .bigbtns { grid-template-columns: repeat(3, 1fr); } }
+.bigbtn {
+  display: flex; align-items: center; gap: var(--s4);
+  padding: var(--s4) var(--s4);
+  min-height: 84px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-1);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.bigbtn:hover { border-color: var(--brand); box-shadow: var(--shadow-2); transform: translateY(-1px); }
+.bigbtn:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.bigbtn-icon {
+  flex: 0 0 auto; width: 48px; height: 48px; border-radius: var(--r);
+  display: grid; place-items: center;
+  background: var(--brand-tint); color: var(--brand);
+}
+.bigbtn-icon svg { width: 26px; height: 26px; }
+.bigbtn-text { display: flex; flex-direction: column; min-width: 0; }
+.bigbtn-text b { font-family: var(--font-display); font-size: var(--step-1); line-height: 1.2; }
+.bigbtn-text small { color: var(--ink-3); font-size: .88rem; margin-top: .15rem; }
+/* The emergency button keeps the red channel it has everywhere else. */
+.bigbtn-alert { border-color: var(--quake-line); background: var(--quake-bg); }
+.bigbtn-alert .bigbtn-icon { background: #fff; color: var(--quake-ink); }
+.bigbtn-alert .bigbtn-text b { color: var(--quake-ink); }
+@media (prefers-color-scheme: dark) { .bigbtn-icon { color: var(--brand-strong); } }
+
+/* ---------- survey ---------- */
+.survey {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper-2);
+  padding: var(--s5) var(--s4);
+  margin: 0 0 var(--s6);
+}
+.survey h2 { margin: 0 0 var(--s1); font-size: var(--step-2); }
+.survey > .small { margin: 0 0 var(--s4); }
+.sv-q { margin: 0 0 var(--s5); }
+.sv-q legend { font-weight: 700; font-size: 1rem; margin: 0 0 var(--s2); padding: 0; }
+.sv-hint { margin: calc(var(--s1) * -1) 0 var(--s2); }
+
+.sv-checks { display: grid; gap: var(--s2); }
+.sv-checks label, .sv-radios label {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .6rem .75rem; min-height: 44px;
+  border: 1.5px solid var(--line); border-radius: var(--r);
+  background: var(--paper); cursor: pointer;
+}
+.sv-checks input, .sv-radios input { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--brand); margin: 0; }
+.sv-checks label:has(input:checked), .sv-radios label:has(input:checked) {
+  border-color: var(--brand); background: var(--brand-tint);
+}
+.sv-checks label:has(input:focus-visible), .sv-radios label:has(input:focus-visible) {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+
+.sv-chips { display: flex; flex-wrap: wrap; gap: var(--s2); }
+
+/* 1-5 scale: five equal targets in one row, ends labelled underneath. */
+.sv-scale-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s2); }
+.sv-scale-row label { justify-content: center; padding: .5rem 0; font-weight: 700; }
+.sv-scale-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sv-scale-ends { display: flex; justify-content: space-between; margin-top: var(--s1); }
+
+.sv-stepper { display: inline-flex; align-items: stretch; border: 1.5px solid var(--line-strong); border-radius: var(--r); overflow: hidden; background: var(--paper); }
+.sv-step {
+  font: inherit; font-size: 1.3rem; font-weight: 700; width: 48px; min-height: 48px;
+  border: 0; background: var(--paper-3); color: var(--brand); cursor: pointer;
+}
+.sv-step:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.sv-num {
+  width: 4rem; border: 0; text-align: center; font: inherit; font-size: 1.15rem; font-weight: 700;
+  background: var(--paper); color: var(--ink); -moz-appearance: textfield;
+}
+.sv-num::-webkit-outer-spin-button, .sv-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.sv-num:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+.sv-privacy { margin: var(--s4) 0 0; }
+.sv-next { font-weight: 700; margin: var(--s4) 0 var(--s2); }
+.sv-links { margin: 0; padding-left: 1.1rem; }
+.sv-links li { margin-bottom: var(--s2); }
+
+/* ---------- emergencies page ---------- */
+.emerg-jump { display: grid; gap: var(--s3); margin: 0 0 var(--s6); }
+@media (min-width: 40rem) { .emerg-jump { grid-template-columns: 1fr 1fr; } }
+.emerg-jump .rn-btn { text-decoration: none; }
+/* Anchored sections must clear the sticky header when jumped to. */
+#smoke, #earthquake { scroll-margin-top: 130px; }
+.emerg-more { margin: var(--s5) 0 var(--s3); font-size: var(--step-1); color: var(--ink-2); }
+#earthquake { margin-top: var(--s7); }

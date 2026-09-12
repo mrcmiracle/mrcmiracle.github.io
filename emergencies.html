@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Impact — MRC Miracle</title>
-<meta name="description" content="Live, anonymous numbers showing how MRC Miracle is used and whether it changes how prepared people are.">
+<title>Emergencies — MRC Miracle</title>
+<meta name="description" content="What to do right now in wildfire smoke or after an earthquake, and how to get ready, for King County households.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/assets/icon-32.png?v=2" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/icon-16.png?v=2" sizes="16x16" type="image/png">
 <link rel="icon" href="/assets/icon-48.png?v=2" sizes="48x48" type="image/png">
 <link rel="icon" href="/assets/icon-96.png?v=2" sizes="96x96" type="image/png">
-<link rel="canonical" href="https://mrcmiracle.vercel.app/impact.html">
+<link rel="canonical" href="https://mrcmiracle.vercel.app/emergencies.html">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MRC Miracle">
-<meta property="og:title" content="Impact — MRC Miracle">
-<meta property="og:description" content="Live, anonymous numbers showing how MRC Miracle is used and whether it changes how prepared people are.">
-<meta property="og:url" content="https://mrcmiracle.vercel.app/impact.html">
+<meta property="og:title" content="Emergencies — MRC Miracle">
+<meta property="og:description" content="What to do right now in wildfire smoke or after an earthquake, and how to get ready, for King County households.">
+<meta property="og:url" content="https://mrcmiracle.vercel.app/emergencies.html">
 <meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -63,27 +63,100 @@
       <li><a href="/" data-i18n="nav.home">Home</a></li>
       <li><a href="/wound.html" data-i18n="nav.wound">Wound check</a></li>
       <li><a href="/clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
-      <li><a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a></li>
+      <li><a href="/emergencies.html" data-i18n="nav.emergencies" aria-current="page">Emergencies</a></li>
     </ul>
   </nav>
 </header>
 
 <main id="main">
 <div class="wrap">
-  <h1>Impact</h1>
-  <p class="lede">Live numbers from this site, updated automatically. Nothing here is typed in by hand.</p>
+  <h1 data-i18n="emerg.h1">Emergencies</h1>
+  <p class="lede" data-i18n="emerg.lede">What to do right now, and how to get ready before it happens.</p>
 
-  <p class="notice"><strong>How to read this.</strong> Everything is anonymous: no name, email, precise
-     location or IP is collected. Before-and-after figures count only people who answered the
-     preparedness questions <em>both</em> times, so the two numbers describe the same group. Sample
-     sizes are shown next to every figure, because a percentage without one means very little.</p>
+  <nav class="emerg-jump" aria-label="Jump to">
+    <a class="rn-btn rn-smoke" href="#smoke"><span data-i18n="home.rn.smoke">There's smoke today</span></a>
+    <a class="rn-btn rn-quake" href="#earthquake"><span data-i18n="home.rn.quake">There was just an earthquake</span></a>
+  </nav>
 
-  <div id="impact-root">
-    <p class="small" id="impact-loading">Loading the current numbers&hellip;</p>
-  </div>
+  <!-- The numbered "do these now" steps. They were inline on the old home
+       page, and were lost when it was cut down - no page rendered them at all
+       until they were restored here. -->
+  <section class="rn-panel smoke" id="smoke" aria-labelledby="smoke-h">
+    <h2 id="smoke-h" data-i18n="rn.smoke.title">There's smoke today</h2>
+    <p class="sub" data-i18n="rn.smoke.sub">Do these now.</p>
+    <ol>
+      <li data-i18n="rn.smoke.1"></li>
+      <li data-i18n="rn.smoke.2"></li>
+      <li data-i18n="rn.smoke.3"></li>
+      <li data-i18n="rn.smoke.4"></li>
+      <li data-i18n="rn.smoke.5"></li>
+      <li data-i18n="rn.smoke.6"></li>
+      <li data-i18n="rn.smoke.7"></li>
+      <li data-i18n="rn.smoke.8"></li>
+    </ol>
+    <p class="call911" data-i18n="rn.smoke.911"></p>
+    <a class="btn" href="/clean-air.html" data-i18n="rn.smoke.cta">Find clean air near me</a>
+  </section>
+  <h3 class="emerg-more" data-i18n="emerg.more_smoke">Getting ready for smoke season</h3>
+    <details class="sect" data-sect="smoke-cleanroom">
+      <summary data-i18n="smoke.s1.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s1.b"></p></div>
+    </details>
+    <details class="sect" data-sect="smoke-seal">
+      <summary data-i18n="smoke.s2.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s2.b"></p></div>
+    </details>
+    <details class="sect" data-sect="smoke-indoor">
+      <summary data-i18n="smoke.s3.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s3.b"></p></div>
+    </details>
+    <details class="sect" data-sect="smoke-masks">
+      <summary data-i18n="smoke.s4.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s4.b"></p></div>
+    </details>
+    <details class="sect" data-sect="smoke-risk">
+      <summary data-i18n="smoke.s5.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s5.b"></p></div>
+    </details>
+    <details class="sect" data-sect="smoke-help">
+      <summary data-i18n="smoke.s6.h"></summary>
+      <div class="sect-body"><p data-i18n="smoke.s6.b"></p></div>
+    </details>
 
-  <p class="small" id="impact-generated"></p>
-  <p class="small"><a href="privacy.html">What we collect and what we never collect</a></p>
+  <section class="rn-panel quake" id="earthquake" aria-labelledby="quake-h">
+    <h2 id="quake-h" data-i18n="rn.quake.title">There was just an earthquake</h2>
+    <p class="sub" data-i18n="rn.quake.sub">Do these now.</p>
+    <ol>
+      <li data-i18n="rn.quake.1"></li>
+      <li data-i18n="rn.quake.2"></li>
+      <li data-i18n="rn.quake.3"></li>
+      <li data-i18n="rn.quake.4"></li>
+      <li data-i18n="rn.quake.5"></li>
+      <li data-i18n="rn.quake.6"></li>
+      <li data-i18n="rn.quake.7"></li>
+      <li data-i18n="rn.quake.8"></li>
+      <li data-i18n="rn.quake.9"></li>
+      <li data-i18n="rn.quake.10"></li>
+    </ol>
+    <p class="call911" data-i18n="rn.quake.911"></p>
+  </section>
+  <h3 class="emerg-more" data-i18n="emerg.more_quake">Getting ready for an earthquake</h3>
+    <details class="sect" data-sect="quake-during">
+      <summary data-i18n="quake.s1.h"></summary>
+      <div class="sect-body"><p data-i18n="quake.s1.b"></p></div>
+    </details>
+    <details class="sect" data-sect="quake-after">
+      <summary data-i18n="quake.s2.h"></summary>
+      <div class="sect-body"><p data-i18n="quake.s2.b"></p></div>
+    </details>
+    <details class="sect" data-sect="quake-before">
+      <summary data-i18n="quake.s3.h"></summary>
+      <div class="sect-body"><p data-i18n="quake.s3.b"></p></div>
+    </details>
+    <details class="sect" data-sect="quake-why">
+      <summary data-i18n="quake.s4.h"></summary>
+      <div class="sect-body"><p data-i18n="quake.s4.b"></p></div>
+    </details>
 </div>
 </main>
 
@@ -111,6 +184,5 @@
 <script src="js/i18n.js"></script>
 <script src="js/track.js"></script>
 <script src="js/app.js"></script>
-<script src="js/impact.js"></script>
 </body>
 </html>

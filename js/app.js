@@ -27,10 +27,16 @@
     return f && f !== '' ? f : 'index.html';
   }
 
+  /* The active tab is written into each page's HTML (aria-current="page"), so
+     it is correct on first paint. Setting it here, after load, made the
+     highlight pop in a beat late - one of the reasons the toolbar looked like
+     it was changing on every click. This now only fills a gap if a page ever
+     ships without the attribute. */
   function markNav(page) {
+    if (document.querySelector('.subnav a[aria-current]')) return;
     document.querySelectorAll('.subnav a').forEach(function (a) {
-      var href = a.getAttribute('href');
-      if (href === page || (page === 'index.html' && href === './')) {
+      var href = (a.getAttribute('href') || '').replace(/^\//, '');
+      if (href === page || (page === 'index.html' && (href === '' || href === './'))) {
         a.setAttribute('aria-current', 'page');
       }
     });

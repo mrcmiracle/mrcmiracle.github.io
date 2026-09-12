@@ -39,31 +39,34 @@
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
+<!-- Site chrome. GENERATED - identical on every page except aria-current.
+     Do not hand-edit one page: that is exactly how the toolbar drifted before,
+     when Home got a different menu from every other page. -->
 <header class="site-head">
   <div class="wrap head-row">
-    <a class="brand" href="./">
-      <img class="brand-mark" src="assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+    <a class="brand" href="/">
+      <img class="brand-mark" src="/assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-name">MRC Miracle</span>
         <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
       </span>
     </a>
-    <div class="langswitch" role="group" aria-label="Language / Idioma">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    <div class="head-actions">
+      <div class="langswitch" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
     </div>
   </div>
+  <nav class="subnav" aria-label="Main">
+    <ul class="wrap">
+      <li><a href="/" data-i18n="nav.home">Home</a></li>
+      <li><a href="/wound.html" data-i18n="nav.wound">Wound check</a></li>
+      <li><a href="/clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+      <li><a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a></li>
+    </ul>
+  </nav>
 </header>
-
-<nav class="subnav" aria-label="Main">
-  <ul>
-    <li><a href="./" data-i18n="nav.home">Home</a></li>
-    <li><a href="kit.html" data-i18n="nav.kit">Kit calculator</a></li>
-    <li><a href="clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
-    <li><a href="earthquake.html" data-i18n="nav.quake">Earthquake</a></li>
-    <li><a href="smoke.html" data-i18n="nav.smoke">Smoke</a></li>
-  </ul>
-</nav>
 
 <main id="main">
 <div class="wrap">

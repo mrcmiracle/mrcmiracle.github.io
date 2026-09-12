@@ -56,8 +56,9 @@
     var tbody = el('tbody');
     [
       ['Two weeks of water stored', p.water],
-      ['Knows where to go for cleaner air', p.air],
-      ['Household has an earthquake plan', p.plan]
+      ['A plan for cleaner air in smoke', p.air],
+      ['An earthquake plan everyone knows', p.plan],
+      ['A first aid kit', p.firstaid]
     ].forEach(function (row) {
       var name = row[0], d = row[1] || {};
       var tr = el('tr');
@@ -75,7 +76,14 @@
       'Of the ' + paired + ' people who answered both times, ' + (s.improved || 0) +
       ' were more prepared the second time, ' + (s.unchanged || 0) + ' were the same and ' +
       (s.declined || 0) + ' were less. Average score moved from ' + (s.before || 0) +
-      ' to ' + (s.after || 0) + ' out of 3.'));
+      ' to ' + (s.after || 0) + ' out of ' + (s.out_of || 4) + '.'));
+
+    var c = p.confidence || {};
+    if (c.n) {
+      box.appendChild(el('p', 'small',
+        'Asked how ready they feel on a 1 to 5 scale, the ' + c.n + ' people who answered both times went from an average of ' +
+        c.before + ' to ' + c.after + '; ' + c.improved + ' of them rated themselves higher the second time.'));
+    }
 
     if (paired < MIN_MEANINGFUL) {
       box.appendChild(el('p', 'notice',
@@ -133,17 +141,61 @@
         var u = d.use || {};
         root.appendChild(el('h2', null, 'How the tools are used'));
         root.appendChild(statBlock([
-          { value: u.kits || 0, label: 'kit checklists built' },
-          { value: u.people || 0, label: 'people covered by those kits' },
           { value: u.lookups || 0, label: 'clean air searches' },
-          { value: u.commits || 0, label: 'people who committed to an action' }
+          { value: (d.wound && d.wound.checks) || 0, label: 'wound photos checked' }
         ]));
 
         root.appendChild(el('h2', null, 'Did it change anything?'));
         root.appendChild(el('p', null,
-          'Visitors are asked the same three questions on a first visit and again on a later one. ' +
+          'Visitors are asked about their household\'s readiness on a first visit and again on a later one. ' +
           'This compares those answers.'));
         root.appendChild(prepTable(d.preparedness || {}));
+
+        var pr = d.preparedness || {};
+        var reach = pr.reach || {};
+        if (reach.respondents) {
+          root.appendChild(el('h2', null, 'Who the survey reached'));
+          root.appendChild(statBlock([
+            { value: reach.respondents, label: 'people answered the first survey' },
+            { value: reach.people_in_households || 0, label: 'people living in those households (' + (reach.household_n || 0) + ' gave a size)' },
+            { value: reach.any_vulnerable || 0, label: 'households with someone 65+, a child under 5, a disability or chronic illness, or a non-English language' }
+          ]));
+          var rt = el('table', 'impact-table');
+          var rh = el('thead'), rhr = el('tr');
+          ['Household includes', 'Households'].forEach(function (h) { rhr.appendChild(el('th', null, h)); });
+          rh.appendChild(rhr); rt.appendChild(rh);
+          var rb = el('tbody');
+          [['Someone 65 or older', reach.older], ['A child under 5', reach.child],
+           ['A disability or chronic illness', reach.disability],
+           ['A language other than English at home', reach.language]].forEach(function (r) {
+            var tr = el('tr');
+            tr.appendChild(el('th', null, r[0]));
+            tr.appendChild(el('td', null, String(r[1] || 0)));
+            rb.appendChild(tr);
+          });
+          rt.appendChild(rb);
+          root.appendChild(rt);
+          root.appendChild(el('p', 'small',
+            'Every question is optional, so each figure counts only the people who answered that question. ' +
+            'A household is counted once however many of these apply.'));
+        }
+
+        var act = pr.actions || {}, sh = pr.shared || {}, us = pr.useful || {};
+        if (act.n || sh.n || us.n) {
+          root.appendChild(el('h2', null, 'What people did afterwards'));
+          var items = [];
+          if (act.n) {
+            items.push({ value: act.water || 0, label: 'stored water (of ' + act.n + ' who answered)' });
+            items.push({ value: act.plan || 0, label: 'made or updated a plan' });
+            items.push({ value: act.cleanair || 0, label: 'found a clean air location' });
+            items.push({ value: act.wound || 0, label: 'used the wound check' });
+          }
+          if (sh.n) items.push({ value: sh.people || 0, label: 'people they say they shared it with (' + sh.n + ' answered)' });
+          if (us.n) items.push({ value: us.avg, label: 'average usefulness out of 5 (' + us.n + ' answered)' });
+          root.appendChild(statBlock(items));
+          root.appendChild(el('p', 'small',
+            'These are self-reported on a later visit. "Shared with" is what people told us, not something we can verify.'));
+        }
 
         var w = d.wound || {};
         if (w.checks) {

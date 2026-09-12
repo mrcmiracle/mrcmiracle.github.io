@@ -43,14 +43,42 @@ const COLUMNS = [
   // Which poster the visitor arrived from, and the preparedness check.
   'src', 'prep_phase', 'prep_water', 'prep_air', 'prep_plan', 'prep_score',
   // Wound check: the category and the confidence, never the image.
-  'wound_label', 'wound_confidence'
+  'wound_label', 'wound_confidence',
+  // The 5 + 5 survey (event 'prep_check'). See supabase migration
+  // survey_five_plus_five for what each means.
+  'prep_firstaid', 'prep_confidence', 'household_size', 'age_band',
+  'hh_older', 'hh_child', 'hh_disability', 'hh_language',
+  'useful', 'did_water', 'did_plan', 'did_cleanair', 'did_wound', 'did_nothing',
+  'shared_count'
 ];
 const INT_COLS = new Set([
   'returning', 'visit_number', 'new_session', 'people', 'pets', 'meds',
   'water_gallons', 'item_count', 'results', 'selection_count', 'offered_count',
   'seconds', 'scroll_pct', 'done', 'total',
-  'prep_water', 'prep_air', 'prep_plan', 'prep_score'
+  'prep_water', 'prep_air', 'prep_plan', 'prep_score',
+  'prep_firstaid', 'prep_confidence', 'household_size',
+  'hh_older', 'hh_child', 'hh_disability', 'hh_language',
+  'useful', 'did_water', 'did_plan', 'did_cleanair', 'did_wound', 'did_nothing',
+  'shared_count'
 ]);
+
+/* Allowed values for survey answers. These mirror CHECK constraints on the
+   events table, and they are enforced HERE as well for one reason: the
+   database rejects the entire row when any single column fails a check. A
+   tampered or buggy "confidence: 9" would otherwise throw away the whole
+   response - including the valid answers sitting next to it. So an
+   out-of-range answer is nulled (recorded as "not answered") and the rest of
+   the response is kept. */
+const INT_RANGES = {
+  prep_water: [0, 1], prep_air: [0, 1], prep_plan: [0, 1], prep_firstaid: [0, 1],
+  prep_confidence: [1, 5], household_size: [1, 20],
+  hh_older: [0, 1], hh_child: [0, 1], hh_disability: [0, 1], hh_language: [0, 1],
+  useful: [1, 5],
+  did_water: [0, 1], did_plan: [0, 1], did_cleanair: [0, 1], did_wound: [0, 1], did_nothing: [0, 1],
+  shared_count: [0, 500]
+};
+const AGE_BANDS = new Set(['under18', '18-39', '40-64', '65plus', 'na']);
+const PREP_PHASES = new Set(['baseline', 'followup']);
 
 // The page sends `returning`, but that is a reserved word in Postgres and
 // cannot be a column name unquoted. Map it on the way into the database.
@@ -115,6 +143,17 @@ export default async function handler(req, res) {
     if (!Object.prototype.hasOwnProperty.call(data, c)) continue;
     const col = RENAME[c] || c;
     row[col] = INT_COLS.has(c) ? toInt(data[c]) : clampStr(data[c]);
+  }
+  for (const [col, [lo, hi]] of Object.entries(INT_RANGES)) {
+    if (row[col] !== undefined && row[col] !== null && (row[col] < lo || row[col] > hi)) {
+      row[col] = null;
+    }
+  }
+  if (row.age_band !== undefined && row.age_band !== null && !AGE_BANDS.has(row.age_band)) {
+    row.age_band = null;
+  }
+  if (row.prep_phase !== undefined && row.prep_phase !== null && !PREP_PHASES.has(row.prep_phase)) {
+    row.prep_phase = null;
   }
   if (data.wound_confidence !== undefined && data.wound_confidence !== '') {
     const c = parseFloat(data.wound_confidence);
