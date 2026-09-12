@@ -41,6 +41,28 @@
     }
   }
 
+  function readVidCookie() {
+    var m = /(?:^|;\s*)mrcm_vid=([a-z0-9]{6,40})(?:;|$)/.exec(document.cookie || '');
+    return m ? m[1] : '';
+  }
+  function writeVidCookie(v) {
+    try {
+      document.cookie = 'mrcm_vid=' + v + '; Path=/; Max-Age=31536000; SameSite=Lax' +
+        (location.protocol === 'https:' ? '; Secure' : '');
+    } catch (e) { /* cookies disabled: scans simply cannot be de-duplicated */ }
+  }
+  /* phone / tablet / computer, from pointer type and screen size only. The
+     user agent string is never read, so nothing about the model or browser
+     is known, let alone stored. */
+  function deviceCategory() {
+    try {
+      var coarse = global.matchMedia && global.matchMedia('(pointer: coarse)').matches;
+      var shortSide = Math.min(global.screen.width, global.screen.height);
+      if (!coarse) return 'computer';
+      return shortSide >= 600 ? 'tablet' : 'phone';
+    } catch (e) { return ''; }
+  }
+
   var Track = {
     enabled: true,
     visitorId: '',
@@ -53,7 +75,23 @@
 
     init: function (pageName) {
       this.page = pageName || (location.pathname.split('/').pop() || 'index.html');
-      this.visitorId = store('localStorage', VID_KEY, function () { return rand(10); });
+      /* One browser id, kept in two places that must agree:
+           localStorage  what every page event carries
+           mrcm_vid cookie  what api/q.js can read at the moment of a QR scan,
+                            before any page has loaded (approved)
+         If only the cookie exists - a first visit that began with a scan -
+         adopt the id the scan was recorded under, so that scan and everything
+         after it belong to the same browser. Otherwise localStorage wins and
+         the cookie is written to match, so the NEXT scan is recognised. */
+      var cookieVid = readVidCookie();
+      var stored = null;
+      try { stored = global.localStorage.getItem(VID_KEY); } catch (e) { stored = null; }
+      if (!stored && cookieVid) {
+        try { global.localStorage.setItem(VID_KEY, cookieVid); } catch (e) { /* private mode */ }
+      }
+      this.visitorId = store('localStorage', VID_KEY, function () { return cookieVid || rand(10); });
+      if (cookieVid !== this.visitorId) writeVidCookie(this.visitorId);
+      this.device = deviceCategory();
 
       /* Which poster the visitor arrived from. Each printed QR carries its own
          ?src= (for example ?src=kcls-bothell), so the team can see which
@@ -92,7 +130,8 @@
       this.send('page_view', {
         returning: this.visitNumber > 1 ? 1 : 0,
         visit_number: this.visitNumber,
-        new_session: isNewSession ? 1 : 0
+        new_session: isNewSession ? 1 : 0,
+        device: this.device
       });
 
       this.watchScroll();

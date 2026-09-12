@@ -158,9 +158,14 @@
     },
 
     /* Bring an existing session back on page load. Resolves with the user or null. */
+    /* Runs ONCE per page, however many modules ask. The admin page has two
+       (sites and QR codes). Two independent runs near token expiry would both
+       spend the same single-use refresh token; Supabase rejects the reuse, the
+       second refresh fails, and the coordinator is signed out mid-session. */
     init: function () {
+      if (this._initPromise) return this._initPromise;
       var self = this;
-      return this.config().then(function (c) {
+      this._initPromise = this.config().then(function (c) {
         if (!c) return null;
         var fresh = self.captureRedirect();
         if (!fresh && !self.restore()) return null;
@@ -168,6 +173,7 @@
           return ok ? self.loadUser() : null;
         });
       });
+      return this._initPromise;
     },
 
     // ---- requests as this user, guarded by row level security ----

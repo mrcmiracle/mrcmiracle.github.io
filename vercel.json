@@ -55,5 +55,11 @@
       "destination": "/",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/q/:slug",
+      "destination": "/api/q?slug=:slug"
+    }
   ]
 }

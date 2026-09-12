@@ -22,7 +22,7 @@
                    page already has a designed state for that.
      other /api/   network only. Writes must not be replayed from a cache.
 */
-const VERSION = 'v9';
+const VERSION = 'v11';
 const SHELL = 'shell-' + VERSION;
 const ASSETS = 'assets-' + VERSION;
 
@@ -79,6 +79,11 @@ self.addEventListener('fetch', (event) => {
   // Air quality must never come from a cache. Everything else under /api is
   // live data or a write path; let it go straight to the network.
   if (url.pathname.startsWith('/api/')) return;
+
+  // QR scans. /q/<code> must reach the server EVERY time: that request is the
+  // scan being counted, and it answers with a redirect. Handled here it could
+  // be served from a cache (a scan that is never recorded) or cache a redirect.
+  if (url.pathname.startsWith('/q/')) return;
 
   // The coordinator page edits live data. It must never be precached, never be
   // written to a cache by the handler below, and never be served from one - a

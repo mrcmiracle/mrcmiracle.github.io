@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     const [use, prep, reach, wound, window] = await Promise.all([
       rpc('impact_stats', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('prep_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
-      rpc('src_reach', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
+      rpc('qr_report', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('wound_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       fetch(SUPABASE_URL.replace(/\/$/, '') +
         '/rest/v1/events?select=received_at&order=received_at.asc&limit=1', {

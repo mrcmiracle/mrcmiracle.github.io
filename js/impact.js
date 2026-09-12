@@ -98,29 +98,45 @@
     return box;
   }
 
-  function reachTable(rows) {
+  /* Per-poster reach, from qr_report(). "Browsers" is said plainly because it
+     is not the same as people, and a judge reading "9 people" would be misled. */
+  function reachTable(report) {
     var box = el('div');
-    if (!rows || !rows.length) {
+    var codes = (report && report.codes) || [];
+    var scanned = codes.filter(function (c) { return c.scans > 0; });
+    if (!scanned.length) {
       box.appendChild(el('p', 'small',
-        'No posters have been scanned yet. Each printed QR carries its own tag, so once they are up this ' +
-        'shows which placements actually reach people.'));
+        'No posters have been scanned yet. ' + codes.length + ' QR codes are live; each one is counted ' +
+        'separately, so once posters are up this shows which placements actually reach people.'));
       return box;
     }
+    var t = report.totals || {};
+    box.appendChild(statBlock([
+      { value: t.scans || 0, label: 'QR scans' },
+      { value: t.people || 0, label: 'different browsers that scanned' },
+      { value: t.acted || 0, label: 'went on to use a tool or answer the survey' }
+    ]));
     var table = el('table', 'impact-table');
     var thead = el('thead'), hr = el('tr');
-    ['Poster or venue', 'People', 'First scan', 'Latest scan'].forEach(function (h) { hr.appendChild(el('th', null, h)); });
+    ['Poster or event', 'Scans', 'Browsers', 'Answered survey', 'Wound check', 'Clean air search']
+      .forEach(function (h) { hr.appendChild(el('th', null, h)); });
     thead.appendChild(hr); table.appendChild(thead);
     var tb = el('tbody');
-    rows.forEach(function (r) {
+    scanned.forEach(function (c) {
       var tr = el('tr');
-      tr.appendChild(el('th', null, r.src));
-      tr.appendChild(el('td', null, String(r.visitors)));
-      tr.appendChild(el('td', null, r.first_seen || '—'));
-      tr.appendChild(el('td', null, r.last_seen || '—'));
+      tr.appendChild(el('th', null, c.label));
+      [c.scans, c.people, c.took_survey, c.used_wound, c.searched_air].forEach(function (v) {
+        tr.appendChild(el('td', null, String(v || 0)));
+      });
       tb.appendChild(tr);
     });
     table.appendChild(tb);
     box.appendChild(table);
+    var idle = codes.length - scanned.length;
+    box.appendChild(el('p', 'small',
+      '"Browsers" counts different web browsers, not different people. One person who scans on a phone and ' +
+      'later visits on a laptop counts twice unless they sign in; two people sharing a phone count once. ' +
+      (idle ? idle + ' more code' + (idle === 1 ? ' has' : 's have') + ' not been scanned yet.' : '')));
     return box;
   }
 

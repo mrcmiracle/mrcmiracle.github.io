@@ -1290,3 +1290,29 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .h-conf { color: var(--ink-2); font-size: .9rem; text-align: right; }
 .h-date { grid-column: 1 / -1; color: var(--ink-3); font-size: .82rem; }
 .saved-note { color: var(--ok); font-weight: 700; margin-top: var(--s3); }
+
+/* ---------- coordinator dashboard: QR codes ---------- */
+.qr-root { margin-top: var(--s7); }
+.qr-root:empty { display: none; }
+.qr-create {
+  display: grid; gap: var(--s3); align-items: end;
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--paper-2);
+  padding: var(--s4); margin: var(--s5) 0;
+}
+@media (min-width: 44rem) { .qr-create { grid-template-columns: 2fr 1fr auto; } }
+.qr-create h3, .qr-create p { grid-column: 1 / -1; margin: 0; }
+.qr-create label { display: grid; gap: var(--s1); font-weight: 700; font-size: .9rem; }
+.qr-create input, .qr-create select {
+  font: inherit; min-height: 44px; padding: 0 var(--s3);
+  border: 1.5px solid var(--line-strong); border-radius: var(--r-sm); background: var(--paper); color: var(--ink);
+}
+.qr-list { display: grid; gap: var(--s3); }
+.qr-card { border: 1px solid var(--line); border-radius: var(--r); padding: var(--s4); background: var(--paper); }
+.qr-card.is-off { opacity: .6; }
+.qr-card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2) var(--s3); }
+.qr-card-head h3 { margin: 0; font-size: var(--step-1); }
+.qr-card-head code { font-size: .82rem; color: var(--ink-3); }
+.qr-nums { margin: var(--s2) 0 var(--s1); font-weight: 600; }
+.qr-card .row { margin-top: var(--s3); }
+.qr-card .row .btn { width: auto; }
+.qr-check { margin: var(--s2) 0 0; }

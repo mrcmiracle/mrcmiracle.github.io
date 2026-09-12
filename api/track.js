@@ -49,7 +49,9 @@ const COLUMNS = [
   'prep_firstaid', 'prep_confidence', 'household_size', 'age_band',
   'hh_older', 'hh_child', 'hh_disability', 'hh_language',
   'useful', 'did_water', 'did_plan', 'did_cleanair', 'did_wound', 'did_nothing',
-  'shared_count'
+  'shared_count',
+  // Device CATEGORY, worked out in the browser. Never the user agent string.
+  'device'
 ];
 const INT_COLS = new Set([
   'returning', 'visit_number', 'new_session', 'people', 'pets', 'meds',
@@ -78,6 +80,7 @@ const INT_RANGES = {
   shared_count: [0, 500]
 };
 const AGE_BANDS = new Set(['under18', '18-39', '40-64', '65plus', 'na']);
+const DEVICES = new Set(['phone', 'tablet', 'computer']);
 const PREP_PHASES = new Set(['baseline', 'followup']);
 
 // The page sends `returning`, but that is a reserved word in Postgres and
@@ -173,6 +176,9 @@ export default async function handler(req, res) {
     if (row[col] !== undefined && row[col] !== null && (row[col] < lo || row[col] > hi)) {
       row[col] = null;
     }
+  }
+  if (row.device !== undefined && row.device !== null && !DEVICES.has(row.device)) {
+    row.device = null;
   }
   if (row.age_band !== undefined && row.age_band !== null && !AGE_BANDS.has(row.age_band)) {
     row.age_band = null;
