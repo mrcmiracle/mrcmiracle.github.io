@@ -72,13 +72,32 @@
 
   <p class="notice notice-strong"><strong data-i18n="wound.notdiagnosis_b">This is not a diagnosis and not medical advice.</strong> <span data-i18n="wound.notdiagnosis"> It is a student project that guesses what kind of wound a photo shows, and it can be wrong. It cannot see infection, depth, or anything under the skin. If you are worried about an injury, see a medical professional, whatever this page says.</span></p>
 
-  <section id="wound-tool" class="savebox">
+  <section id="wound-tool" class="savebox wound-stage">
     <h2 data-i18n="wound.tool.h">Check a photo</h2>
     <p class="small" data-i18n="wound.tool.privacy">Your photo is sent for analysis and is not saved anywhere — not by us, and not in the tool. It is not stored, not logged, and nobody on our team ever sees it.</p>
-    <p>
-      <label class="btn btn-block" for="wound-file" data-i18n="wound.tool.choose">Take or choose a photo</label>
-      <input type="file" id="wound-file" accept="image/jpeg,image/png" capture="environment" class="sr-only">
-    </p>
+      <p class="wound-cta-row">
+        <label class="btn btn-block" for="wound-file" data-i18n="wound.tool.choose">Take a photo or choose a file</label>
+        <!-- No `capture` attribute. See the header of js/wound.js: it forces
+             iOS straight to the camera and leaves macOS on the file dialog,
+             which is exactly the "camera only on iPhone, files only on Mac"
+             behaviour. accept is image/* because shrink() re-encodes to JPEG,
+             so narrowing it only hid valid photos such as iPhone HEIC. -->
+        <input type="file" id="wound-file" accept="image/*" class="sr-only">
+      </p>
+      <p class="wound-alt">
+        <button type="button" class="btn btn-secondary" id="wound-camera" hidden data-i18n="wound.tool.camera">Use this computer&#39;s camera</button>
+      </p>
+      <!-- Filled by js/wound.js, which knows which routes this device has.
+           No data-i18n: the text depends on the device, not just the language. -->
+      <p class="picker-hint small" id="wound-hint"></p>
+
+      <div class="wound-cam" id="wound-cam" hidden>
+        <video id="wound-video" playsinline muted></video>
+        <p class="wound-cam-row">
+          <button type="button" class="btn" id="wound-shutter" data-i18n="wound.cam.shutter">Take the photo</button>
+          <button type="button" class="btn btn-secondary" id="wound-cam-cancel" data-i18n="wound.cam.cancel">Cancel</button>
+        </p>
+      </div>
     <div id="wound-preview" hidden></div>
     <p class="err" id="wound-err" hidden></p>
     <div id="wound-result" hidden></div>

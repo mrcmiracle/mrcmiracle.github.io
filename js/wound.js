@@ -1,10 +1,39 @@
-/* wound.js — the wound check page.
+/* wound.js — the wound check.
 
    The model is deployed separately; /api/wound proxies to it so the browser
    only ever talks to this origin.
 
-   Three deliberate choices, all about the fact that the people most likely to
-   use this are the people least able to get seen by a clinician:
+   HOW A PHOTO GETS IN
+   There are four ways, and which ones are offered depends on the device:
+
+     the file button   the native picker. On a phone this is the OS sheet -
+                       Photo Library, Take Photo, and Choose File, which lists
+                       Google Drive, Dropbox and iCloud as providers when those
+                       apps are installed. On a desktop it is the file dialog,
+                       which reaches the same services because they mount as
+                       ordinary folders.
+     drag and drop     desktop.
+     paste             desktop. Cmd/Ctrl+V after a screenshot or a copied image.
+     the camera        desktop only, via getUserMedia. A phone does not need it:
+                       its native sheet already offers Take Photo, and an
+                       in-page camera would be a worse version of the one the
+                       OS provides.
+
+   There is deliberately NO `capture` attribute on the input. `capture` tells
+   the browser to go straight to the camera, and it is the reason this used to
+   be camera-only on iPhone and file-only on Mac at the same time: iOS honours
+   it and skips the picker entirely, while macOS has no camera intent and
+   silently falls back to the file dialog. One attribute, two opposite
+   complaints. Do not add it back.
+
+   `accept` is image/* rather than image/jpeg,image/png because every file is
+   re-encoded to JPEG by shrink() below before it is ever sent. Narrowing it
+   only hid valid photos - notably iPhone HEIC, which Safari decodes perfectly
+   well but which was being filtered out of the picker.
+
+   Three deliberate choices about the medical content, all about the fact that
+   the people most likely to use this are the people least able to get seen by
+   a clinician:
 
    1. The "get care now" panel is in the HTML above this script, always
       visible, and repeated with every result. It does not depend on the model
@@ -35,9 +64,22 @@
   }
 
   var lastResult = null;
+  var stream = null;          // live camera stream, when one is open
 
-  /* Downscale in the browser. Smaller upload, and the full-resolution original
-     never leaves the device. */
+  function isCoarsePointer() {
+    return !!(global.matchMedia && global.matchMedia('(pointer: coarse)').matches);
+  }
+  function hasCamera() {
+    return !!(global.navigator && global.navigator.mediaDevices &&
+              global.navigator.mediaDevices.getUserMedia);
+  }
+  function isMacLike() {
+    return /Mac|iPhone|iPad|iPod/.test((global.navigator && global.navigator.platform) || '');
+  }
+
+  /* Downscale in the browser. Smaller upload, the full-resolution original
+     never leaves the device, and - because this always re-encodes to JPEG -
+     any format the browser can decode becomes something the model accepts. */
   function shrink(file) {
     return new Promise(function (resolve, reject) {
       var url = URL.createObjectURL(file);
@@ -52,7 +94,7 @@
         canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
         resolve({ dataUrl: canvas.toDataURL('image/jpeg', JPEG_QUALITY), w: cw, h: ch });
       };
-      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('could not read image')); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('decode')); };
       img.src = url;
     });
   }
@@ -117,15 +159,23 @@
     var err = document.getElementById('wound-err');
     if (!input) return;
 
+    var stage = document.getElementById('wound-stage') || input.closest('.wound-stage') || input.parentNode;
+    var hint = document.getElementById('wound-hint');
+    var camBtn = document.getElementById('wound-camera');
+    var camBox = document.getElementById('wound-cam');
+    var video = document.getElementById('wound-video');
+
     function fail(key) {
       err.textContent = t(key);
       err.hidden = false;
       result.hidden = true;
     }
 
-    input.addEventListener('change', function () {
-      var file = input.files && input.files[0];
+    /* ---------------- the four ways in ---------------- */
+
+    function accept(file, how) {
       if (!file) return;
+      if (file.type && file.type.indexOf('image/') !== 0) { fail('wound.err.notimage'); return; }
       err.hidden = true;
       result.hidden = true;
 
@@ -139,7 +189,7 @@
         preview.appendChild(el('p', 'small', t('wound.tool.working')));
         preview.hidden = false;
 
-        global.Track.send('wound_check', { method: 'upload' });
+        global.Track.send('wound_check', { method: how || 'upload' });
 
         return fetch('/api/wound', {
           method: 'POST',
@@ -165,12 +215,120 @@
         var p = preview.querySelector('.small');
         if (p) p.remove();
         console.warn('[wound] ' + e.message);
-        fail('wound.err.failed');
+        fail(e.message === 'decode' ? 'wound.err.decode' : 'wound.err.failed');
       });
+    }
+
+    // 1. the native picker
+    input.addEventListener('change', function () {
+      accept(input.files && input.files[0], 'upload');
+      // Let the same file be chosen twice in a row - without this, re-picking
+      // an identical file fires no change event and nothing appears to happen.
+      input.value = '';
     });
+
+    // 2. drag and drop
+    if (stage) {
+      ['dragenter', 'dragover'].forEach(function (ev) {
+        stage.addEventListener(ev, function (e) {
+          if (e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') === -1) return;
+          e.preventDefault();
+          stage.classList.add('is-dropping');
+        });
+      });
+      ['dragleave', 'dragend'].forEach(function (ev) {
+        stage.addEventListener(ev, function (e) {
+          if (e.target === stage) stage.classList.remove('is-dropping');
+        });
+      });
+      stage.addEventListener('drop', function (e) {
+        if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+        e.preventDefault();
+        stage.classList.remove('is-dropping');
+        accept(e.dataTransfer.files[0], 'drop');
+      });
+    }
+
+    // 3. paste. Bound to the document because a pasted screenshot has no
+    //    obvious focus target - the reader just hits Cmd+V on the page.
+    document.addEventListener('paste', function (e) {
+      var items = e.clipboardData && e.clipboardData.items;
+      if (!items) return;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].kind === 'file' && items[i].type.indexOf('image/') === 0) {
+          var f = items[i].getAsFile();
+          if (f) { e.preventDefault(); accept(f, 'paste'); return; }
+        }
+      }
+    });
+
+    // 4. the camera, desktop only
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(function (tr) { tr.stop(); });
+        stream = null;
+      }
+      if (camBox) camBox.hidden = true;
+      if (video) video.srcObject = null;
+    }
+
+    if (camBtn && camBox && video && hasCamera() && !isCoarsePointer()) {
+      camBtn.hidden = false;
+
+      camBtn.addEventListener('click', function () {
+        err.hidden = true;
+        global.navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false
+        }).then(function (s) {
+          stream = s;
+          video.srcObject = s;
+          camBox.hidden = false;
+          video.play();
+          var shutter = document.getElementById('wound-shutter');
+          if (shutter) shutter.focus();
+        }).catch(function (e) {
+          // A refused permission is a choice, not a fault. Say so plainly and
+          // leave every other route open.
+          console.warn('[wound] camera: ' + e.name);
+          fail('wound.err.camera');
+        });
+      });
+
+      var shutterBtn = document.getElementById('wound-shutter');
+      if (shutterBtn) {
+        shutterBtn.addEventListener('click', function () {
+          if (!stream) return;
+          var cw = video.videoWidth, ch = video.videoHeight;
+          if (!cw || !ch) return;
+          var canvas = document.createElement('canvas');
+          canvas.width = cw; canvas.height = ch;
+          canvas.getContext('2d').drawImage(video, 0, 0, cw, ch);
+          canvas.toBlob(function (blob) {
+            stopCamera();
+            if (blob) accept(new File([blob], 'camera.jpg', { type: 'image/jpeg' }), 'camera');
+          }, 'image/jpeg', 0.92);
+        });
+      }
+      var cancelBtn = document.getElementById('wound-cam-cancel');
+      if (cancelBtn) cancelBtn.addEventListener('click', function () { stopCamera(); camBtn.focus(); });
+
+      // Never leave the camera light on because someone navigated away.
+      global.addEventListener('pagehide', stopCamera);
+    }
+
+    /* The hint has to describe the routes this device actually has, or it is
+       telling someone to drag a file onto a phone. */
+    function paintHint() {
+      if (!hint) return;
+      hint.textContent = isCoarsePointer()
+        ? t('wound.tool.hint_touch')
+        : t('wound.tool.hint_desktop', { key: isMacLike() ? '⌘V' : 'Ctrl+V' });
+    }
+    paintHint();
 
     // Results are built here, so redraw them when the language changes.
     document.addEventListener('i18n:changed', function () {
+      paintHint();
       if (lastResult && !result.hidden) render(result, lastResult);
     });
   });

@@ -258,6 +258,34 @@ Favicon URLs carry `?v=N`. Chrome keeps favicons in its own icon database and
 will serve a stale one straight through a hard reload; changing the URL is what
 actually forces a refetch. Bump N when the artwork changes.
 
+**Rule 19 — never put `capture` on the photo input.** It looks like a helpful
+hint and is actually a restriction: it tells the browser to go straight to the
+camera. iOS honours it and skips the picker sheet entirely, so Photo Library
+and Choose File - which is where Google Drive, Dropbox and iCloud live - become
+unreachable. Desktop has no camera intent, ignores it, and leaves you with the
+file dialog. One attribute produced "camera only on iPhone" and "files only on
+Mac" simultaneously.
+
+There are four ways a photo gets in, and the device decides which are offered:
+the native picker (always), drag and drop and paste (desktop), and an in-page
+camera via `getUserMedia` (desktop only - a phone's own sheet already offers
+Take Photo and does it better). The hint text is written by JS to match the
+device, because telling someone to drag a file onto a phone is worse than
+saying nothing.
+
+**Rule 20 — `accept` should be `image/*`, not a format list.** Every file is
+re-encoded to JPEG by a canvas before it is sent, so the model never sees the
+original container. Listing `image/jpeg,image/png` did not protect anything; it
+just hid valid photos from the picker, most importantly iPhone HEIC, which
+Safari decodes perfectly well. Validate by trying to decode, not by filtering
+the file dialog.
+
+**No Google Drive or Dropbox SDK.** Both are reachable already: on iOS through
+Choose File, on desktop because both services mount as ordinary folders. Adding
+the Picker or Chooser SDKs would mean loading third-party scripts at runtime,
+which rule 13 and `privacy.html` forbid, and would hand a file listing to a
+third party for no functional gain.
+
 ### The standalone Wound Analyzer
 
 The classifier also has its own site at **wound-analyzer-vercel.vercel.app**,

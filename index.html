@@ -84,11 +84,30 @@
     <h1 data-i18n="home.hero.h1">Check a wound with AI</h1>
     <p class="lede" data-i18n="home.hero.lede">Photograph a cut, scrape, bruise or burn and get first aid guidance in seconds. Your photo is never saved.</p>
 
-    <div class="wound-stage">
+    <div class="wound-stage" id="wound-stage">
       <p class="wound-cta-row">
-        <label class="btn btn-hero" for="wound-file" data-i18n="wound.tool.choose">Take or choose a photo</label>
-        <input type="file" id="wound-file" accept="image/jpeg,image/png" capture="environment" class="sr-only">
+        <label class="btn btn-hero" for="wound-file" data-i18n="wound.tool.choose">Take a photo or choose a file</label>
+        <!-- No `capture` attribute. See the header of js/wound.js: it forces
+             iOS straight to the camera and leaves macOS on the file dialog,
+             which is exactly the "camera only on iPhone, files only on Mac"
+             behaviour. accept is image/* because shrink() re-encodes to JPEG,
+             so narrowing it only hid valid photos such as iPhone HEIC. -->
+        <input type="file" id="wound-file" accept="image/*" class="sr-only">
       </p>
+      <p class="wound-alt">
+        <button type="button" class="btn btn-secondary" id="wound-camera" hidden data-i18n="wound.tool.camera">Use this computer&#39;s camera</button>
+      </p>
+      <!-- Filled by js/wound.js, which knows which routes this device has.
+           No data-i18n: the text depends on the device, not just the language. -->
+      <p class="picker-hint small" id="wound-hint"></p>
+
+      <div class="wound-cam" id="wound-cam" hidden>
+        <video id="wound-video" playsinline muted></video>
+        <p class="wound-cam-row">
+          <button type="button" class="btn" id="wound-shutter" data-i18n="wound.cam.shutter">Take the photo</button>
+          <button type="button" class="btn btn-secondary" id="wound-cam-cancel" data-i18n="wound.cam.cancel">Cancel</button>
+        </p>
+      </div>
       <p class="wound-privacy small" data-i18n="home.hero.privacy">Nothing is stored — not the photo, not by us, not by the model.</p>
 
       <div id="wound-preview" hidden></div>

@@ -1022,3 +1022,32 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .kit-extras > p.small { margin: 0 0 var(--s3); }
 .kit-extras h3:first-of-type { margin-top: 0; }
 @media (prefers-color-scheme: dark) { .kit-extras > summary { color: var(--brand-strong); } }
+
+/* ---------- the photo picker ----------
+   Four routes in - the native picker, drag and drop, paste, and (desktop only)
+   the camera. js/wound.js decides which of them this device actually has and
+   writes the hint to match; the CSS just has to make the extra affordances
+   read as secondary to the one big button. */
+.wound-alt { margin: var(--s3) 0 0; text-align: center; }
+.wound-alt .btn { width: auto; }
+.wound-alt .btn[hidden] { display: none; }
+.picker-hint { margin: var(--s3) 0 0; text-align: center; color: var(--ink-3); }
+
+/* The whole stage is the drop target, not just the button. */
+.wound-stage.is-dropping {
+  outline: 3px dashed var(--brand);
+  outline-offset: -6px;
+  background: var(--brand-soft);
+}
+.wound-stage.is-dropping * { pointer-events: none; }
+
+.wound-cam { margin: var(--s4) 0 0; }
+.wound-cam[hidden] { display: none; }
+.wound-cam video {
+  width: 100%; max-height: 52vh; border-radius: var(--r);
+  border: 1px solid var(--line-strong); background: #000; display: block;
+  /* Mirrored would be wrong here: the reader is pointing the camera at an
+     injury, not at their own face. */
+}
+.wound-cam-row { display: flex; flex-wrap: wrap; gap: var(--s3); margin: var(--s3) 0 0; }
+.wound-cam-row .btn { width: auto; flex: 1 1 auto; }

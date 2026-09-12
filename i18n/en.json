@@ -404,7 +404,7 @@
   "wound.red.911": "Call 911 for heavy bleeding that will not stop, a severe burn, or if someone is confused, pale and breathing fast.",
   "wound.tool.h": "Check a photo",
   "wound.tool.privacy": "Your photo is sent for analysis and is not saved anywhere — not by us, and not in the tool. It is not stored, not logged, and nobody on our team ever sees it.",
-  "wound.tool.choose": "Take or choose a photo",
+  "wound.tool.choose": "Take a photo or choose a file",
   "wound.tool.working": "Checking the photo…",
   "wound.preview.alt": "The photo you selected",
   "wound.privacylink": "How this site handles your data",
@@ -463,5 +463,13 @@
   "home.card.kit.body2": "Four questions. You get the essentials for your household, sized and ready to print.",
   "wound.notdiagnosis_b": "This is not a diagnosis and not medical advice.",
   "kit.extras.summary": "Show {n} more items",
-  "kit.extras.note": "These are worth having, but the essentials above matter most. The progress bar counts only the essentials."
+  "kit.extras.note": "These are worth having, but the essentials above matter most. The progress bar counts only the essentials.",
+  "wound.tool.camera": "Use this computer's camera",
+  "wound.tool.hint_touch": "Take a photo, pick one from your library, or choose a file from Google Drive, Dropbox or iCloud.",
+  "wound.tool.hint_desktop": "You can also drag an image here, or paste one with {key}. Files from Google Drive, Dropbox or iCloud work too.",
+  "wound.cam.shutter": "Take the photo",
+  "wound.cam.cancel": "Cancel",
+  "wound.err.notimage": "That file is not an image.",
+  "wound.err.decode": "That image could not be read. Try a different photo.",
+  "wound.err.camera": "The camera could not be opened. Check your browser's permissions, or choose a file instead."
 }

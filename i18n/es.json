@@ -404,7 +404,7 @@
   "wound.red.911": "Llame al 911 si hay sangrado abundante que no para, una quemadura grave, o si alguien está confundido, pálido y respira rápido.",
   "wound.tool.h": "Revisar una foto",
   "wound.tool.privacy": "Su foto se envía para analizarla y no se guarda en ningún lugar: ni por nosotros, ni en la herramienta. No se almacena, no se registra y nadie de nuestro equipo la ve.",
-  "wound.tool.choose": "Tomar o elegir una foto",
+  "wound.tool.choose": "Toma una foto o elige un archivo",
   "wound.tool.working": "Revisando la foto…",
   "wound.preview.alt": "La foto que eligió",
   "wound.privacylink": "Cómo este sitio maneja sus datos",
@@ -463,5 +463,13 @@
   "home.card.kit.body2": "Cuatro preguntas. Obtienes lo esencial para tu hogar, con las cantidades listas para imprimir.",
   "wound.notdiagnosis_b": "Esto no es un diagnóstico ni consejo médico.",
   "kit.extras.summary": "Ver {n} artículos más",
-  "kit.extras.note": "Vale la pena tenerlos, pero lo esencial de arriba importa más. La barra de progreso solo cuenta lo esencial."
+  "kit.extras.note": "Vale la pena tenerlos, pero lo esencial de arriba importa más. La barra de progreso solo cuenta lo esencial.",
+  "wound.tool.camera": "Usar la cámara de esta computadora",
+  "wound.tool.hint_touch": "Toma una foto, elige una de tu galería, o selecciona un archivo desde Google Drive, Dropbox o iCloud.",
+  "wound.tool.hint_desktop": "También puedes arrastrar una imagen aquí o pegarla con {key}. Los archivos de Google Drive, Dropbox o iCloud también funcionan.",
+  "wound.cam.shutter": "Tomar la foto",
+  "wound.cam.cancel": "Cancelar",
+  "wound.err.notimage": "Ese archivo no es una imagen.",
+  "wound.err.decode": "No se pudo leer esa imagen. Intenta con otra foto.",
+  "wound.err.camera": "No se pudo abrir la cámara. Revisa los permisos del navegador, o elige un archivo."
 }
