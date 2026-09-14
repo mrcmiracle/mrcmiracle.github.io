@@ -119,26 +119,41 @@
     return out;
   }
 
+  /* The classifier only names a wound at CONFIDENCE_THRESHOLD or above - with
+     one exception. A photo that most resembles a third-degree burn comes back
+     as burn_3rd_degree even below that bar, because missing one costs far more
+     than a false alarm. So a third-degree answer under the bar means "possibly
+     severe", and is shown that way rather than as a confident answer. Must
+     match CONFIDENCE_THRESHOLD in the classifier's src/model.py (a percentage
+     here, because the classifier sends confidence as one). */
+  var CONFIDENCE_THRESHOLD_PCT = 60;
+
+  function isPossibleSevereBurn(label, confidence) {
+    return label === 'burn_3rd_degree' && confidence != null && confidence < CONFIDENCE_THRESHOLD_PCT;
+  }
+
   function render(host, data) {
     host.textContent = '';
 
     var isUnknown = data.label === 'unknown' || data.confidence == null;
-    var box = el('div', 'wound-answer' + (isUnknown ? ' is-unsure' : ''));
+    var possibleSevere = isPossibleSevereBurn(data.label, data.confidence);
+    var box = el('div', 'wound-answer' + (isUnknown || possibleSevere ? ' is-unsure' : ''));
 
-    box.appendChild(el('p', 'wound-eyebrow', isUnknown ? t('wound.result.unsure_h') : t('wound.result.h')));
-    box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure') : labelText(data.label)));
+    box.appendChild(el('p', 'wound-eyebrow', isUnknown || possibleSevere ? t('wound.result.unsure_h') : t('wound.result.h')));
+    box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure')
+      : possibleSevere ? t('wound.result.maybe_severe') : labelText(data.label)));
 
     if (data.confidence != null) {
       var c = el('p', 'wound-confidence');
       c.textContent = t('wound.result.confidence', { pct: data.confidence });
       box.appendChild(c);
-      if (isUnknown && data.best_guess) {
-        box.appendChild(el('p', 'small', t('wound.result.bestguess', { guess: labelText(data.best_guess) })));
-      }
     }
+    // No "closest guess" for an unknown answer: the photo is often not a wound
+    // this tool covers at all, and naming a wound for it only misleads.
+    if (possibleSevere) box.appendChild(el('p', 'notice notice-strong', t('wound.result.maybe_severe_911')));
     host.appendChild(box);
 
-    var tips = guidanceFor(isUnknown ? 'unknown' : data.label, data.tips);
+    var tips = guidanceFor(isUnknown ? 'unknown' : possibleSevere ? 'burn_3rd_degree_possible' : data.label, data.tips);
     if (tips.length) {
       host.appendChild(el('h3', null, t('wound.result.tips_h')));
       var ul = el('ul', 'wound-tips');
@@ -247,7 +262,8 @@
           var ul = el('ul', 'history-list');
           rows.forEach(function (r) {
             var li = el('li');
-            li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure') : labelText(r.label)));
+            li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure')
+              : isPossibleSevereBurn(r.label, r.confidence) ? t('wound.result.maybe_severe') : labelText(r.label)));
             li.appendChild(el('span', 'h-conf', r.confidence == null ? '' : t('wound.result.confidence', { pct: r.confidence })));
             li.appendChild(el('span', 'h-date', fmtDate(r.created_at)));
             ul.appendChild(li);
