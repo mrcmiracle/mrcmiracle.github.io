@@ -38,8 +38,13 @@
    1. The "get care now" panel is in the HTML above this script, always
       visible, and repeated with every result. It does not depend on the model
       being right, or on the model working at all.
-   2. Confidence is shown as a plain number every time, and a low-confidence
-      answer is presented as "not sure" rather than a quiet guess.
+   2. An answer the model will not stand behind is presented as "not sure"
+      rather than a quiet guess, and carries NO confidence number. Until the
+      out-of-scope gate shipped, "not sure" always meant confidence under 60%,
+      so printing it was informative. The gate can now withhold an answer the
+      classifier was 88% sure of, and "Not confident enough to say - 88%
+      confidence" reads as a contradiction. A confident answer still shows its
+      number, which is what the reader can act on.
    3. The guidance shown for each result lives HERE rather than being whatever
       the model's server returns, for one reason: that server answers in
       English only, and this site is fully bilingual. Passing its text straight
@@ -143,7 +148,7 @@
     box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure')
       : possibleSevere ? t('wound.result.maybe_severe') : labelText(data.label)));
 
-    if (data.confidence != null) {
+    if (data.confidence != null && !isUnknown) {
       var c = el('p', 'wound-confidence');
       c.textContent = t('wound.result.confidence', { pct: data.confidence });
       box.appendChild(c);
@@ -264,7 +269,8 @@
             var li = el('li');
             li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure')
               : isPossibleSevereBurn(r.label, r.confidence) ? t('wound.result.maybe_severe') : labelText(r.label)));
-            li.appendChild(el('span', 'h-conf', r.confidence == null ? '' : t('wound.result.confidence', { pct: r.confidence })));
+            li.appendChild(el('span', 'h-conf', (r.confidence == null || r.label === 'unknown') ? ''
+              : t('wound.result.confidence', { pct: r.confidence })));
             li.appendChild(el('span', 'h-date', fmtDate(r.created_at)));
             ul.appendChild(li);
           });
