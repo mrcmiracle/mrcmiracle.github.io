@@ -340,7 +340,7 @@
   "priv.s6.h": "Deleting your data",
   "priv.s6.b": "To delete your saved wound check results yourself, sign in and use \"Clear my history\" on the wound check page. To delete a signed-in account and everything linked to it, including survey answers, email us and we will remove it. To remove what is stored in your browser, clear your site data.",
   "priv.s7.h": "Who else can see it",
-  "priv.s7.b": "The site is hosted by Vercel. The database is Supabase. Anonymous usage is mirrored to a Google Sheet that our team can read. Visitor counts come from GoatCounter, which sets no cookies. Map tiles come from OpenStreetMap, which is only contacted if you tap to open the map. If you tap a directions link, it opens Apple Maps, Google Maps or OpenStreetMap in a new tab and passes only that location's coordinates and name, never yours. Apart from that, Google is involved only if you choose to sign in. Each of these companies sees the traffic needed to do its job and nothing more.",
+  "priv.s7.b": "The site is hosted by Vercel. The database is Supabase. Anonymous usage is mirrored to a Google Sheet that our team can read. Air quality readings come from AirNow (EPA), which carries the Puget Sound Clean Air Agency's own numbers, and from Google's Air Quality service. Both are fetched by our server, not by your browser, so neither of them learns anything about you. The map works differently: when you tap to open it, your browser loads Google Maps directly — or OpenStreetMap, if no Google key is configured — and at that moment Google or OpenStreetMap can see your IP address, the same as visiting any website. Nothing contacts them until you tap, and the rest of the page works without it. If you tap a directions link, it opens Apple Maps, Google Maps or OpenStreetMap in a new tab and passes only that location's coordinates and name, never yours. Apart from that, Google is involved only if you choose to sign in. Each of these companies sees the traffic needed to do its job and nothing more.",
   "priv.s8.h": "Why we collect anything at all",
   "priv.s8.b": "Two reasons. It tells us which parts of the site actually help people, so we can improve them. And this is a HOSA competitive project, so we report totals such as how many households built a preparedness plan. Everything reported is a count or an average. No individual is ever identified.",
   "priv.s9.h": "Questions",
@@ -561,5 +561,7 @@
   "wound.history.empty": "Nothing saved yet. Results you get while signed in will appear here.",
   "survey.privacy_signedin": "You are signed in, so these answers are linked to your account. That is what lets us match them across your devices. They are only ever reported as totals, never by name.",
   "sources.h": "Sources",
-  "sources.tag.guidance": "official guidance"
+  "sources.tag.guidance": "official guidance",
+  "aqi.detail.dominant": "Main pollutant right now: {name}",
+  "aqi.detail.source": "Pollutant detail and guidance from Google Air Quality"
 }

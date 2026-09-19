@@ -128,6 +128,7 @@
     host.appendChild(p);
     global.AQI.nearest(origin.lat, origin.lon).then(function (reading) {
       global.AQI.render(host, reading, t);
+      global.AQI.detail(host, origin.lat, origin.lon, t);
       if (reading) {
         global.Track.send('aqi_lookup', {
           results: reading.area.aqi,
@@ -197,6 +198,58 @@
     });
   }
 
+  /* Which map to draw. Google if a key is configured, OpenStreetMap if not.
+     The key is fetched at the moment the map is opened, not on page load, so a
+     visitor who never taps the map never causes the request. */
+  var configPromise = null;
+  function mapsKey() {
+    if (!configPromise) {
+      configPromise = fetch('/api/config', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
+    }
+    return configPromise.then(function (c) { return (c && c.mapsKey) || ''; });
+  }
+
+  /* Google Maps loads by calling a global when it is ready, so the callback
+     name has to exist on window before the script tag is added. */
+  function loadGoogleMaps(key) {
+    if (global.google && global.google.maps) return Promise.resolve();
+    return new Promise(function (res, rej) {
+      var cb = '__mrcMapsReady';
+      global[cb] = function () { delete global[cb]; res(); };
+      var s = document.createElement('script');
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) +
+              '&callback=' + cb + '&loading=async&v=weekly';
+      s.async = true;
+      s.onerror = function () { delete global[cb]; rej(new Error('Google Maps failed to load')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function drawGoogle(box, origin) {
+    box.hidden = false;
+    var gm = global.google.maps;
+    /* Classic google.maps.Marker rather than AdvancedMarkerElement: the
+       advanced one needs a Map ID configured in Cloud Console, which is a
+       second thing to set up and get wrong. Revisit if Google withdraws it. */
+    var gmap = new gm.Map(box, { mapTypeControl: false, streetViewControl: false, zoom: 11 });
+    var bounds = new gm.LatLngBounds();
+    var info = new gm.InfoWindow();
+    shown.forEach(function (e) {
+      var pos = { lat: e.site.lat, lng: e.site.lon };
+      var marker = new gm.Marker({ position: pos, map: gmap, title: e.site.name });
+      marker.addListener('click', function () {
+        info.setContent('<strong>' + e.site.name + '</strong><br>' + e.site.address);
+        info.open({ anchor: marker, map: gmap });
+      });
+      bounds.extend(pos);
+    });
+    if (origin) bounds.extend({ lat: origin.lat, lng: origin.lon });
+    if (!bounds.isEmpty()) gmap.fitBounds(bounds, 40);
+    map = { google: gmap, invalidateSize: function () { gm.event.trigger(gmap, 'resize'); } };
+  }
+
   function toggleMap(btn, origin) {
     var box = $('#map');
     if (map && !box.hidden) {
@@ -214,7 +267,33 @@
     btn.textContent = t('air.map.loading');
     global.Track.send('map_open', { results: shown.length });
 
-    Promise.all([loadCss(LEAFLET_CSS), loadScript(LEAFLET_JS)])
+    mapsKey()
+      .then(function (key) {
+        if (!key) throw new Error('no maps key');
+        return loadGoogleMaps(key).then(function () { drawGoogle(box, origin); });
+      })
+      .catch(function (err) {
+        /* Any reason at all - no key, billing off, referrer blocked, offline -
+           falls through to OpenStreetMap rather than leaving the reader with a
+           dead button during a smoke event. */
+        if (err && err.message !== 'no maps key') console.warn('[map] Google: ' + err.message);
+        return drawLeaflet(box, origin);
+      })
+      .then(function () {
+        btn.disabled = false;
+        btn.textContent = t('air.map.hide');
+      })
+      .catch(function (err) {
+        console.warn('[map] ' + err.message);
+        btn.disabled = false;
+        btn.textContent = t('air.map.show');
+        var p = el('p', 'notice', t('common.error'));
+        box.parentNode.insertBefore(p, box);
+      });
+  }
+
+  function drawLeaflet(box, origin) {
+    return Promise.all([loadCss(LEAFLET_CSS), loadScript(LEAFLET_JS)])
       .then(function () {
         box.hidden = false;
         map = global.L.map('map');
@@ -231,16 +310,6 @@
         });
         if (origin) group.push([origin.lat, origin.lon]);
         map.fitBounds(group, { padding: [30, 30], maxZoom: 13 });
-
-        btn.disabled = false;
-        btn.textContent = t('air.map.hide');
-      })
-      .catch(function (err) {
-        console.warn('[map] ' + err.message);
-        btn.disabled = false;
-        btn.textContent = t('air.map.show');
-        var p = el('p', 'notice', t('common.error'));
-        box.parentNode.insertBefore(p, box);
       });
   }
 

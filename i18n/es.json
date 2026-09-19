@@ -340,7 +340,7 @@
   "priv.s6.h": "Cómo borrar sus datos",
   "priv.s6.b": "Para borrar usted mismo sus resultados guardados de la revisión de heridas, inicie sesión y use \"Borrar mi historial\" en la página de revisión de heridas. Para borrar una cuenta y todo lo vinculado a ella, incluidas las respuestas de la encuesta, escríbanos y la eliminaremos. Para quitar lo que está guardado en su navegador, borre los datos del sitio.",
   "priv.s7.h": "Quién más puede verlo",
-  "priv.s7.b": "El sitio está alojado por Vercel. La base de datos es Supabase. El uso anónimo se copia a una hoja de cálculo de Google que nuestro equipo puede leer. Los conteos de visitantes vienen de GoatCounter, que no usa cookies. Los mapas vienen de OpenStreetMap, que solo se contacta si usted toca para abrir el mapa. Si usted toca un enlace de cómo llegar, se abre Apple Maps, Google Maps u OpenStreetMap en una pestaña nueva y solo se envían las coordenadas y el nombre de ese lugar, nunca los suyos. Fuera de eso, Google participa únicamente si usted decide iniciar sesión. Cada una de estas empresas ve solo el tráfico necesario para hacer su trabajo y nada más.",
+  "priv.s7.b": "El sitio está alojado por Vercel. La base de datos es Supabase. El uso anónimo se copia a una hoja de cálculo de Google que nuestro equipo puede leer. Los datos de calidad del aire vienen de AirNow (EPA), que trae las cifras de la propia Agencia de Aire Limpio de Puget Sound, y del servicio de Calidad del Aire de Google. Los dos los consulta nuestro servidor, no su navegador, así que ninguno de los dos se entera de nada sobre usted. El mapa funciona distinto: cuando usted toca para abrirlo, su navegador carga Google Maps directamente — o OpenStreetMap, si no hay una clave de Google configurada — y en ese momento Google u OpenStreetMap pueden ver su dirección IP, igual que al visitar cualquier sitio web. Nada los contacta hasta que usted toca, y el resto de la página funciona sin eso. Si usted toca un enlace de cómo llegar, se abre Apple Maps, Google Maps u OpenStreetMap en una pestaña nueva y solo se envían las coordenadas y el nombre de ese lugar, nunca los suyos. Fuera de eso, Google participa únicamente si usted decide iniciar sesión. Cada una de estas empresas ve solo el tráfico necesario para hacer su trabajo y nada más.",
   "priv.s8.h": "Por qué recopilamos algo",
   "priv.s8.b": "Por dos razones. Nos dice qué partes del sitio realmente ayudan a la gente, para poder mejorarlas. Y este es un proyecto de competencia de HOSA, así que reportamos totales, como cuántos hogares armaron un plan de preparación. Todo lo que reportamos es un conteo o un promedio. Nunca se identifica a ninguna persona.",
   "priv.s9.h": "Preguntas",
@@ -561,5 +561,7 @@
   "wound.history.empty": "Aún no hay nada guardado. Los resultados que obtengas con la sesión iniciada aparecerán aquí.",
   "survey.privacy_signedin": "Tienes la sesión iniciada, así que estas respuestas quedan vinculadas a tu cuenta. Así podemos relacionarlas entre tus dispositivos. Solo se reportan como totales, nunca por nombre.",
   "sources.h": "Fuentes",
-  "sources.tag.guidance": "guía oficial"
+  "sources.tag.guidance": "guía oficial",
+  "aqi.detail.dominant": "Contaminante principal en este momento: {name}",
+  "aqi.detail.source": "Detalle de contaminantes y recomendaciones de Google Air Quality"
 }
