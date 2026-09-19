@@ -108,9 +108,17 @@
 
   function scale(name, lowKey, highKey) {
     var wrap = el('div', 'sv-scale');
+    /* BOTH classes, and that is the whole point: sv-scale-row lays the five
+       out in a row, but every piece of label chrome - the box, the border, and
+       above all the highlight that says "you picked this" - lives on
+       .sv-radios. Passing only sv-scale-row, as this did until 2026-09-19,
+       left the numbers with no visible checked state at all. The radio was
+       being set and the answer was submitted correctly, so nothing errored;
+       it simply looked broken, and people reported that the buttons did
+       nothing. Do not drop sv-radios here. */
     wrap.appendChild(radios(name, [1, 2, 3, 4, 5].map(function (n) {
       return { value: String(n), text: String(n) };
-    }), 'sv-scale-row'));
+    }), 'sv-radios sv-scale-row'));
     var ends = el('div', 'sv-scale-ends small');
     ends.appendChild(span(lowKey));
     ends.appendChild(span(highKey));
