@@ -295,3 +295,41 @@ MRC endorses its output. It reports to this site's `/api/track` with
 `site: 'wound-analyzer'` so both front ends land in one dataset; `impact.html`
 breaks the wound figures out by site rather than letting one borrow the other's
 numbers.
+
+---
+
+## Amendment — sources, and the new seal (2026-09-19)
+
+**21. Every medical claim carries its source.** MRC asked for this, and it is
+now the rule rather than a one-off: any guidance telling a reader what to do
+about an injury, smoke or an earthquake gets a `data-sources` attribute naming
+references in `js/sources.js`, which renders a collapsed **Sources** block under
+it. Collapsed, because a reader acting during a smoke event must not have to
+scroll past a bibliography to reach the next instruction.
+
+Three things that are not negotiable when adding one:
+
+- **The reference must exist.** Every entry was looked up on PubMed and its
+  fields copied from the record. A plausible-looking citation that does not
+  exist is the worst failure this page can have, and it is invisible to anyone
+  who does not click.
+- **It must support the exact sentence it sits under.** When nothing did, the
+  sentence changed: the earthquake step used to say broken glass causes most
+  injuries after a quake, which no source found supports. It now says cuts and
+  bruises are among the most common injuries, which the Loma Prieta hospital
+  data does show.
+- **Research and agency guidance are labelled differently.** A state
+  preparedness campaign is not a study, and the block says so.
+
+**22. The seal is the HOSA jaguar, and the transparent master lives in the
+repo.** `tools/seal-source-transparent.png`. Exports from Instagram or Canva
+come back with the transparency flattened to black; dropped onto a light page
+or into the middle of a QR code, that is a black square. Cut the circle out and
+unmultiply the rim rather than pasting the export.
+
+**23. A QR code is not shipped until it has been decoded.** `tools/make_qr.py`
+regenerates the poster set and refuses to write any file that does not read
+back its own URL, at seven sizes down to 150px, with ZXing. The seal sits on a
+white disc for the same reason. Check SVGs in a browser with BarcodeDetector.
+Never check with OpenCV's basic `QRCodeDetector` — it fails roughly 2% of codes
+that phones read fine, and it has already produced two wrong conclusions here.
