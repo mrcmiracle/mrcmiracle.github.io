@@ -79,7 +79,7 @@
   "rn.quake.title": "There was just an earthquake",
   "rn.quake.sub": "Do these now.",
   "rn.quake.1": "Check yourself, then the people near you. For serious bleeding, press hard on the wound and keep pressing.",
-  "rn.quake.2": "Put shoes on before you walk anywhere. Broken glass causes most injuries after a quake.",
+  "rn.quake.2": "Put shoes on before you walk anywhere. Cuts and bruises are among the most common injuries after a quake.",
   "rn.quake.3": "Expect aftershocks. When one starts: Drop, Cover, and Hold On.",
   "rn.quake.4": "Smell gas or hear hissing? Get everyone outside first. Shut the gas off only if you know how. Once it is off, the utility must turn it back on.",
   "rn.quake.5": "No candles, no matches, no lighters. Use a flashlight. Do not flip light switches if you suspect a gas leak.",
@@ -559,5 +559,7 @@
   "wound.history.clear": "Clear my history",
   "wound.history.confirm": "Tap again to delete all of it",
   "wound.history.empty": "Nothing saved yet. Results you get while signed in will appear here.",
-  "survey.privacy_signedin": "You are signed in, so these answers are linked to your account. That is what lets us match them across your devices. They are only ever reported as totals, never by name."
+  "survey.privacy_signedin": "You are signed in, so these answers are linked to your account. That is what lets us match them across your devices. They are only ever reported as totals, never by name.",
+  "sources.h": "Sources",
+  "sources.tag.guidance": "official guidance"
 }

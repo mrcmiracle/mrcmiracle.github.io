@@ -110,6 +110,21 @@
     return got === key ? label.replace(/_/g, ' ') : got;
   }
 
+  /* The published evidence behind each set of first aid steps, by label. Ids
+     are defined in js/sources.js; the block is rendered under the steps so a
+     reader - or MRC reviewing this page - can check any of it. Guidance shown
+     to someone treating a wound should never be unattributable. */
+  var TIP_SOURCES = {
+    abrasion: ['laceration2017', 'idsa2014', 'tetanus2020'],
+    bruise: ['cryo2004'],
+    cut: ['ilcor2020', 'laceration2017', 'tetanus2020'],
+    burn_1st_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
+    burn_2nd_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
+    burn_3rd_degree: ['isbi2016', 'ilcor2020'],
+    burn_3rd_degree_possible: ['isbi2016', 'ilcor2020'],
+    unknown: ['idsa2014', 'isbi2016']
+  };
+
   /* Localised guidance for a label. Falls back to whatever the classifier sent
      if this file has no wording for that label - better English guidance than
      none, and it means a new class added upstream still says something. */
@@ -164,6 +179,9 @@
       var ul = el('ul', 'wound-tips');
       tips.forEach(function (line) { ul.appendChild(el('li', null, line)); });
       host.appendChild(ul);
+
+      var srcIds = TIP_SOURCES[isUnknown ? 'unknown' : possibleSevere ? 'burn_3rd_degree_possible' : data.label];
+      if (srcIds && global.Sources) host.appendChild(global.Sources.block(srcIds));
     }
 
     host.appendChild(el('p', 'notice notice-strong', t('wound.result.repeat')));

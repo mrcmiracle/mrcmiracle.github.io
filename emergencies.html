@@ -6,10 +6,10 @@
 <title>Emergencies — MRC Miracle</title>
 <meta name="description" content="What to do right now in wildfire smoke or after an earthquake, and how to get ready, for King County households.">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" href="/assets/icon-32.png?v=2" sizes="32x32" type="image/png">
-<link rel="icon" href="/assets/icon-16.png?v=2" sizes="16x16" type="image/png">
-<link rel="icon" href="/assets/icon-48.png?v=2" sizes="48x48" type="image/png">
-<link rel="icon" href="/assets/icon-96.png?v=2" sizes="96x96" type="image/png">
+<link rel="icon" href="/assets/icon-32.png?v=3" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/icon-16.png?v=3" sizes="16x16" type="image/png">
+<link rel="icon" href="/assets/icon-48.png?v=3" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/icon-96.png?v=3" sizes="96x96" type="image/png">
 <link rel="canonical" href="https://mrcmiracle.vercel.app/emergencies.html">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -98,31 +98,32 @@
     </ol>
     <p class="call911" data-i18n="rn.smoke.911"></p>
     <a class="btn" href="/clean-air.html" data-i18n="rn.smoke.cta">Find clean air near me</a>
+    <div data-sources="reid2016 stauffer2020 holm2021 epaSmoke"></div>
   </section>
   <h3 class="emerg-more" data-i18n="emerg.more_smoke">Getting ready for smoke season</h3>
     <details class="sect" data-sect="smoke-cleanroom">
       <summary data-i18n="smoke.s1.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s1.b"></p></div>
+      <div class="sect-body" data-sources="stauffer2020 epaSmoke"><p data-i18n="smoke.s1.b"></p></div>
     </details>
     <details class="sect" data-sect="smoke-seal">
       <summary data-i18n="smoke.s2.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s2.b"></p></div>
+      <div class="sect-body" data-sources="stauffer2020 epaSmoke"><p data-i18n="smoke.s2.b"></p></div>
     </details>
     <details class="sect" data-sect="smoke-indoor">
       <summary data-i18n="smoke.s3.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s3.b"></p></div>
+      <div class="sect-body" data-sources="vardoulakis2020"><p data-i18n="smoke.s3.b"></p></div>
     </details>
     <details class="sect" data-sect="smoke-masks">
       <summary data-i18n="smoke.s4.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s4.b"></p></div>
+      <div class="sect-body" data-sources="holm2021"><p data-i18n="smoke.s4.b"></p></div>
     </details>
     <details class="sect" data-sect="smoke-risk">
       <summary data-i18n="smoke.s5.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s5.b"></p></div>
+      <div class="sect-body" data-sources="cascio2018 reid2016"><p data-i18n="smoke.s5.b"></p></div>
     </details>
     <details class="sect" data-sect="smoke-help">
       <summary data-i18n="smoke.s6.h"></summary>
-      <div class="sect-body"><p data-i18n="smoke.s6.b"></p></div>
+      <div class="sect-body" data-sources="reid2016 cascio2018"><p data-i18n="smoke.s6.b"></p></div>
     </details>
 
   <section class="rn-panel quake" id="earthquake" aria-labelledby="quake-h">
@@ -141,23 +142,24 @@
       <li data-i18n="rn.quake.10"></li>
     </ol>
     <p class="call911" data-i18n="rn.quake.911"></p>
+    <div data-sources="pointer1992 ilcor2020 shakeout waTsunami"></div>
   </section>
   <h3 class="emerg-more" data-i18n="emerg.more_quake">Getting ready for an earthquake</h3>
     <details class="sect" data-sect="quake-during">
       <summary data-i18n="quake.s1.h"></summary>
-      <div class="sect-body"><p data-i18n="quake.s1.b"></p></div>
+      <div class="sect-body" data-sources="shakeout ramirez2005"><p data-i18n="quake.s1.b"></p></div>
     </details>
     <details class="sect" data-sect="quake-after">
       <summary data-i18n="quake.s2.h"></summary>
-      <div class="sect-body"><p data-i18n="quake.s2.b"></p></div>
+      <div class="sect-body" data-sources="pointer1992 peekasa2003 ilcor2020"><p data-i18n="quake.s2.b"></p></div>
     </details>
     <details class="sect" data-sect="quake-before">
       <summary data-i18n="quake.s3.h"></summary>
-      <div class="sect-body"><p data-i18n="quake.s3.b"></p></div>
+      <div class="sect-body" data-sources="ramirez2005 waQuake"><p data-i18n="quake.s3.b"></p></div>
     </details>
     <details class="sect" data-sect="quake-why">
       <summary data-i18n="quake.s4.h"></summary>
-      <div class="sect-body"><p data-i18n="quake.s4.b"></p></div>
+      <div class="sect-body" data-sources="waQuake"><p data-i18n="quake.s4.b"></p></div>
     </details>
 </div>
 </main>
@@ -188,5 +190,6 @@
 <script src="js/auth.js"></script>
 <script src="js/account.js"></script>
 <script src="js/app.js"></script>
+<script src="js/sources.js"></script>
 </body>
 </html>

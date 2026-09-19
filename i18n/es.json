@@ -79,7 +79,7 @@
   "rn.quake.title": "Acaba de haber un terremoto",
   "rn.quake.sub": "Haga esto ahora.",
   "rn.quake.1": "Revísese usted primero y luego a las personas cercanas. Si hay sangrado grave, presione fuerte sobre la herida y no deje de presionar.",
-  "rn.quake.2": "Póngase zapatos antes de caminar. Los vidrios rotos causan la mayoría de las lesiones después de un terremoto.",
+  "rn.quake.2": "Póngase zapatos antes de caminar. Las cortaduras y los moretones están entre las lesiones más comunes después de un terremoto.",
   "rn.quake.3": "Espere réplicas. Cuando empiece una: agáchese, cúbrase y agárrese.",
   "rn.quake.4": "¿Huele a gas o escucha un silbido? Saque a todos afuera primero. Cierre el gas solo si sabe cómo hacerlo. Una vez cerrado, la compañía debe volver a abrirlo.",
   "rn.quake.5": "Nada de velas, cerillos ni encendedores. Use una linterna. No toque los interruptores de luz si sospecha una fuga de gas.",
@@ -559,5 +559,7 @@
   "wound.history.clear": "Borrar mi historial",
   "wound.history.confirm": "Toca de nuevo para borrarlo todo",
   "wound.history.empty": "Aún no hay nada guardado. Los resultados que obtengas con la sesión iniciada aparecerán aquí.",
-  "survey.privacy_signedin": "Tienes la sesión iniciada, así que estas respuestas quedan vinculadas a tu cuenta. Así podemos relacionarlas entre tus dispositivos. Solo se reportan como totales, nunca por nombre."
+  "survey.privacy_signedin": "Tienes la sesión iniciada, así que estas respuestas quedan vinculadas a tu cuenta. Así podemos relacionarlas entre tus dispositivos. Solo se reportan como totales, nunca por nombre.",
+  "sources.h": "Fuentes",
+  "sources.tag.guidance": "guía oficial"
 }

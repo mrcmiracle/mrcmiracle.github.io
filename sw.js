@@ -22,7 +22,7 @@
                    page already has a designed state for that.
      other /api/   network only. Writes must not be replayed from a cache.
 */
-const VERSION = 'v13';
+const VERSION = 'v14';
 const SHELL = 'shell-' + VERSION;
 const ASSETS = 'assets-' + VERSION;
 
@@ -32,7 +32,7 @@ const PRECACHE = [
   '/privacy.html', '/impact.html', '/404.html',
   '/css/styles.css',
   '/js/i18n.js', '/js/track.js', '/js/app.js', '/js/survey.js',
-  '/js/cleanair.js', '/js/aqi.js', '/js/auth.js', '/js/account.js', '/js/wound.js',
+  '/js/cleanair.js', '/js/aqi.js', '/js/auth.js', '/js/account.js', '/js/wound.js', '/js/sources.js',
   '/i18n/en.json', '/i18n/es.json',
   '/data/clean-air-sites.json', '/data/zips.json',
   '/assets/fonts/atkinson-400.woff2', '/assets/fonts/atkinson-700.woff2',
