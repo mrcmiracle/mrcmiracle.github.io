@@ -52,7 +52,13 @@ export default async function handler(req, res) {
       }).then((r) => (r.ok ? r.json() : []))
     ]);
 
-    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    /* Short, because of how this page is actually used: someone scans a poster
+       at a library table and then refreshes the dashboard to check it worked.
+       At s-maxage=300 they saw a five-minute-old number, concluded the counting
+       was broken, and had no way to tell the difference. 30s still collapses a
+       room full of refreshes into one query, and stale-while-revalidate keeps
+       it instant while the new figures are fetched behind it. */
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=120');
     return res.status(200).json({
       ok: true,
       generated_at: new Date().toISOString(),

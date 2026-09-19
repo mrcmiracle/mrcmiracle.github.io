@@ -1384,3 +1384,83 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .rn-panel .src-authors,
 .rn-panel .src-where,
 .rn-panel .src-ids a { color: inherit; }
+
+/* ---------- impact dashboard ----------
+   Read in this order: totals, then the working behind them. The page is a
+   reporting surface, not an emergency one, so it may carry more density than
+   anything a reader reaches mid-smoke-event - but it stays in the same
+   palette, and colour still means something: violet is this project, amber
+   and red stay reserved for the hazard channels and appear nowhere here. */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--s3); margin: var(--s4) 0 var(--s5);
+}
+.kpi {
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--paper); padding: var(--s4) var(--s3);
+}
+.kpi.is-muted { background: var(--paper-2); }
+.kpi-num {
+  font-family: var(--font-display); font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-weight: 700; line-height: 1; color: var(--brand);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums;
+}
+.kpi.is-muted .kpi-num { color: var(--ink-2); }
+.kpi-label { font-size: .8rem; color: var(--ink); margin-top: .4rem; line-height: 1.35; }
+.kpi-sub { font-size: .72rem; color: var(--ink-3); margin-top: .2rem; }
+
+.dash-card {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--paper); padding: var(--s5) var(--s4);
+  margin: 0 0 var(--s5);
+}
+.dash-head h2 { margin: 0; font-size: var(--step-2); }
+.dash-hint { font-size: .88rem; color: var(--ink-2); margin: var(--s2) 0 var(--s4); }
+.dash-sub {
+  font-family: var(--font-text); font-size: .74rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3);
+  margin: var(--s5) 0 var(--s2);
+}
+.dash-note { font-size: .82rem; color: var(--ink-3); margin: var(--s3) 0 0; line-height: 1.5; }
+.dash-figure { font-size: .92rem; color: var(--ink-2); margin: var(--s4) 0 0; line-height: 1.55; }
+.dash-figure b { color: var(--brand); font-variant-numeric: tabular-nums lining-nums; }
+.dash-card .kpi-grid { margin-bottom: var(--s4); }
+.dash-card > .notice { margin-top: var(--s4); }
+
+/* horizontal bars: the label and the number are text, the bar is decoration */
+.bars { display: grid; gap: var(--s2); margin: var(--s3) 0 0; }
+.bar-row { display: grid; grid-template-columns: minmax(6rem, 11rem) 1fr auto; gap: var(--s3); align-items: center; }
+.bar-label { font-size: .86rem; color: var(--ink); }
+.bar-track { background: var(--paper-3); border-radius: var(--r-pill); height: 12px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--brand); border-radius: var(--r-pill); }
+.bar-fill.tone-flat { background: var(--ink-3); }
+.bar-value { font-size: .8rem; color: var(--ink-2); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.bar-row.is-zero .bar-label, .bar-row.is-zero .bar-value { color: var(--ink-3); }
+
+/* before / after */
+.pair-legend { display: flex; gap: var(--s4); margin: 0 0 var(--s3); font-size: .78rem; color: var(--ink-2); }
+.key::before {
+  content: ''; display: inline-block; width: .8rem; height: .55rem;
+  border-radius: 2px; margin-right: .4rem; vertical-align: baseline;
+}
+.key-before::before { background: var(--violet-200); }
+.key-after::before { background: var(--brand); }
+.pair-grid { display: grid; gap: var(--s4); }
+.pair-line { display: grid; grid-template-columns: minmax(7rem, 13rem) 1fr auto; gap: var(--s3); align-items: center; }
+.pair-label { font-size: .86rem; }
+.pair-nums { font-size: .8rem; color: var(--ink-2); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.chart-pair { width: 100%; height: 30px; display: block; }
+.pair-before { fill: var(--violet-200); }
+.pair-after { fill: var(--brand); }
+
+/* when people scan */
+.hours-bars { display: flex; align-items: flex-end; gap: 2px; height: 64px; margin-top: var(--s2); }
+.hour { flex: 1; background: var(--brand); border-radius: 2px 2px 0 0; min-height: 3px; }
+.hour.is-zero { background: var(--line); }
+.hours-axis { display: flex; justify-content: space-between; font-size: .68rem; color: var(--ink-3); margin-top: .3rem; }
+
+@media (max-width: 34rem) {
+  .bar-row, .pair-line { grid-template-columns: 1fr auto; }
+  .bar-track { grid-column: 1 / -1; order: 3; }
+  .chart-pair { grid-column: 1 / -1; order: 3; }
+}
