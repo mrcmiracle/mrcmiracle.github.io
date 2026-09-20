@@ -453,7 +453,7 @@
   "wound.tips.burn_3rd_degree_possible.3": "No despegue la ropa pegada, y no ponga hielo, mantequilla ni pomada.",
   "wound.tips.burn_3rd_degree_possible.4": "Cubra sin apretar con una tela limpia y seca o un apósito que no se pegue hasta que reciba atención.",
   "wound.tips.unknown.1": "La herramienta no pudo identificar esta lesión. O la foto no fue lo bastante clara, o no es un tipo de lesión que la herramienta cubre: solo reconoce cortadas, raspaduras, moretones y quemaduras.",
-  "wound.tips.unknown.2": "Si la foto salió borrosa, oscura o tomada de lejos, intente de nuevo con una foto de cerca, enfocada y con buena luz.",
+  "wound.tips.unknown.2": "Si la foto estaba borrosa, oscura o tomada de lejos, intente de nuevo con un primer plano claro y bien iluminado donde la lesión llene la foto. El encuadre es lo que más influye y usted lo controla.",
   "wound.tips.unknown.3": "Una herida que no sana, que sigue creciendo o que muestra señales de infección (enrojecimiento que se extiende, hinchazón, calor, pus o fiebre) debe revisarla un profesional médico, sobre todo si tiene diabetes o mala circulación.",
   "wound.tips.unknown.4": "Si le preocupa la lesión, que la vean sin importar lo que diga esta herramienta.",
   "nav.wound": "Revisar herida",
@@ -563,5 +563,6 @@
   "sources.h": "Fuentes",
   "sources.tag.guidance": "guía oficial",
   "aqi.detail.dominant": "Contaminante principal en este momento: {name}",
-  "aqi.detail.source": "Detalle de contaminantes y recomendaciones de Google Air Quality"
+  "aqi.detail.source": "Detalle de contaminantes y recomendaciones de Google Air Quality",
+  "wound.tool.framing": "Acérquese: que la lesión llene la foto. Las fotos tomadas de lejos tienen mucha más probabilidad de salir como \"no estoy seguro\"."
 }

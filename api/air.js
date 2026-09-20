@@ -39,12 +39,17 @@ function remember(key, payload) {
   cache.set(key, { at: Date.now(), payload });
 }
 
-/* Google returns a list of indexes (universal AQI and, in the US, the EPA's
-   NowCast AQI). The EPA one is what every other number on this site means, so
-   it is preferred and the other is dropped rather than mixed in. */
+/* Google returns a list of indexes: its own "universal" AQI and, where it has
+   one, the local official index - in the US, the EPA AQI. Only the EPA one is
+   used. The universal index is deliberately DROPPED rather than used as a
+   fallback: it is scored in the opposite direction, so passing it through
+   under the same name would publish "81 - excellent" on a page where 81 means
+   unhealthy for sensitive groups. Anything returned carries the scale it is
+   on, so nothing downstream can mix them by accident. */
 function pickIndex(indexes) {
   const list = Array.isArray(indexes) ? indexes : [];
-  return list.find((i) => i.code === 'usa_epa') || list[0] || null;
+  const epa = list.find((i) => i.code === 'usa_epa');
+  return epa || null;
 }
 
 export default async function handler(req, res) {
@@ -82,7 +87,14 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         location: { latitude: gLat, longitude: gLon },
-        extraComputations: ['HEALTH_RECOMMENDATIONS', 'POLLUTANT_CONCENTRATION', 'DOMINANT_POLLUTANT_CONCENTRATION'],
+        /* LOCAL_AQI is what makes Google return the US EPA index alongside its
+           own. Without it the only index in the reply is Google's "universal"
+           AQI, which runs the OTHER WAY - 100 is clean air there, while 100 on
+           the EPA scale is unhealthy for sensitive groups. Every other number
+           on this site, and every message King County puts out, is EPA. Two
+           scales that look identical and mean opposite things must never reach
+           the same page. */
+        extraComputations: ['LOCAL_AQI', 'HEALTH_RECOMMENDATIONS', 'POLLUTANT_CONCENTRATION', 'DOMINANT_POLLUTANT_CONCENTRATION'],
         languageCode: 'en'
       }),
       signal: AbortSignal.timeout(8000)
@@ -104,9 +116,12 @@ export default async function handler(req, res) {
       source: 'Google Air Quality API',
       at: body.dateTime || new Date().toISOString(),
       point: { lat: gLat, lon: gLon },
+      // Null rather than a number on an unknown scale, when no EPA index came back.
+      scale: index ? 'usa_epa' : null,
       aqi: index ? index.aqi : null,
       category: index ? index.category : null,
-      dominant: index ? index.dominantPollutant : null,
+      dominant: (index && index.dominantPollutant) ||
+                (body.pollutants && body.pollutants.length ? body.pollutants[0].code : null),
       pollutants: (body.pollutants || []).map((p) => ({
         code: p.code,
         name: p.displayName,

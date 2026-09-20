@@ -1464,3 +1464,8 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
   .bar-track { grid-column: 1 / -1; order: 3; }
   .chart-pair { grid-column: 1 / -1; order: 3; }
 }
+
+/* The one instruction that changes the answer rate: measured 48% of close-ups
+   answered against 31% of arm's-length shots. It sits with the picker, before
+   the photo is taken, not only in the advice shown after a "not sure". */
+.wound-framing { color: var(--ink-2); margin: var(--s3) 0 0; }
