@@ -148,6 +148,44 @@
      here, because the classifier sends confidence as one). */
   var CONFIDENCE_THRESHOLD_PCT = 60;
 
+  /* Plain words for the confidence number, because "74%" does not tell a
+     reader whether to act on it. The 60% line is not ours to choose - the
+     server already refuses to name a wound below it and sends "unknown" - so
+     these two only split what is left. 85 is a judgement call, set where the
+     measured accuracy is clearly better than a coin toss; it is a label on a
+     number that is shown anyway, never a reason to hide one. */
+  var FAIRLY_SURE_PCT = 85;
+
+  function sureWords(confidence) {
+    if (confidence == null) return t('wound.sure.low');
+    if (confidence >= FAIRLY_SURE_PCT) return t('wound.sure.high');
+    if (confidence >= CONFIDENCE_THRESHOLD_PCT) return t('wound.sure.mid');
+    return t('wound.sure.low');
+  }
+
+  /* The "Get care now if..." box, rebuilt under every single result.
+     It is the one part of this page that does not depend on the model: the
+     same list appears whether the answer was confident, unsure, or refused.
+     It reuses the wound.red.* strings shown further down the page rather than
+     a second copy, so the two can never drift apart in either language. */
+  function careBox() {
+    var box = el('section', 'care-box');
+    box.setAttribute('role', 'note');
+    box.appendChild(el('h3', null, t('wound.red.h')));
+    var ul = document.createElement('ul');
+    for (var i = 1; i <= 8; i++) {
+      var line = t('wound.red.' + i);
+      if (line !== 'wound.red.' + i) ul.appendChild(el('li', null, line));
+    }
+    box.appendChild(ul);
+    box.appendChild(el('p', 'care-note', t('wound.care.note')));
+    if (global.Sources) {
+      box.appendChild(global.Sources.block(
+        ['medlineplus_wounds', 'medlineplus_burns', 'ilcor2020', 'idsa2014']));
+    }
+    return box;
+  }
+
   function isPossibleSevereBurn(label, confidence) {
     return label === 'burn_3rd_degree' && confidence != null && confidence < CONFIDENCE_THRESHOLD_PCT;
   }
@@ -163,13 +201,19 @@
     box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure')
       : possibleSevere ? t('wound.result.maybe_severe') : labelText(data.label)));
 
+    // How sure, in words, on every result including the refused ones.
+    box.appendChild(el('p', 'sure-line', sureWords(isUnknown ? null : data.confidence)));
+
     if (data.confidence != null && !isUnknown) {
       var c = el('p', 'wound-confidence');
       c.textContent = t('wound.result.confidence', { pct: data.confidence });
       box.appendChild(c);
     }
-    // No "closest guess" for an unknown answer: the photo is often not a wound
-    // this tool covers at all, and naming a wound for it only misleads.
+    /* Below the threshold the server sends no wound type, and none is shown -
+       no "closest guess", because the photo is often not a wound this tool
+       covers at all and naming one only misleads. What replaces it is an
+       instruction the reader can act on. */
+    if (isUnknown) box.appendChild(el('p', 'wound-cantell', t('wound.result.cantell')));
     if (possibleSevere) box.appendChild(el('p', 'notice notice-strong', t('wound.result.maybe_severe_911')));
     host.appendChild(box);
 
@@ -184,6 +228,7 @@
       if (srcIds && global.Sources) host.appendChild(global.Sources.block(srcIds));
     }
 
+    host.appendChild(careBox());
     host.appendChild(el('p', 'notice notice-strong', t('wound.result.repeat')));
     host.hidden = false;
     host.querySelector('.wound-eyebrow').setAttribute('tabindex', '-1');

@@ -41,11 +41,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [use, prep, reach, wound, window] = await Promise.all([
+    const [use, prep, reach, wound, sections, window] = await Promise.all([
       rpc('impact_stats', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('prep_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('qr_report', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('wound_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
+      rpc('section_use', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       fetch(SUPABASE_URL.replace(/\/$/, '') +
         '/rest/v1/events?select=received_at&order=received_at.asc&limit=1', {
         headers: { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + SUPABASE_SERVICE_ROLE_KEY }
@@ -67,6 +68,7 @@ export default async function handler(req, res) {
       preparedness: prep,
       reach,
       wound,
+      sections,
       method: 'Anonymous. No name, email, precise location or IP is collected. ' +
               'Before and after figures count only visitors who answered both times.'
     });

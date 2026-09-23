@@ -76,6 +76,10 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Vercel Web Analytics: never cached, never intercepted. A counting beacon
+  // replayed from a cache would be a fabricated visit.
+  if (url.pathname.startsWith('/_vercel/')) return;
+
   // Air quality must never come from a cache. Everything else under /api is
   // live data or a write path; let it go straight to the network.
   if (url.pathname.startsWith('/api/')) return;

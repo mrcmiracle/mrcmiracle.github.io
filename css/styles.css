@@ -1469,3 +1469,38 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
    answered against 31% of arm's-length shots. It sits with the picker, before
    the photo is taken, not only in the advice shown after a "not sure". */
 .wound-framing { color: var(--ink-2); margin: var(--s3) 0 0; }
+
+/* ---------- "How this works" (wound page) ----------
+   Sits above the upload button because the question it answers - who is
+   looking at my photo - is the one a reader has BEFORE they hand over a
+   picture of their own injury, not after. */
+.how-box {
+  border: 1px solid var(--line-strong); border-radius: var(--r);
+  background: var(--paper-2); padding: var(--s4); margin: 0 0 var(--s5);
+}
+.how-h { margin: 0 0 var(--s3); font-size: var(--step-1); }
+.how-list { margin: 0; padding-left: 1.2rem; display: grid; gap: var(--s2); }
+.how-list li { line-height: 1.55; }
+
+/* The care box repeated under every result. Deliberately in the earthquake
+   red channel: it is the one thing on the page that does not depend on the
+   model being right. */
+.care-box {
+  border: 2px solid var(--quake-line); background: var(--quake-bg);
+  border-radius: var(--r); padding: var(--s4); margin: var(--s5) 0 0;
+}
+.care-box h3 { margin: 0 0 var(--s2); color: var(--quake-ink); font-size: var(--step-1); }
+.care-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--s1); }
+.care-box li { line-height: 1.5; }
+.care-note { font-size: .84rem; color: var(--ink-2); margin: var(--s3) 0 0; }
+.sure-line { font-family: var(--font-text); font-weight: 700; margin: 0 0 var(--s2); }
+
+/* King County resources, added at PHRC's request. Styled as a quiet aside:
+   it points away from this site, so it must not compete with the guidance
+   above it. */
+.more-box {
+  border-top: 1px solid var(--line-strong); margin: var(--s7) 0 0; padding: var(--s5) 0 0;
+}
+.more-box h2 { font-size: var(--step-1); margin: 0 0 var(--s2); }
+.more-box p { color: var(--ink-2); margin: 0 0 var(--s3); }
+.more-box .btn { width: auto; display: inline-block; }

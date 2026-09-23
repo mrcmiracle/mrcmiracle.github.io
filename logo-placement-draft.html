@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PHRC logo placement — draft for approval</title>
+<!-- Unlisted and excluded from search. This page exists only so PHRC can see
+     WHERE the logo would sit before we add it. It is linked from nowhere on the
+     site, disallowed in robots.txt, and left out of the sitemap and the service
+     worker. No logo file is used here: the placeholder is a labelled box, since
+     approval has to come before the artwork goes on a public page. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/icon-32.png?v=3" sizes="32x32" type="image/png">
+<link rel="stylesheet" href="/css/styles.css">
+<style>
+  .draft-wrap { max-width: 46rem; margin: 0 auto; padding: var(--s6) var(--s4) var(--s8); }
+  .draft-note {
+    border-left: 5px solid var(--brand); background: var(--brand-soft);
+    padding: var(--s4); border-radius: var(--r-sm); margin: 0 0 var(--s6);
+  }
+  .mock {
+    border: 1px solid var(--line-strong); border-radius: var(--r);
+    background: var(--paper-2); padding: var(--s5); margin: 0 0 var(--s6);
+  }
+  .mock h2 { font-size: var(--step-1); margin: 0 0 var(--s3); }
+  .mock-foot { border-top: 1px solid var(--line); padding-top: var(--s4); }
+  .lockup { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s3); }
+  .lockup img { width: 84px; height: 84px; display: block; }
+  .phrc-slot {
+    width: 84px; height: 84px; flex: none;
+    border: 2px dashed var(--brand); border-radius: 50%;
+    display: grid; place-items: center; text-align: center;
+    font-size: .62rem; line-height: 1.2; color: var(--brand-strong);
+    padding: .4rem; background: var(--paper);
+  }
+  .divider-dot { color: var(--line-strong); font-size: 1.4rem; }
+  .caption { font-size: .84rem; color: var(--ink-3); margin: var(--s2) 0 0; }
+  .opts { display: grid; gap: var(--s3); margin: var(--s4) 0 0; padding-left: 1.1rem; }
+</style>
+</head>
+<body>
+<main class="draft-wrap">
+  <h1>PHRC logo — where it would go</h1>
+
+  <div class="draft-note">
+    <p><strong>For Shaeny, Juanita and Edouard.</strong> This is a draft for approval, not a live page.
+       It is not linked from the site, not in search, and no PHRC logo file has been added to the
+       project yet. Once you approve a placement, we add the artwork at the size shown and nowhere else.</p>
+    <p class="caption">Draft prepared 22 September 2026 · mrcmiracle.vercel.app</p>
+  </div>
+
+  <section class="mock">
+    <h2>Option A — side by side in the footer <em>(recommended)</em></h2>
+    <div class="mock-foot">
+      <div class="lockup">
+        <img src="/assets/logo.png" width="84" height="84"
+             alt="MRC Miracle seal — a North Creek High School HOSA project">
+        <span class="divider-dot" aria-hidden="true">·</span>
+        <span class="phrc-slot">PHRC logo<br>would go here</span>
+      </div>
+      <p class="org">A North Creek High School HOSA student project, in partnership with the
+        Public Health Reserve Corps (PHRC). Educational only, not a substitute for official
+        emergency instructions or medical care.</p>
+      <p class="small">Appears on every page of the site, at the bottom.</p>
+    </div>
+    <p class="caption">Both marks the same size, HOSA first in reading order, one line of text naming
+      the partnership. This is the placement we would use unless you prefer another.</p>
+  </section>
+
+  <section class="mock">
+    <h2>Option B — smaller, under the partnership line</h2>
+    <div class="mock-foot">
+      <img src="/assets/logo.png" width="84" height="84"
+           alt="MRC Miracle seal — a North Creek High School HOSA project">
+      <p class="org">A North Creek High School HOSA student project, in partnership with the
+        Public Health Reserve Corps (PHRC). Educational only, not a substitute for official
+        emergency instructions or medical care.</p>
+      <div class="lockup" style="margin-top:var(--s3)">
+        <span class="phrc-slot" style="width:56px;height:56px;font-size:.55rem">PHRC logo<br>would go here</span>
+      </div>
+    </div>
+    <p class="caption">Keeps the HOSA seal visually dominant and treats the PHRC mark as an
+      attribution. Choose this if the partnership should read as lighter.</p>
+  </section>
+
+  <section class="mock">
+    <h2>What we are asking</h2>
+    <ul class="opts">
+      <li>Approve Option A, Option B, or tell us a different placement.</li>
+      <li>Send the logo file you want used — ideally PNG or SVG with a transparent background.</li>
+      <li>Tell us if any wording beside the logo must change. The line shown above is what the
+          footer says today on every page.</li>
+    </ul>
+    <p class="caption">The logo will not appear anywhere on the live site until you approve it.</p>
+  </section>
+</main>
+</body>
+</html>

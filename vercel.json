@@ -60,6 +60,10 @@
     {
       "source": "/q/:slug",
       "destination": "/api/q?slug=:slug"
+    },
+    {
+      "source": "/logo-placement-draft",
+      "destination": "/logo-placement-draft.html"
     }
   ]
 }

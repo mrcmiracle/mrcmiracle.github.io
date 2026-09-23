@@ -81,6 +81,29 @@
       claim: 'International practice guidelines for assessing and treating burns, including which burns need specialist care.'
     },
 
+    /* ---- plain-language patient sources, for the care box shown with every
+       wound result. MedlinePlus is the National Library of Medicine's public
+       health encyclopedia: written for patients rather than clinicians, which
+       is the right register for a box telling somebody to go and be seen. ---- */
+    medlineplus_wounds: {
+      kind: 'study',
+      authors: 'MedlinePlus, U.S. National Library of Medicine.',
+      title: 'Cuts and puncture wounds — when to contact a medical professional',
+      journal: 'MedlinePlus Medical Encyclopedia',
+      year: '2025',
+      url: 'https://medlineplus.gov/ency/article/000043.htm',
+      claim: 'Seek care for bleeding that will not stop, and for signs of infection: fever, swelling, a red streak from the wound, or pus.'
+    },
+    medlineplus_burns: {
+      kind: 'study',
+      authors: 'MedlinePlus, U.S. National Library of Medicine.',
+      title: 'Burns — when to contact a medical professional',
+      journal: 'MedlinePlus Medical Encyclopedia',
+      year: '2025',
+      url: 'https://medlineplus.gov/ency/article/000030.htm',
+      claim: 'Call for help when a burn is about the size of your palm or larger, and for burns on the hands, feet, face, groin, buttocks or over a major joint.'
+    },
+
     /* ---- wounds, cuts, infection ---- */
     laceration2017: {
       kind: 'study',

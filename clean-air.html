@@ -48,7 +48,7 @@
       <img class="brand-mark" src="/assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
       <span class="brand-text">
         <span class="brand-name">MRC Miracle</span>
-        <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
+        <span class="brand-sub" data-i18n="site.tagline">North Creek High School HOSA · Emergency preparedness for King County</span>
       </span>
     </a>
     <div class="head-actions">
@@ -63,7 +63,7 @@
   <nav class="subnav" aria-label="Main">
     <ul class="wrap">
       <li><a href="/" data-i18n="nav.home">Home</a></li>
-      <li><a href="/wound.html" data-i18n="nav.wound">Wound check</a></li>
+      <li><a href="/wound.html" data-i18n="nav.wound">Wound first aid guide</a></li>
       <li><a href="/clean-air.html" data-i18n="nav.cleanair" aria-current="page">Clean air</a></li>
       <li><a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a></li>
     </ul>
@@ -120,24 +120,34 @@
   <section id="air-results" hidden aria-live="polite"></section>
   <div id="map" hidden role="application" aria-label="Map of clean air locations"></div>
 </div>
+
+  <!-- Requested by PHRC (Shaeny, 2026-09-22): they sit under Public Health's
+       emergency preparedness section and asked that we point readers to the
+       county's own resources, which exist in several languages. Added, not
+       substituted: nothing already on this page was removed for it. -->
+  <section class="more-box" aria-labelledby="more-h">
+    <h2 id="more-h" data-i18n="more.h">Where to find more information</h2>
+    <p data-i18n="more.b">King County&rsquo;s emergency preparedness pages carry much more than this site does, and the material is available in several languages.</p>
+    <p><a class="btn btn-secondary" href="https://kingcounty.gov/en/dept/dph/health-safety/safety-injury-prevention/emergency-preparedness" target="_blank" rel="noopener noreferrer" data-i18n="more.link">Emergency preparedness &mdash; King County</a></p>
+  </section>
 </main>
 
 <footer class="site-foot">
   <div class="wrap">
     <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
-         alt="MRC Miracle seal — King County MRC — HOSA, North Creek High School">
-    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+         alt="MRC Miracle seal — a North Creek High School HOSA project">
+    <p class="org" data-i18n="footer.org">A North Creek High School HOSA student project, in partnership with the Public Health Reserve Corps (PHRC). Educational only, not a substitute for official emergency instructions or medical care.</p>
     <p class="small footer-contact">
       <a href="mailto:northcreek.mrc@gmail.com" data-i18n="footer.email">northcreek.mrc@gmail.com</a>
       <span aria-hidden="true">&middot;</span>
       <a href="https://www.instagram.com/mrc.miracle.nchs/" target="_blank" rel="noopener noreferrer"
          data-i18n="footer.instagram">@mrc.miracle.nchs</a>
     </p>
-    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <p data-i18n="footer.disclaimer">In an emergency, follow directions from emergency responders and public health officials.</p>
     <details>
       <summary data-i18n="footer.privacy_h">Privacy</summary>
       <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
-      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a></p>
+      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a> <span aria-hidden="true">&middot;</span> <a href="https://kingcounty.gov/en/dept/dph/health-safety/safety-injury-prevention/emergency-preparedness" target="_blank" rel="noopener noreferrer" data-i18n="more.link">Emergency preparedness &mdash; King County</a></p>
     </details>
     <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
   </div>
@@ -151,5 +161,13 @@
 <script src="js/aqi.js"></script>
 <script src="js/sources.js"></script>
 <script src="js/cleanair.js"></script>
+<!-- Vercel Web Analytics. Served from this origin (/_vercel/insights), sets no
+     cookies, and needs no consent banner. Vercel already hosts this site and
+     therefore already sees every request, so this adds no new company to the
+     list on /privacy.html - but it is disclosed there anyway, because "they
+     could already see it" is not the same as "we told you we count it".
+     Deliberately NOT on admin.html: coordinator activity is not visitor
+     traffic and does not belong in the numbers. -->
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

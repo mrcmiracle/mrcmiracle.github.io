@@ -402,6 +402,49 @@
     return c;
   }
 
+  /* Which parts of the site people actually open, and how many of those
+     arrivals carried a poster code. Pages that no longer exist still appear
+     while they have history - the checklist and the old split smoke and
+     earthquake pages - so the totals stay honest rather than quietly dropping
+     traffic that really happened. */
+  var SECTION_NAMES = {
+    'index.html': 'Home',
+    'wound.html': 'Wound first aid guide',
+    'clean-air.html': 'Clean air',
+    'emergencies.html': 'Emergencies',
+    'impact.html': 'Impact',
+    'privacy.html': 'Privacy',
+    '404.html': 'Page not found',
+    'standalone': 'Standalone wound analyzer',
+    'kit.html': 'Checklist (retired)',
+    'smoke.html': 'Smoke page (retired)',
+    'earthquake.html': 'Earthquake page (retired)'
+  };
+
+  function sectionsCard(rows) {
+    if (!rows || !rows.length) return null;
+    var c = card('Which parts of the site get used',
+      'Every page view, counted anonymously. "From a poster" means the visit arrived carrying a QR code.');
+    var total = rows.reduce(function (n, r) { return n + (r.views || 0); }, 0);
+    var fromQr = rows.reduce(function (n, r) { return n + (r.from_qr || 0); }, 0);
+    c.appendChild(kpiStrip([
+      { value: total, label: 'page views' },
+      { value: fromQr, label: 'arrived from a poster' }
+    ]));
+    c.appendChild(hbars(rows.map(function (r) {
+      return {
+        label: SECTION_NAMES[r.page] || r.page,
+        value: r.views || 0,
+        tone: /retired/.test(SECTION_NAMES[r.page] || '') ? 'flat' : ''
+      };
+    }), { fmt: function (x) { return x.value + ' views'; } }));
+    c.appendChild(el('p', 'dash-note',
+      'Counted by this site itself, with no third party involved. Vercel Web Analytics counts page ' +
+      'views separately in the Vercel dashboard; the two will not match exactly, because they start ' +
+      'counting at different moments and this one ignores the coordinator page.'));
+    return c;
+  }
+
   function usageCard(u) {
     var rows = [
       { label: 'Clean air searches', value: u.lookups || 0 },
@@ -432,7 +475,8 @@
       { value: (reach.codes || []).filter(function (k) { return k.active; }).length, label: 'codes in circulation' }
     ]));
 
-    [postersCard(reach), changeCard(p), reachCard(p.reach), actionsCard(p), woundCard(w), usageCard(d.use || {})]
+    [postersCard(reach), changeCard(p), reachCard(p.reach), actionsCard(p), woundCard(w),
+     sectionsCard(d.sections), usageCard(d.use || {})]
       .filter(Boolean)
       .forEach(function (section) { root.appendChild(section); });
   }
