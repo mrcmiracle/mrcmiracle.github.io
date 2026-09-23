@@ -77,21 +77,6 @@
 
   <p class="notice notice-strong"><strong data-i18n="wound.notdiagnosis_b">This is not a diagnosis and not medical advice.</strong> <span data-i18n="wound.notdiagnosis"> It is a student project that guesses what kind of wound a photo shows, and it can be wrong. It cannot see infection, depth, or anything under the skin. If you are worried about an injury, see a medical professional, whatever this page says.</span></p>
 
-  <!-- PHRC asked, reasonably, "who is checking the wound?". This answers it
-       before the upload button rather than after the result, and the photo
-       point describes what the code actually does: shrink in the browser,
-       POST to our own /api/wound, forwarded to our model, never written to
-       disk, a database, or a log. -->
-  <section class="how-box" aria-labelledby="how-h">
-    <h2 id="how-h" class="how-h" data-i18n="wound.how.h">How this works</h2>
-    <ol class="how-list">
-      <li data-i18n="wound.how.1">No person looks at your photo. A computer model compares it with labeled photos of wounds and picks the closest match.</li>
-      <li data-i18n="wound.how.2">It tells you how sure it is. When it is not sure, it says so instead of guessing.</li>
-      <li data-i18n="wound.how.3">It gives general first aid steps for that kind of wound. This is not a diagnosis, and it can be wrong.</li>
-      <li data-i18n="wound.how.4">Your phone makes the photo smaller and sends it to our own server, which passes it to the model and sends back the answer. The photo is never saved, never written to a log, and nobody on our team ever sees it. We keep only the wound type and the confidence number, with no name attached.</li>
-    </ol>
-  </section>
-
   <section id="wound-tool" class="savebox wound-stage">
     <h2 data-i18n="wound.tool.h">Check a photo</h2>
     <p class="small" data-i18n="wound.tool.privacy">Your photo is sent for analysis and is not saved anywhere — not by us, and not in the tool. It is not stored, not logged, and nobody on our team ever sees it.</p>
@@ -122,6 +107,22 @@
     <div id="wound-preview" hidden></div>
     <p class="err" id="wound-err" hidden></p>
     <div id="wound-result" hidden></div>
+  </section>
+
+  <!-- PHRC asked, reasonably, "who is checking the wound?". This answers it.
+       Placed below the upload card at Vihaan's request: the tool stays the
+       first thing on the page, and the explanation sits underneath for anyone
+       who wants it. The photo point describes what the code actually does -
+       shrink in the browser, POST to our own /api/wound, forwarded to our
+       model, never written to disk, a database, or a log. -->
+  <section class="how-box" aria-labelledby="how-h">
+    <h2 id="how-h" class="how-h" data-i18n="wound.how.h">How this works</h2>
+    <ol class="how-list">
+      <li data-i18n="wound.how.1">No person looks at your photo. A computer model compares it with labeled photos of wounds and picks the closest match.</li>
+      <li data-i18n="wound.how.2">It tells you how sure it is. When it is not sure, it says so instead of guessing.</li>
+      <li data-i18n="wound.how.3">It gives general first aid steps for that kind of wound. This is not a diagnosis, and it can be wrong.</li>
+      <li data-i18n="wound.how.4">Your phone makes the photo smaller and sends it to our own server, which passes it to the model and sends back the answer. The photo is never saved, never written to a log, and nobody on our team ever sees it. We keep only the wound type and the confidence number, with no name attached.</li>
+    </ol>
   </section>
 
   <!-- Signed-in only: shown by js/wound.js once an account is confirmed. -->

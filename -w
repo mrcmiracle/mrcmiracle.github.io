@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found — MRC Miracle</title>
+<meta name="description" content="That page does not exist. Find the kit calculator, clean air locations, and emergency steps here.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/assets/icon-32.png?v=3" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/icon-16.png?v=3" sizes="16x16" type="image/png">
+<link rel="icon" href="/assets/icon-48.png?v=3" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/icon-96.png?v=3" sizes="96x96" type="image/png">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MRC Miracle">
+<meta property="og:title" content="Earthquake — MRC Miracle">
+<meta property="og:description" content="What to do before, during, and after an earthquake in King County.">
+<meta property="og:image" content="https://mrcmiracle.vercel.app/assets/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MRC Miracle — get ready for smoke and earthquakes. Free preparedness tools for King County households.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4f2b92">
+<link rel="preload" href="assets/fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/styles.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+<script type="speculationrules">
+{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/api/*"}},{"not":{"href_matches":"/admin.html"}}]},"eagerness":"moderate"}]}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Site chrome. GENERATED - identical on every page except aria-current.
+     Do not hand-edit one page: that is exactly how the toolbar drifted before,
+     when Home got a different menu from every other page. -->
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="/">
+      <img class="brand-mark" src="/assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+      <span class="brand-text">
+        <span class="brand-name">MRC Miracle</span>
+        <span class="brand-sub" data-i18n="site.tagline">Emergency preparedness for King County</span>
+      </span>
+    </a>
+    <div class="head-actions">
+      <div class="langswitch" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
+      <!-- Sign in pill, or the signed-in initial. Filled by js/account.js. -->
+      <div class="account" id="account"></div>
+    </div>
+  </div>
+  <nav class="subnav" aria-label="Main">
+    <ul class="wrap">
+      <li><a href="/" data-i18n="nav.home">Home</a></li>
+      <li><a href="/wound.html" data-i18n="nav.wound">Wound check</a></li>
+      <li><a href="/clean-air.html" data-i18n="nav.cleanair">Clean air</a></li>
+      <li><a href="/emergencies.html" data-i18n="nav.emergencies">Emergencies</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+<div class="wrap home">
+  <h1 data-i18n="nf.h1">That page does not exist</h1>
+  <p class="lede" data-i18n="nf.b">The link may be mistyped or out of date. Everything below works.</p>
+
+  <nav class="bigbtns" aria-label="Tools">
+    <a class="bigbtn" href="/wound.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M12 10v4M10 12h4"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.wound">Check a wound</b><small data-i18n="home.btn.wound_s">Photo-based first aid guidance</small></span>
+    </a>
+    <a class="bigbtn" href="/clean-air.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.air">Find clean air</b><small data-i18n="home.btn.air_s">Libraries and cooling sites near your zip code</small></span>
+    </a>
+    <a class="bigbtn bigbtn-alert" href="/emergencies.html">
+      <span class="bigbtn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+      <span class="bigbtn-text"><b data-i18n="home.btn.emerg">Smoke or earthquake right now</b><small data-i18n="home.btn.emerg_s">What to do in the next few minutes</small></span>
+    </a>
+  </nav>
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
+         alt="MRC Miracle seal — King County MRC — HOSA, North Creek High School">
+    <p class="org" data-i18n="footer.org">North Creek High School HOSA, in partnership with the Public Health Reserve Corps of Seattle &amp; King County, MRC Unit 503.</p>
+    <p class="small footer-contact">
+      <a href="mailto:northcreek.mrc@gmail.com" data-i18n="footer.email">northcreek.mrc@gmail.com</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="https://www.instagram.com/mrc.miracle.nchs/" target="_blank" rel="noopener noreferrer"
+         data-i18n="footer.instagram">@mrc.miracle.nchs</a>
+    </p>
+    <p data-i18n="footer.disclaimer">This site is a student project. It is educational and is not a substitute for official emergency instructions. In an emergency, follow directions from emergency responders and public health officials.</p>
+    <details>
+      <summary data-i18n="footer.privacy_h">Privacy</summary>
+      <p class="small" data-i18n="footer.privacy_b">We record how the tools are used so we can improve them and report our impact. We store your calculator answers, the zip codes searched, and which actions people commit to. We never collect your name, email, address, phone number, precise location, or IP address. There are no accounts and no advertising trackers. A random number is stored in your browser so we can tell repeat visits apart, and it contains nothing about you. You can clear it any time by clearing your browser data.</p>
+      <p class="small"><a href="privacy.html" data-i18n="priv.h1">Privacy</a> <span aria-hidden="true">&middot;</span> <a href="impact.html" data-i18n="footer.impact">Impact</a></p>
+    </details>
+    <p class="small">&copy; <span data-year>2026</span> North Creek High School HOSA</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/track.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/account.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
