@@ -64,6 +64,10 @@
     {
       "source": "/logo-placement-draft",
       "destination": "/logo-placement-draft.html"
+    },
+    {
+      "source": "/logo",
+      "destination": "/logo-placement-draft.html"
     }
   ]
 }

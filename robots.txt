@@ -4,5 +4,6 @@ Allow: /
 Disallow: /admin.html
 # Draft shown to PHRC for logo approval; not part of the public site.
 Disallow: /logo-placement-draft
+Disallow: /logo
 
 Sitemap: https://mrcmiracle.vercel.app/sitemap.xml

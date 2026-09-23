@@ -1089,7 +1089,13 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 }
 /* Four equal slots that ALWAYS fit - no sideways scroll, which on a phone was
    another way the bar appeared to shift. Measured to fit at 320px in English
-   and Spanish ("Revisar herida" is the longest label). */
+   and Spanish; the longest label is "Guía de heridas".
+
+   Nav labels are kept SHORT on purpose. The font here is clamped by viewport,
+   not by content, so a long label does not shrink the type - it wraps, and at
+   375px a three-line label in a 44px box is what "Wound first aid guide"
+   produced across all four slots. The full name lives on the page, in the
+   <title> and on the home button, where there is room for it. */
 .site-head .subnav ul {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
