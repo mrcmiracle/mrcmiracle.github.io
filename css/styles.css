@@ -1501,12 +1501,26 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .care-note { font-size: .84rem; color: var(--ink-2); margin: var(--s3) 0 0; }
 .sure-line { font-family: var(--font-text); font-weight: 700; margin: 0 0 var(--s2); }
 
-/* King County resources, added at PHRC's request. Styled as a quiet aside:
-   it points away from this site, so it must not compete with the guidance
-   above it. */
+/* King County resources, added at PHRC's request. A card, like everything
+   else on these pages - as a bare rule it read as leftover text rather than a
+   deliberate section. It still points away from this site, so it stays quiet:
+   no hazard colour, secondary button, muted body. */
 .more-box {
-  border-top: 1px solid var(--line-strong); margin: var(--s7) 0 0; padding: var(--s5) 0 0;
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--paper-2);
+  margin: var(--s6) 0 0; padding: var(--s5) var(--s4);
 }
 .more-box h2 { font-size: var(--step-1); margin: 0 0 var(--s2); }
-.more-box p { color: var(--ink-2); margin: 0 0 var(--s3); }
-.more-box .btn { width: auto; display: inline-block; }
+.more-box p { color: var(--ink-2); margin: 0 0 var(--s4); max-width: 34rem; }
+/* A link, not a button. This points off the site, so it should not carry the
+   same weight as "Find clean air near me" two sections above it. Padded to a
+   44px tap target even though it reads as text. */
+.more-link { margin: 0; }
+.more-link a {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-height: 44px; font-weight: 700; color: var(--brand);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.more-link a:hover { color: var(--brand-strong); }
+.more-link .ext { font-size: .85em; }
+@media (min-width: 34rem) { .more-box { padding: var(--s5); } }
