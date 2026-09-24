@@ -577,5 +577,7 @@
   "wound.care.note": "This list does not depend on the model. It applies whatever the photo shows.",
   "more.h": "Where to find more information",
   "more.b": "King County’s emergency preparedness pages carry much more than this site does, and the material is available in several languages.",
-  "more.link": "Emergency preparedness — King County"
+  "more.link": "Emergency preparedness — King County",
+  "phrc.alt": "Public Health Reserve Corps (PHRC) seal",
+  "phrc.partner": "In partnership with the Public Health Reserve Corps"
 }

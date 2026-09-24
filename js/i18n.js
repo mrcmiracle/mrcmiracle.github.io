@@ -53,6 +53,12 @@
         var v = self.dict[el.getAttribute('data-i18n-ph')];
         if (v !== undefined) el.setAttribute('placeholder', v);
       });
+      /* Alt text needs translating too: a Spanish reader with a screen reader
+         should not hear an English description of a logo. */
+      scope.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+        var v = self.dict[el.getAttribute('data-i18n-alt')];
+        if (v !== undefined) el.setAttribute('alt', v);
+      });
       scope.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
         var v = self.dict[el.getAttribute('data-i18n-aria')];
         if (v !== undefined) el.setAttribute('aria-label', v);

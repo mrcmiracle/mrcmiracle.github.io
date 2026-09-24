@@ -1524,3 +1524,26 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .more-link a:hover { color: var(--brand-strong); }
 .more-link .ext { font-size: .85em; }
 @media (min-width: 34rem) { .more-box { padding: var(--s5); } }
+
+/* ---------- PHRC partner mark ----------
+   Their logo sits beside ours, the same size, in the header and the footer.
+   It is a partner mark, not a second brand: no link of its own, and it never
+   appears without the HOSA seal next to it.
+
+   The header is tight on a phone - two 44px marks, the wordmark, the language
+   switch and the sign-in pill all share one row - so below 30rem the partner
+   mark steps down rather than pushing the wordmark into a wrap. */
+.brand-phrc { margin-left: .35rem; }
+/* Not in the header on a phone. That row already holds the seal, the
+   wordmark, the language switch and the sign-in pill; a second seal either
+   pushed "MRC Miracle" onto two lines or, once told not to wrap, clipped it
+   behind the language buttons. Both were measured at 375px. PHRC is still
+   credited on every page - in the footer, at full size, where there is room
+   for it - and the header mark returns above 30rem. */
+@media (max-width: 30rem) {
+  .brand-phrc { display: none; }
+}
+
+/* Footer: the two seals share a row, wrapping together on narrow screens. */
+.foot-marks { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s4); }
+.foot-marks .site-logo { margin-bottom: 0; }

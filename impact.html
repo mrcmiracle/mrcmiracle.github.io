@@ -46,6 +46,12 @@
   <div class="wrap head-row">
     <a class="brand" href="/">
       <img class="brand-mark" src="/assets/logo-96.png" width="44" height="44" alt="" aria-hidden="true">
+      <!-- PHRC's mark sits beside ours, same size. It is inside the brand link
+           only because it belongs to the lockup visually; it carries real alt
+           text rather than aria-hidden, because unlike our own seal it names a
+           partner the reader may not know about from the text alone. -->
+      <img class="brand-mark brand-phrc" src="/assets/phrc-96.png" width="44" height="44"
+           data-i18n-alt="phrc.alt" alt="Public Health Reserve Corps (PHRC) seal">
       <span class="brand-text">
         <span class="brand-name">MRC Miracle</span>
         <span class="brand-sub" data-i18n="site.tagline">North Creek High School HOSA · Emergency preparedness for King County</span>
@@ -91,8 +97,12 @@
 
 <footer class="site-foot">
   <div class="wrap">
-    <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
+    <div class="foot-marks">
+      <img class="site-logo" src="assets/logo.png" width="88" height="88" loading="lazy"
          alt="MRC Miracle seal — a North Creek High School HOSA project">
+      <img class="site-logo site-logo-phrc" src="assets/phrc.png" width="88" height="88" loading="lazy"
+           data-i18n-alt="phrc.alt" alt="Public Health Reserve Corps (PHRC) seal">
+    </div>
     <p class="org" data-i18n="footer.org">A North Creek High School HOSA student project, in partnership with the Public Health Reserve Corps (PHRC). Educational only, not a substitute for official emergency instructions or medical care.</p>
     <p class="small footer-contact">
       <a href="mailto:northcreek.mrc@gmail.com" data-i18n="footer.email">northcreek.mrc@gmail.com</a>
