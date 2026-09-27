@@ -120,8 +120,9 @@
     cut: ['ilcor2020', 'laceration2017', 'tetanus2020'],
     burn_1st_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
     burn_2nd_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
-    burn_3rd_degree: ['isbi2016', 'ilcor2020'],
-    burn_3rd_degree_possible: ['isbi2016', 'ilcor2020'],
+    burn_3rd_degree: ['medlineplus_burns', 'isbi2016'],
+    burn_3rd_degree_possible: ['medlineplus_burns', 'isbi2016'],
+    possible_burn: ['griffin2020', 'griffin2022', 'cuttle2009', 'cuttle2008', 'varley2016', 'medlineplus_burns'],
     unknown: ['idsa2014', 'isbi2016']
   };
 

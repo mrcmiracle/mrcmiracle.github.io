@@ -80,6 +80,39 @@
       doi: '10.1016/j.burns.2016.05.013',
       claim: 'International practice guidelines for assessing and treating burns, including which burns need specialist care.'
     },
+    cuttle2009: {
+      kind: 'study',
+      authors: 'Cuttle L, Pearn J, McMillan JR, Kimble RM.',
+      title: 'A review of first aid treatments for burn injuries',
+      journal: 'Burns',
+      year: '2009',
+      detail: '35(6):768–775',
+      pmid: '19269746',
+      doi: '10.1016/j.burns.2008.10.011',
+      claim: 'Reviewing water, ice, oils, powders and plant remedies: first aid for burns should be cold running tap water (2–15 °C), not ice or alternative remedies.'
+    },
+    cuttle2008: {
+      kind: 'study',
+      authors: 'Cuttle L, Kempf M, Kravchuk O, et al.',
+      title: 'The optimal temperature of first aid treatment for partial thickness burn injuries',
+      journal: 'Wound Repair and Regeneration',
+      year: '2008',
+      detail: '16(5):626–634',
+      pmid: '19128257',
+      doi: '10.1111/j.1524-475X.2008.00413.x',
+      claim: 'In an animal (pig) burn model, 20 minutes of cold tap water helped burns heal; the authors conclude ice should not be used.'
+    },
+    varley2016: {
+      kind: 'study',
+      authors: 'Varley A, Sarginson J, Young A.',
+      title: 'Evidence-based first aid advice for paediatric burns in the United Kingdom',
+      journal: 'Burns',
+      year: '2016',
+      detail: '42(3):571–577',
+      pmid: '26655279',
+      doi: '10.1016/j.burns.2015.10.029',
+      claim: 'Its evidence review concluded: cool the burn with running tap water for 20 minutes, remove clothing and jewellery, and cover it with cling film or a clean non-adhesive dressing.'
+    },
 
     /* ---- plain-language patient sources, for the care box shown with every
        wound result. MedlinePlus is the National Library of Medicine's public
