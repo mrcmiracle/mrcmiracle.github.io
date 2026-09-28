@@ -41,18 +41,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [use, prep, reach, wound, window] = await Promise.all([
+    const [use, prep, reach, wound, sections, window] = await Promise.all([
       rpc('impact_stats', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('prep_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('qr_report', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       rpc('wound_impact', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
+      rpc('section_use', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
       fetch(SUPABASE_URL.replace(/\/$/, '') +
         '/rest/v1/events?select=received_at&order=received_at.asc&limit=1', {
         headers: { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + SUPABASE_SERVICE_ROLE_KEY }
       }).then((r) => (r.ok ? r.json() : []))
     ]);
 
-    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    /* Short, because of how this page is actually used: someone scans a poster
+       at a library table and then refreshes the dashboard to check it worked.
+       At s-maxage=300 they saw a five-minute-old number, concluded the counting
+       was broken, and had no way to tell the difference. 30s still collapses a
+       room full of refreshes into one query, and stale-while-revalidate keeps
+       it instant while the new figures are fetched behind it. */
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=30, stale-while-revalidate=120');
     return res.status(200).json({
       ok: true,
       generated_at: new Date().toISOString(),
@@ -61,6 +68,7 @@ export default async function handler(req, res) {
       preparedness: prep,
       reach,
       wound,
+      sections,
       method: 'Anonymous. No name, email, precise location or IP is collected. ' +
               'Before and after figures count only visitors who answered both times.'
     });

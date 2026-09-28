@@ -124,6 +124,50 @@
 
       host.hidden = false;
       return reading;
+    },
+
+    /* Google's Air Quality reading for the same point, appended UNDER the
+       AirNow figure rather than replacing it. AirNow carries the Puget Sound
+       Clean Air Agency's own numbers for King County - the regional authority,
+       and the same scale every other agency message uses - so it stays the
+       headline. What Google adds is the pollutant breakdown and its health
+       guidance for the exact point searched.
+       Silent when GOOGLE_AQ_KEY is not configured: an absent extra must never
+       look like a broken page. */
+    detail: function (host, lat, lon, t) {
+      if (!host) return Promise.resolve(null);
+      return fetch('/api/air?lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lon),
+                   { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.ok) return null;
+          var wrap = document.createElement('div');
+          wrap.className = 'aqi-detail';
+
+          if (d.dominant) {
+            var dom = document.createElement('p');
+            dom.className = 'aqi-dom small';
+            var named = (d.pollutants || []).find(function (x) { return x.code === d.dominant; });
+            dom.textContent = t('aqi.detail.dominant', { name: (named && named.name) || d.dominant.toUpperCase() });
+            wrap.appendChild(dom);
+          }
+          if (d.advice) {
+            var adv = document.createElement('p');
+            adv.className = 'aqi-advice small';
+            adv.textContent = d.advice;
+            wrap.appendChild(adv);
+          }
+          if (!wrap.childNodes.length) return null;
+
+          var src = document.createElement('p');
+          src.className = 'aqi-meta small';
+          src.textContent = t('aqi.detail.source');
+          wrap.appendChild(src);
+
+          host.appendChild(wrap);
+          return d;
+        })
+        .catch(function () { return null; });   // an extra, never a failure
     }
   };
 

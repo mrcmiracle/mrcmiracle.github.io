@@ -46,7 +46,7 @@
     clear();
     root.appendChild(el('h2', null, 'Sign in to continue'));
     root.appendChild(el('p', 'small',
-      'This page is for MRC Unit 503 coordinators. Sign in with the account your team gave access to.'));
+      'This page is for PHRC coordinators. Sign in with the account your team gave access to.'));
     var b = el('button', 'btn', 'Continue with Google');
     b.type = 'button';
     b.addEventListener('click', function () {

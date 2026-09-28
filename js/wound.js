@@ -38,8 +38,13 @@
    1. The "get care now" panel is in the HTML above this script, always
       visible, and repeated with every result. It does not depend on the model
       being right, or on the model working at all.
-   2. Confidence is shown as a plain number every time, and a low-confidence
-      answer is presented as "not sure" rather than a quiet guess.
+   2. An answer the model will not stand behind is presented as "not sure"
+      rather than a quiet guess, and carries NO confidence number. Until the
+      out-of-scope gate shipped, "not sure" always meant confidence under 60%,
+      so printing it was informative. The gate can now withhold an answer the
+      classifier was 88% sure of, and "Not confident enough to say - 88%
+      confidence" reads as a contradiction. A confident answer still shows its
+      number, which is what the reader can act on.
    3. The guidance shown for each result lives HERE rather than being whatever
       the model's server returns, for one reason: that server answers in
       English only, and this site is fully bilingual. Passing its text straight
@@ -105,6 +110,22 @@
     return got === key ? label.replace(/_/g, ' ') : got;
   }
 
+  /* The published evidence behind each set of first aid steps, by label. Ids
+     are defined in js/sources.js; the block is rendered under the steps so a
+     reader - or MRC reviewing this page - can check any of it. Guidance shown
+     to someone treating a wound should never be unattributable. */
+  var TIP_SOURCES = {
+    abrasion: ['laceration2017', 'idsa2014', 'tetanus2020'],
+    bruise: ['cryo2004'],
+    cut: ['ilcor2020', 'laceration2017', 'tetanus2020'],
+    burn_1st_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
+    burn_2nd_degree: ['griffin2020', 'griffin2022', 'isbi2016'],
+    burn_3rd_degree: ['medlineplus_burns', 'isbi2016'],
+    burn_3rd_degree_possible: ['medlineplus_burns', 'isbi2016'],
+    possible_burn: ['griffin2020', 'griffin2022', 'cuttle2009', 'cuttle2008', 'varley2016', 'medlineplus_burns'],
+    unknown: ['idsa2014', 'isbi2016']
+  };
+
   /* Localised guidance for a label. Falls back to whatever the classifier sent
      if this file has no wording for that label - better English guidance than
      none, and it means a new class added upstream still says something. */
@@ -128,6 +149,44 @@
      here, because the classifier sends confidence as one). */
   var CONFIDENCE_THRESHOLD_PCT = 60;
 
+  /* Plain words for the confidence number, because "74%" does not tell a
+     reader whether to act on it. The 60% line is not ours to choose - the
+     server already refuses to name a wound below it and sends "unknown" - so
+     these two only split what is left. 85 is a judgement call, set where the
+     measured accuracy is clearly better than a coin toss; it is a label on a
+     number that is shown anyway, never a reason to hide one. */
+  var FAIRLY_SURE_PCT = 85;
+
+  function sureWords(confidence) {
+    if (confidence == null) return t('wound.sure.low');
+    if (confidence >= FAIRLY_SURE_PCT) return t('wound.sure.high');
+    if (confidence >= CONFIDENCE_THRESHOLD_PCT) return t('wound.sure.mid');
+    return t('wound.sure.low');
+  }
+
+  /* The "Get care now if..." box, rebuilt under every single result.
+     It is the one part of this page that does not depend on the model: the
+     same list appears whether the answer was confident, unsure, or refused.
+     It reuses the wound.red.* strings shown further down the page rather than
+     a second copy, so the two can never drift apart in either language. */
+  function careBox() {
+    var box = el('section', 'care-box');
+    box.setAttribute('role', 'note');
+    box.appendChild(el('h3', null, t('wound.red.h')));
+    var ul = document.createElement('ul');
+    for (var i = 1; i <= 8; i++) {
+      var line = t('wound.red.' + i);
+      if (line !== 'wound.red.' + i) ul.appendChild(el('li', null, line));
+    }
+    box.appendChild(ul);
+    box.appendChild(el('p', 'care-note', t('wound.care.note')));
+    if (global.Sources) {
+      box.appendChild(global.Sources.block(
+        ['medlineplus_wounds', 'medlineplus_burns', 'ilcor2020', 'idsa2014']));
+    }
+    return box;
+  }
+
   function isPossibleSevereBurn(label, confidence) {
     return label === 'burn_3rd_degree' && confidence != null && confidence < CONFIDENCE_THRESHOLD_PCT;
   }
@@ -143,13 +202,19 @@
     box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure')
       : possibleSevere ? t('wound.result.maybe_severe') : labelText(data.label)));
 
-    if (data.confidence != null) {
+    // How sure, in words, on every result including the refused ones.
+    box.appendChild(el('p', 'sure-line', sureWords(isUnknown ? null : data.confidence)));
+
+    if (data.confidence != null && !isUnknown) {
       var c = el('p', 'wound-confidence');
       c.textContent = t('wound.result.confidence', { pct: data.confidence });
       box.appendChild(c);
     }
-    // No "closest guess" for an unknown answer: the photo is often not a wound
-    // this tool covers at all, and naming a wound for it only misleads.
+    /* Below the threshold the server sends no wound type, and none is shown -
+       no "closest guess", because the photo is often not a wound this tool
+       covers at all and naming one only misleads. What replaces it is an
+       instruction the reader can act on. */
+    if (isUnknown) box.appendChild(el('p', 'wound-cantell', t('wound.result.cantell')));
     if (possibleSevere) box.appendChild(el('p', 'notice notice-strong', t('wound.result.maybe_severe_911')));
     host.appendChild(box);
 
@@ -159,8 +224,12 @@
       var ul = el('ul', 'wound-tips');
       tips.forEach(function (line) { ul.appendChild(el('li', null, line)); });
       host.appendChild(ul);
+
+      var srcIds = TIP_SOURCES[isUnknown ? 'unknown' : possibleSevere ? 'burn_3rd_degree_possible' : data.label];
+      if (srcIds && global.Sources) host.appendChild(global.Sources.block(srcIds));
     }
 
+    host.appendChild(careBox());
     host.appendChild(el('p', 'notice notice-strong', t('wound.result.repeat')));
     host.hidden = false;
     host.querySelector('.wound-eyebrow').setAttribute('tabindex', '-1');
@@ -264,7 +333,8 @@
             var li = el('li');
             li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure')
               : isPossibleSevereBurn(r.label, r.confidence) ? t('wound.result.maybe_severe') : labelText(r.label)));
-            li.appendChild(el('span', 'h-conf', r.confidence == null ? '' : t('wound.result.confidence', { pct: r.confidence })));
+            li.appendChild(el('span', 'h-conf', (r.confidence == null || r.label === 'unknown') ? ''
+              : t('wound.result.confidence', { pct: r.confidence })));
             li.appendChild(el('span', 'h-date', fmtDate(r.created_at)));
             ul.appendChild(li);
           });

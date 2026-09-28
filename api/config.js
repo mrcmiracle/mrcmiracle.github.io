@@ -73,6 +73,19 @@ export default async function handler(req, res) {
     console.warn('[config] provider list unavailable:', err.message);
   }
 
+  /* The Google Maps browser key, when one is set. Unlike GOOGLE_AQ_KEY - which
+     is billed, server-side only, and never leaves api/air.js - a Maps
+     JavaScript key is public by design: it travels in the URL of the script
+     the browser loads, so it cannot be hidden from anyone. What stops someone
+     else spending your quota is the HTTP referrer restriction set on the key
+     in Cloud Console, NOT secrecy. If this key is ever used somewhere without
+     that restriction, assume it will be scraped and used.
+
+     It is handed over here rather than hardcoded in the HTML so it can be
+     rotated from `vercel env` without a code change, and so the map silently
+     falls back to OpenStreetMap when no key is configured. */
+  const mapsKey = process.env.GOOGLE_MAPS_KEY || '';
+
   res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-  return res.status(200).json({ ok: true, url, anonKey: anon, providers });
+  return res.status(200).json({ ok: true, url, anonKey: anon, providers, mapsKey });
 }

@@ -1089,7 +1089,13 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 }
 /* Four equal slots that ALWAYS fit - no sideways scroll, which on a phone was
    another way the bar appeared to shift. Measured to fit at 320px in English
-   and Spanish ("Revisar herida" is the longest label). */
+   and Spanish; the longest label is "Guía de heridas".
+
+   Nav labels are kept SHORT on purpose. The font here is clamped by viewport,
+   not by content, so a long label does not shrink the type - it wraps, and at
+   375px a three-line label in a 44px box is what "Wound first aid guide"
+   produced across all four slots. The full name lives on the page, in the
+   <title> and on the home button, where there is room for it. */
 .site-head .subnav ul {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1316,3 +1322,228 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .qr-card .row { margin-top: var(--s3); }
 .qr-card .row .btn { width: auto; }
 .qr-check { margin: var(--s2) 0 0; }
+
+/* ---------- sources ----------
+   The evidence behind a piece of medical guidance, attached under it.
+
+   Collapsed by default and set in small type: someone acting on the steps in
+   a hurry should not have to scroll past a bibliography to reach the next
+   instruction, while someone checking the claim - MRC reviewing the page, a
+   clinician, a teacher - is one tap away. It is quiet, not hidden. */
+.srcs { margin-top: var(--s4); border-top: 1px dashed var(--line-strong); padding-top: var(--s2); }
+.srcs > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: var(--s2);
+  font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-3); padding: var(--s1) 0;
+}
+.srcs > summary::-webkit-details-marker { display: none; }
+.srcs > summary::before {
+  content: '';
+  width: .5rem; height: .5rem; flex: none;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform .15s ease;
+}
+.srcs[open] > summary::before { transform: rotate(45deg); }
+.srcs > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.srcs-count {
+  font-size: .72rem; line-height: 1; padding: .2rem .4rem; border-radius: 99px;
+  background: var(--brand-tint); color: var(--brand-strong); letter-spacing: 0;
+}
+.src-list { list-style: none; margin: var(--s2) 0 var(--s1); padding: 0; }
+.src-list > li {
+  font-size: .82rem; line-height: 1.5; color: var(--ink-2);
+  padding: var(--s2) 0 var(--s3); border-bottom: 1px solid var(--line);
+}
+.src-list > li:last-child { border-bottom: 0; padding-bottom: var(--s1); }
+.src-authors { color: var(--ink-2); }
+.src-title { color: var(--brand-strong); font-weight: 600; }
+.src-where { color: var(--ink-3); }
+/* An agency instruction is not a research finding; say which one the reader
+   is looking at rather than letting the list imply everything is a study. */
+.src-tag {
+  display: inline-block; margin-left: var(--s2); padding: .05rem .4rem;
+  border: 1px solid var(--line-strong); border-radius: 99px;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3);
+}
+/* What the paper actually found, so the citation is checkable without opening it. */
+.src-claim { display: block; margin-top: var(--s1); color: var(--ink); }
+.src-ids { display: block; margin-top: var(--s1); font-size: .76rem; }
+.src-ids a { color: var(--ink-3); }
+.src-sep { margin: 0 .4rem; color: var(--line-strong); }
+.src-missing { color: var(--quake-ink); font-weight: 700; }
+
+/* Inside a hazard panel the dashed rule and chip have to sit on the amber or
+   red ground, not the paper ground. */
+.rn-panel .srcs { border-top-color: currentColor; opacity: .95; }
+.rn-panel .srcs > summary { color: inherit; }
+.rn-panel .srcs-count { background: rgba(255,255,255,.55); color: inherit; }
+/* The panel numbers its steps with a counter on every li it contains. A
+   reference is not step 9 of the instructions, so the marker and its indent
+   are cancelled for this list. */
+.rn-panel .src-list > li {
+  color: inherit; border-bottom-color: rgba(0,0,0,.12);
+  counter-increment: none; padding-left: 0;
+}
+.rn-panel .src-list > li::before { content: none; }
+.rn-panel .src-title,
+.rn-panel .src-claim,
+.rn-panel .src-authors,
+.rn-panel .src-where,
+.rn-panel .src-ids a { color: inherit; }
+
+/* ---------- impact dashboard ----------
+   Read in this order: totals, then the working behind them. The page is a
+   reporting surface, not an emergency one, so it may carry more density than
+   anything a reader reaches mid-smoke-event - but it stays in the same
+   palette, and colour still means something: violet is this project, amber
+   and red stay reserved for the hazard channels and appear nowhere here. */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--s3); margin: var(--s4) 0 var(--s5);
+}
+.kpi {
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--paper); padding: var(--s4) var(--s3);
+}
+.kpi.is-muted { background: var(--paper-2); }
+.kpi-num {
+  font-family: var(--font-display); font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-weight: 700; line-height: 1; color: var(--brand);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums;
+}
+.kpi.is-muted .kpi-num { color: var(--ink-2); }
+.kpi-label { font-size: .8rem; color: var(--ink); margin-top: .4rem; line-height: 1.35; }
+.kpi-sub { font-size: .72rem; color: var(--ink-3); margin-top: .2rem; }
+
+.dash-card {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--paper); padding: var(--s5) var(--s4);
+  margin: 0 0 var(--s5);
+}
+.dash-head h2 { margin: 0; font-size: var(--step-2); }
+.dash-hint { font-size: .88rem; color: var(--ink-2); margin: var(--s2) 0 var(--s4); }
+.dash-sub {
+  font-family: var(--font-text); font-size: .74rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3);
+  margin: var(--s5) 0 var(--s2);
+}
+.dash-note { font-size: .82rem; color: var(--ink-3); margin: var(--s3) 0 0; line-height: 1.5; }
+.dash-figure { font-size: .92rem; color: var(--ink-2); margin: var(--s4) 0 0; line-height: 1.55; }
+.dash-figure b { color: var(--brand); font-variant-numeric: tabular-nums lining-nums; }
+.dash-card .kpi-grid { margin-bottom: var(--s4); }
+.dash-card > .notice { margin-top: var(--s4); }
+
+/* horizontal bars: the label and the number are text, the bar is decoration */
+.bars { display: grid; gap: var(--s2); margin: var(--s3) 0 0; }
+.bar-row { display: grid; grid-template-columns: minmax(6rem, 11rem) 1fr auto; gap: var(--s3); align-items: center; }
+.bar-label { font-size: .86rem; color: var(--ink); }
+.bar-track { background: var(--paper-3); border-radius: var(--r-pill); height: 12px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--brand); border-radius: var(--r-pill); }
+.bar-fill.tone-flat { background: var(--ink-3); }
+.bar-value { font-size: .8rem; color: var(--ink-2); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.bar-row.is-zero .bar-label, .bar-row.is-zero .bar-value { color: var(--ink-3); }
+
+/* before / after */
+.pair-legend { display: flex; gap: var(--s4); margin: 0 0 var(--s3); font-size: .78rem; color: var(--ink-2); }
+.key::before {
+  content: ''; display: inline-block; width: .8rem; height: .55rem;
+  border-radius: 2px; margin-right: .4rem; vertical-align: baseline;
+}
+.key-before::before { background: var(--violet-200); }
+.key-after::before { background: var(--brand); }
+.pair-grid { display: grid; gap: var(--s4); }
+.pair-line { display: grid; grid-template-columns: minmax(7rem, 13rem) 1fr auto; gap: var(--s3); align-items: center; }
+.pair-label { font-size: .86rem; }
+.pair-nums { font-size: .8rem; color: var(--ink-2); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.chart-pair { width: 100%; height: 30px; display: block; }
+.pair-before { fill: var(--violet-200); }
+.pair-after { fill: var(--brand); }
+
+/* when people scan */
+.hours-bars { display: flex; align-items: flex-end; gap: 2px; height: 64px; margin-top: var(--s2); }
+.hour { flex: 1; background: var(--brand); border-radius: 2px 2px 0 0; min-height: 3px; }
+.hour.is-zero { background: var(--line); }
+.hours-axis { display: flex; justify-content: space-between; font-size: .68rem; color: var(--ink-3); margin-top: .3rem; }
+
+@media (max-width: 34rem) {
+  .bar-row, .pair-line { grid-template-columns: 1fr auto; }
+  .bar-track { grid-column: 1 / -1; order: 3; }
+  .chart-pair { grid-column: 1 / -1; order: 3; }
+}
+
+/* The one instruction that changes the answer rate: measured 48% of close-ups
+   answered against 31% of arm's-length shots. It sits with the picker, before
+   the photo is taken, not only in the advice shown after a "not sure". */
+.wound-framing { color: var(--ink-2); margin: var(--s3) 0 0; }
+
+/* ---------- "How this works" (wound page) ----------
+   Sits above the upload button because the question it answers - who is
+   looking at my photo - is the one a reader has BEFORE they hand over a
+   picture of their own injury, not after. */
+.how-box {
+  border: 1px solid var(--line-strong); border-radius: var(--r);
+  background: var(--paper-2); padding: var(--s4); margin: 0 0 var(--s5);
+}
+.how-h { margin: 0 0 var(--s3); font-size: var(--step-1); }
+.how-list { margin: 0; padding-left: 1.2rem; display: grid; gap: var(--s2); }
+.how-list li { line-height: 1.55; }
+
+/* The care box repeated under every result. Deliberately in the earthquake
+   red channel: it is the one thing on the page that does not depend on the
+   model being right. */
+.care-box {
+  border: 2px solid var(--quake-line); background: var(--quake-bg);
+  border-radius: var(--r); padding: var(--s4); margin: var(--s5) 0 0;
+}
+.care-box h3 { margin: 0 0 var(--s2); color: var(--quake-ink); font-size: var(--step-1); }
+.care-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--s1); }
+.care-box li { line-height: 1.5; }
+.care-note { font-size: .84rem; color: var(--ink-2); margin: var(--s3) 0 0; }
+.sure-line { font-family: var(--font-text); font-weight: 700; margin: 0 0 var(--s2); }
+
+/* King County resources, added at PHRC's request. A card, like everything
+   else on these pages - as a bare rule it read as leftover text rather than a
+   deliberate section. It still points away from this site, so it stays quiet:
+   no hazard colour, secondary button, muted body. */
+.more-box {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--paper-2);
+  margin: var(--s6) 0 0; padding: var(--s5) var(--s4);
+}
+.more-box h2 { font-size: var(--step-1); margin: 0 0 var(--s2); }
+.more-box p { color: var(--ink-2); margin: 0 0 var(--s4); max-width: 34rem; }
+/* A link, not a button. This points off the site, so it should not carry the
+   same weight as "Find clean air near me" two sections above it. Padded to a
+   44px tap target even though it reads as text. */
+.more-link { margin: 0; }
+.more-link a {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-height: 44px; font-weight: 700; color: var(--brand);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.more-link a:hover { color: var(--brand-strong); }
+.more-link .ext { font-size: .85em; }
+@media (min-width: 34rem) { .more-box { padding: var(--s5); } }
+
+/* ---------- PHRC partner mark ----------
+   Their logo sits beside ours, the same size, in the header and the footer.
+   It is a partner mark, not a second brand: no link of its own, and it never
+   appears without the HOSA seal next to it.
+
+   The header is tight on a phone - two 44px marks, the wordmark, the language
+   switch and the sign-in pill all share one row - so below 30rem the partner
+   mark steps down rather than pushing the wordmark into a wrap. */
+.brand-phrc { margin-left: .35rem; }
+/* Not in the header on a phone. That row already holds the seal, the
+   wordmark, the language switch and the sign-in pill; a second seal either
+   pushed "MRC Miracle" onto two lines or, once told not to wrap, clipped it
+   behind the language buttons. Both were measured at 375px. PHRC is still
+   credited on every page - in the footer, at full size, where there is room
+   for it - and the header mark returns above 30rem. */
+@media (max-width: 30rem) {
+  .brand-phrc { display: none; }
+}
+
+/* Footer: the two seals share a row, wrapping together on narrow screens. */
+.foot-marks { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s4); }
+.foot-marks .site-logo { margin-bottom: 0; }
