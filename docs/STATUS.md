@@ -130,11 +130,19 @@ Checked here rather than taken on trust:
   (3 in the test split). The detection worked over a week ago; nothing was done with it. The
   labels are deliberately NOT being changed — the repo's practice is to flag for qualified
   review and test exclusion instead, which is the right call for medical labels.
+- **The effect on the published figures is now measured, and it is small.** The v6 round
+  flagged 32 no-visible-injury photos under a written criterion (`experiments/v6/flags.csv`),
+  9 of them in the test split; 5 were already in the v2 file, 27 are new. Excluding the 9 moves
+  "right when it names one" from 153/164 = 93.3% to 151/162 = 93.2% — **0.1 points**, verified
+  here independently. The model card's "93%" therefore stands and needs no correction. An
+  earlier line in this file called the optimism "unmeasured"; it is now measured, and negligible.
+  Spot-checked two flags by eye and both are correct: a pair of hands on an unmarked abdomen
+  labelled "first-degree burn", and a blurred stock watermark labelled "cut".
 - **Label contamination, confirmed.** `data/test/burn_1st_degree/burn_1st_degree_kg2_693.jpg`
   is a stock photo of a woman touching an uninjured face, labelled "first-degree burn" **in
   the test split**. First-degree-burn training photos include many faces; the "not a wound"
-  class has none. So the test set partly *rewards* calling a healthy face a burn, and every
-  published burn accuracy figure is optimistic by an unmeasured amount.
+  class has none. So the test set partly *rewards* calling a healthy face a burn. The size of that effect is
+  measured below and comes to about 0.1 points.
 - **Candidate code, confirmed.** `experiments/v5/production_mean_070/api/predict.py` differs
   from live in exactly three places: threshold 0.75 → 0.70; the classifier is averaged with
   the healthy-skin model; that model's output is reused for the gate.
@@ -197,3 +205,24 @@ be quoted beside these numbers because it leaves non-wound photos unpadded.
 An independent run on raw 224 px files suggested the release also *raised* correct answers
 (161 vs 153). Browser-encoding removed that difference entirely, so **no claim is made that
 correct answers rose** — they are flat, and only the false-alarm side improved.
+
+
+## v6 round (2026-10-03) — no candidate beats live, nothing deployed
+
+Retraining with the flagged photos excluded, plus 1,609 healthy-skin and 821 extra face photos
+added to "not a wound", produced a best candidate — mean of the new model, the deployed model
+and the healthy model at 0.70 — that **fails the bar**:
+
+| | Live | v6 best |
+|---|---|---|
+| Correct wound names | 204 | 202 |
+| False alarms | 392 | 368 (CI −69..+12, not significant) |
+| Arm's length named | 47 | **39 (worse again)** |
+| Faces labelled (of 864) | 70 | **48** |
+
+**The conclusion matters more than the numbers:** adding non-wound data keeps improving the
+false-alarm side and never improves the number of wounds correctly named. Two independent
+rounds have now failed the same half of the objective. More negatives cannot fix it — that half
+needs more and better-labelled *wound* photos, which is the EBIS access that is still pending.
+
+Production stays on `g0fyqeygp` / `98oq5pvba`.
