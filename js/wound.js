@@ -147,7 +147,7 @@
      severe", and is shown that way rather than as a confident answer. Must
      match CONFIDENCE_THRESHOLD in the classifier's src/model.py (a percentage
      here, because the classifier sends confidence as one). */
-  var CONFIDENCE_THRESHOLD_PCT = 75;   // the classifier's CONFIDENCE_THRESHOLD since 2026-09-27 (was 60)
+  var CONFIDENCE_THRESHOLD_PCT = 70;   // the classifier's CONFIDENCE_THRESHOLD since 2026-10-03 (was 75, and 60 before that)
 
   /* Plain words for the confidence number, because "74%" does not tell a
      reader whether to act on it. The 60% line is not ours to choose - the
