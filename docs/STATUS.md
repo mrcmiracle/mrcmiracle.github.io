@@ -124,6 +124,12 @@ photos). Full report: `Wound-Analyzer/.claude/worktrees/silly-wilson-17d01a/expe
 
 Checked here rather than taken on trust:
 
+- **Label contamination, confirmed — and already known.** The offending photo is line 249 of
+  `experiments/v2/flagged_for_review.csv`, flagged on similarity 0.845 against a *normal skin*
+  photo, split "test". That file holds 319 flagged photos, 38 of them likely label conflicts
+  (3 in the test split). The detection worked over a week ago; nothing was done with it. The
+  labels are deliberately NOT being changed — the repo's practice is to flag for qualified
+  review and test exclusion instead, which is the right call for medical labels.
 - **Label contamination, confirmed.** `data/test/burn_1st_degree/burn_1st_degree_kg2_693.jpg`
   is a stock photo of a woman touching an uninjured face, labelled "first-degree burn" **in
   the test split**. First-degree-burn training photos include many faces; the "not a wound"
