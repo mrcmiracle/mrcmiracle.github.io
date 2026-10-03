@@ -22,7 +22,7 @@
                    page already has a designed state for that.
      other /api/   network only. Writes must not be replayed from a cache.
 */
-const VERSION = 'v19';
+const VERSION = 'v20';
 const SHELL = 'shell-' + VERSION;
 const ASSETS = 'assets-' + VERSION;
 

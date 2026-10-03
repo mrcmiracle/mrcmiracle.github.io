@@ -140,14 +140,12 @@
     return out;
   }
 
-  /* The classifier only names a wound at CONFIDENCE_THRESHOLD or above - with
-     one exception. A photo that most resembles a third-degree burn comes back
-     as burn_3rd_degree even below that bar, because missing one costs far more
-     than a false alarm. So a third-degree answer under the bar means "possibly
-     severe", and is shown that way rather than as a confident answer. Must
-     match CONFIDENCE_THRESHOLD in the classifier's src/model.py (a percentage
-     here, because the classifier sends confidence as one). */
-  var CONFIDENCE_THRESHOLD_PCT = 70;   // the classifier's CONFIDENCE_THRESHOLD since 2026-10-03 (was 75, and 60 before that)
+  /* The classifier names a wound only at CONFIDENCE_THRESHOLD or above, and
+     sends "unknown" otherwise - there is no longer any exception, because the
+     three burn degrees were merged into one reported label and burn_3rd_degree
+     is never returned. Must match CONFIDENCE_THRESHOLD in the deployed
+     classifier (a percentage here, because confidence arrives as one). */
+  var CONFIDENCE_THRESHOLD_PCT = 65;   // the classifier's CONFIDENCE_THRESHOLD since 2026-10-03
 
   /* Plain words for the confidence number, because "74%" does not tell a
      reader whether to act on it. The 60% line is not ours to choose - the
@@ -187,20 +185,14 @@
     return box;
   }
 
-  function isPossibleSevereBurn(label, confidence) {
-    return label === 'burn_3rd_degree' && confidence != null && confidence < CONFIDENCE_THRESHOLD_PCT;
-  }
-
   function render(host, data) {
     host.textContent = '';
 
     var isUnknown = data.label === 'unknown' || data.confidence == null;
-    var possibleSevere = isPossibleSevereBurn(data.label, data.confidence);
-    var box = el('div', 'wound-answer' + (isUnknown || possibleSevere ? ' is-unsure' : ''));
+    var box = el('div', 'wound-answer' + (isUnknown ? ' is-unsure' : ''));
 
-    box.appendChild(el('p', 'wound-eyebrow', isUnknown || possibleSevere ? t('wound.result.unsure_h') : t('wound.result.h')));
-    box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure')
-      : possibleSevere ? t('wound.result.maybe_severe') : labelText(data.label)));
+    box.appendChild(el('p', 'wound-eyebrow', isUnknown ? t('wound.result.unsure_h') : t('wound.result.h')));
+    box.appendChild(el('p', 'wound-label', isUnknown ? t('wound.result.unsure') : labelText(data.label)));
 
     // How sure, in words, on every result including the refused ones.
     box.appendChild(el('p', 'sure-line', sureWords(isUnknown ? null : data.confidence)));
@@ -215,17 +207,16 @@
        covers at all and naming one only misleads. What replaces it is an
        instruction the reader can act on. */
     if (isUnknown) box.appendChild(el('p', 'wound-cantell', t('wound.result.cantell')));
-    if (possibleSevere) box.appendChild(el('p', 'notice notice-strong', t('wound.result.maybe_severe_911')));
     host.appendChild(box);
 
-    var tips = guidanceFor(isUnknown ? 'unknown' : possibleSevere ? 'burn_3rd_degree_possible' : data.label, data.tips);
+    var tips = guidanceFor(isUnknown ? 'unknown' : data.label, data.tips);
     if (tips.length) {
       host.appendChild(el('h3', null, t('wound.result.tips_h')));
       var ul = el('ul', 'wound-tips');
       tips.forEach(function (line) { ul.appendChild(el('li', null, line)); });
       host.appendChild(ul);
 
-      var srcIds = TIP_SOURCES[isUnknown ? 'unknown' : possibleSevere ? 'burn_3rd_degree_possible' : data.label];
+      var srcIds = TIP_SOURCES[isUnknown ? 'unknown' : data.label];
       if (srcIds && global.Sources) host.appendChild(global.Sources.block(srcIds));
     }
 
@@ -332,7 +323,7 @@
           rows.forEach(function (r) {
             var li = el('li');
             li.appendChild(el('span', 'h-label', r.label === 'unknown' ? t('wound.result.unsure')
-              : isPossibleSevereBurn(r.label, r.confidence) ? t('wound.result.maybe_severe') : labelText(r.label)));
+              : labelText(r.label)));
             li.appendChild(el('span', 'h-conf', (r.confidence == null || r.label === 'unknown') ? ''
               : t('wound.result.confidence', { pct: r.confidence })));
             li.appendChild(el('span', 'h-date', fmtDate(r.created_at)));

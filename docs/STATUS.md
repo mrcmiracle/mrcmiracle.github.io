@@ -8,8 +8,8 @@ code wins over both.
 
 | | Project | Production deployment | Source of that deploy |
 |---|---|---|---|
-| Website | `vihaannrsingh-cmyk/mrc-miracle` | `mrc-miracle-98oq5pvba` (2026-10-03) | Git auto-deploy from `main` (`74657ee`) |
-| Classifier | `vihaannrsingh-cmyk/wound-analyzer-vercel` | `wound-analyzer-vercel-g0fyqeygp` (2026-10-03) | Vercel CLI from `~/Downloads/wound-analyzer-vercel` |
+| Website | `vihaannrsingh-cmyk/mrc-miracle` | see release note below (2026-10-03) | Git auto-deploy from `main` |
+| Classifier | `vihaannrsingh-cmyk/wound-analyzer-vercel` | `wound-analyzer-vercel-9o38jv884` + card redeploy (2026-10-03) | Vercel CLI from `~/Downloads/wound-analyzer-vercel` |
 
 Website repo: `github.com/mrcmiracle/mrcmiracle.github.io` (despite the name, it is
 served by Vercel, not GitHub Pages). Local checkout `~/Downloads/mrc-miracle` is level
@@ -226,3 +226,44 @@ rounds have now failed the same half of the objective. More negatives cannot fix
 needs more and better-labelled *wound* photos, which is the EBIS access that is still pending.
 
 Production stays on `g0fyqeygp` / `98oq5pvba`.
+
+
+## Release 2026-10-03 (third) — the middle ground, threshold 0.65
+
+Vihaan asked for one configuration balanced for distribution at KCLS libraries and to PHRC
+volunteers. The averaging was already live, so **only the threshold moved: 0.70 → 0.65.**
+
+Chosen by sweeping averaging weight (0 … 0.5) against threshold (0.55 … 0.75) on `data/val`
+only, then reporting the shortlist once on the untouched test split, the held-out healthy
+photos and the arm's-length reconstruction:
+
+| | 0.75 no avg | 0.70 avg | **0.65 avg (now)** | 0.60 avg |
+|---|---|---|---|---|
+| Wounds named | 172 | 164 | **189** | 210 |
+| Right when named | 154 (89.5%) | 153 (93.3%) | **173 (91.5%)** | 188 (89.5%) |
+| Wrong names | 18 | 11 | 16 | 22 |
+| Non-wounds labelled | 48 (10.7%) | 44 (9.8%) | 58 (12.9%) | 82 (18.2%) |
+| Healthy faces labelled | 18 (12.3%) | 10 (6.8%) | **14 (9.6%)** | 18 (12.3%) |
+| Arm's length answered | 42 (12.7%) | 47 (14.2%) | **68 (20.5%)** | 84 (25.4%) |
+
+0.60 was rejected outright: it returns face false alarms to 12.3%, the level that started this
+work. 0.65 names **more wounds than either predecessor**, answers half again as many
+arm's-length photos, and keeps most of the face fix. The cost is 12.9% of non-wound photos
+labelled instead of 9.8%.
+
+### Front-end work shipped with it
+
+- Site threshold synced to 65.
+- **Dead code removed.** `isPossibleSevereBurn()` tested for `burn_3rd_degree`, which the
+  backend can no longer return. While removing it, a surviving call in the wound-history
+  renderer was found that would have thrown a `ReferenceError`; `node --check` does not catch
+  that, a grep did.
+- The stray `-w` file committed in `26be345` is deleted; it was being served from the site root.
+- Service worker `v19` → `v20`, so returning visitors get the new code rather than a cached copy.
+
+### Pre-distribution checks
+
+- `node --check` clean on every file in `js/`, `sw.js` and `api/`.
+- All 33 service-worker precached paths exist on disk (an offline visitor gets a complete site).
+- 205 referenced translation keys, **none missing in either language**; en.json and es.json hold
+  582 keys each with no key present in one and absent from the other.
