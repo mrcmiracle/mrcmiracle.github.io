@@ -8,8 +8,8 @@ code wins over both.
 
 | | Project | Production deployment | Source of that deploy |
 |---|---|---|---|
-| Website | `vihaannrsingh-cmyk/mrc-miracle` | `mrc-miracle-fqg5jzkri` (2026-09-28) | Git auto-deploy from `main` |
-| Classifier | `vihaannrsingh-cmyk/wound-analyzer-vercel` | `wound-analyzer-vercel-i3d03qut5` (2026-09-28) | Vercel CLI from `~/Downloads/wound-analyzer-vercel` |
+| Website | `vihaannrsingh-cmyk/mrc-miracle` | `mrc-miracle-98oq5pvba` (2026-10-03) | Git auto-deploy from `main` (`74657ee`) |
+| Classifier | `vihaannrsingh-cmyk/wound-analyzer-vercel` | `wound-analyzer-vercel-g0fyqeygp` (2026-10-03) | Vercel CLI from `~/Downloads/wound-analyzer-vercel` |
 
 Website repo: `github.com/mrcmiracle/mrcmiracle.github.io` (despite the name, it is
 served by Vercel, not GitHub Pages). Local checkout `~/Downloads/mrc-miracle` is level
@@ -24,9 +24,9 @@ is the only authority on what is serving.
 
 ### Rollback references
 
-- Website: previous production `mrc-miracle-6fzt73rxs`; commit `281919c` is the last
-  state before the 2026-09-27 wound changes.
-- Classifier, newest first: `i3d03qut5` (current) → `axnmf5u04` → `jop7ssu2o` (crop retry
+- Website: previous production `mrc-miracle-fqg5jzkri`; previous commit `8c57e87`.
+- Classifier, newest first: `g0fyqeygp` (current) → `p88tya367` (same code, old card) →
+  **`i3d03qut5` (the pre-2026-10-03 release — roll back here)** → `axnmf5u04` → `jop7ssu2o` (crop retry
   still on) → `imjnkbxko` (one gate, 0.60) → `qpgrxqjqx` (pre-burn-merge, seven classes).
 - A Vercel rollback does **not** reverse Supabase. See the Supabase note below.
 
@@ -153,3 +153,41 @@ loss of correct answers. That is Vihaan's decision, not a session's.
 `wound-ebsdw-4atst` is ruled out, now including on faces, where it is **worse** (82 vs 61
 labelled of 531). At 0.40 it gets 39 wound names right vs live's 79; at 0.82 it answers
 almost nothing. No further Roboflow work is warranted.
+
+
+## Release 2026-10-03 — averaged classifier at 0.70
+
+Deployed after Vihaan chose it over holding for a retrain. Backend `g0fyqeygp`, site
+`98oq5pvba` (commit `74657ee`). Rollback: classifier to `i3d03qut5`, site to `fqg5jzkri`;
+the backend file it replaced is kept at
+`wound-analyzer-artifacts/predict.py.live-i3d03qut5-backup`. No Supabase change, so a
+rollback of either side is complete on its own.
+
+Three lines differ from the previous backend: threshold 0.75 → 0.70; the classifier is
+averaged with the healthy-skin model; that model's output is reused for the gate.
+
+**Verified end to end after deploy**, through the site's own `/api/wound` proxy:
+healthy face → `unknown` (was `possible_burn` 90.9); `cut_kg1_116` → `cut` 85.7;
+`burn_2nd_degree_kg2_1023` → `possible_burn` 91.8; `{}` → `{"ok":false,"error":"no image"}`;
+GET → `{"ok":false,"error":"POST only"}`. Spanish has every `possible_burn` and
+confidence-wording key — no gaps. Site and server both report 70.
+
+### Public figures were re-measured, not carried over
+
+Browser-encoded test split, this server's own `_classify()`:
+
+| | Before | Now |
+|---|---|---|
+| Close-ups named | 172/331 (52%) | 164/331 (50%) |
+| Right when named | 154/172 (89%) | 153/164 (93%) |
+| Non-wounds called a wound | 48/450 (11%) | 44/450 (10%) |
+| Arm's length named | 60/331 (18%) | **47/331 (14%)** |
+
+The arm's-length figure got **worse** and the model card says so. Reconstructing the original
+padding (blurred self-copy, non-wounds padded too) reproduced the recorded 2.7% non-wound
+rate as 2.9%, which is what validates the reconstruction; `experiments/data_frame50` must not
+be quoted beside these numbers because it leaves non-wound photos unpadded.
+
+An independent run on raw 224 px files suggested the release also *raised* correct answers
+(161 vs 153). Browser-encoding removed that difference entirely, so **no claim is made that
+correct answers rose** — they are flat, and only the false-alarm side improved.
