@@ -267,3 +267,30 @@ labelled instead of 9.8%.
 - All 33 service-worker precached paths exist on disk (an offline visitor gets a complete site).
 - 205 referenced translation keys, **none missing in either language**; en.json and es.json hold
   582 keys each with no key present in one and absent from the other.
+
+### Verified on the live site after deploy
+
+- Every page returns 200 (`/`, wound, clean-air, emergencies, privacy, impact, `/logo`, 404);
+  the deleted `-w` file now returns 404.
+- The real upload path was exercised in a browser, not just unit-checked: a synthetic photo
+  through the actual file input renders the unsure result, the "we can't tell" line, the
+  12-item care box, 14 source links and 4 guidance steps, with no confidence number — correct.
+- Spanish verified end to end on the rendered result: heading, label, care-box heading and
+  guidance all translate; 375 px layout correct.
+- `/api/wound` end to end: `cut` 85.7, `possible_burn` 91.8, healthy face `unknown`;
+  `{}` → `{"ok":false,"error":"no image"}`, GET → `{"ok":false,"error":"POST only"}`.
+- `robots.txt` still disallows `/admin.html` and `/logo`, both of which carry
+  `noindex, nofollow`. The poster QR path `/q/kcls-bothell` still 302s to `/?src=kcls-bothell`,
+  so printed library posters keep working and keep counting.
+
+### Known cosmetic issue, deliberately not patched
+
+Navigating between pages logs `Uncaught (in promise) AbortError: Transition was skipped` to the
+browser console. It comes from the declarative cross-document view-transition feature
+(`@view-transition { navigation: auto; }` in `css/styles.css`) when a transition is skipped —
+there is no site-code promise to attach a `catch` to. It has no functional effect.
+
+It could be silenced with a global `unhandledrejection` handler, but that would also hide real
+errors, which conflicts with the standing instruction to raise errors rather than swallow them.
+Removing `@view-transition` would clear it at the cost of the page transition. Left visible and
+recorded here instead; say which trade you prefer.
