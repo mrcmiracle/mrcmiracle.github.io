@@ -72,7 +72,7 @@
   ],
   "crons": [
     {
-      "path": "/api/keepwarm",
+      "path": "/api/impact",
       "schedule": "0 11 * * *"
     }
   ]
