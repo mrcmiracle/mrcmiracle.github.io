@@ -69,5 +69,11 @@
       "source": "/logo",
       "destination": "/logo-placement-draft.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/keepwarm",
+      "schedule": "0 11 * * *"
+    }
   ]
 }
