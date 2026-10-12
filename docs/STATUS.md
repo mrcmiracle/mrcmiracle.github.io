@@ -294,3 +294,39 @@ It could be silenced with a global `unhandledrejection` handler, but that would 
 errors, which conflicts with the standing instruction to raise errors rather than swallow them.
 Removing `@view-transition` would clear it at the cost of the page transition. Left visible and
 recorded here instead; say which trade you prefer.
+
+## Supabase auto-pause, and the keep-warm cron (2026-10-11/12)
+
+The project paused and was resumed manually. The site itself never went down — pages, the
+wound tool and air quality do not touch Supabase — which is exactly what makes this dangerous:
+nothing looked broken.
+
+**What actually breaks while it is paused**, measured during the outage rather than assumed:
+
+- `/api/impact` → 502 (`section_use HTTP 521`).
+- `/q/<slug>` still returns 302 and still sends people to the site — `api/q.js` fails open by
+  design, so a printed poster never shows an error — **but the code lookup fails, so the
+  redirect drops `?src=` and the scan is never counted.** Posters keep drawing people in and
+  nothing records that they came.
+- Sign-in and all visit tracking fail.
+
+**Cause.** The organisation is on the Supabase **free plan**, which auto-pauses on inactivity.
+Note the evidence does not fit the plain seven-day story: real visits landed on Oct 5, 6 and 8,
+the last about four days before the pause. Storage is ruled out — 12 MB against a 500 MB limit,
+1,952 event rows, 936 kB of tables. Supabase does not expose the pause reason over the API; the
+project page in its dashboard normally states it.
+
+**Mitigation shipped.** `vercel.json` now runs a daily cron at `0 11 * * *` against
+`/api/impact`, which already reads the database through five RPCs.
+
+A dedicated `/api/keepwarm` was written first and **could not ship**: the Vercel **Hobby plan
+allows 12 Serverless Functions per deployment and this project already has exactly 12**, so the
+deploy was rejected. Production was unaffected — Vercel keeps the last good deployment serving.
+Reusing `/api/impact` needs no new function. Its cache cannot absorb the request either:
+`s-maxage=30, stale-while-revalidate=120` are both long expired a day later, so the CDN must
+revalidate at the origin.
+
+Verified, not assumed: `vercel crons ls` lists the job, and triggering it at `04:43:10.893Z`
+produced **six Supabase requests at `04:43:11.3`** — the five RPCs plus overhead.
+
+**If a 13th API function is ever needed, something must be removed or the plan upgraded.**
