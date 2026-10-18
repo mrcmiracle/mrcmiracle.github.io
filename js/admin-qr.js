@@ -23,7 +23,7 @@
 (function (global) {
   'use strict';
 
-  var BASE_URL = 'https://mrcmiracle.vercel.app/q/';
+  var BASE_URL = 'https://www.mrcmiraclehealthcorps.org/q/';
   var DARK = '#2A1550';
   var LOGO_FRACTION = 0.22;
   var BORDER = 4;

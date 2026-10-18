@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
   try {
     const upstream = await fetch(SOURCE, {
-      headers: { 'User-Agent': 'MRC-Miracle/1.0 (+https://mrcmiracle.vercel.app)' }
+      headers: { 'User-Agent': 'MRC-Miracle/1.0 (+https://www.mrcmiraclehealthcorps.org)' }
     });
     if (!upstream.ok) throw new Error('AirNow HTTP ' + upstream.status);
 

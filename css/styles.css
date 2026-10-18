@@ -212,6 +212,35 @@ body {
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--s4); }
 
+/* ---------- container width, by device ----------
+
+   42rem is a good reading measure and exactly right on a phone, but it was
+   applied at every size, so a laptop got a 672px column inside a 1440px
+   window - 47% content, 53% empty margin (measured, not estimated). The
+   container now grows in steps with the viewport.
+
+   Prose does NOT grow with it. A paragraph running the full width of a wide
+   monitor is hard to read, so text blocks that sit directly in the container
+   keep their own measure below; cards, grids and the dashboard take the extra
+   room instead, which is what actually wanted it. */
+@media (min-width: 48rem)  { :root { --maxw: 46rem; } }   /* small tablet      */
+@media (min-width: 64rem)  { :root { --maxw: 58rem; } }   /* laptop            */
+@media (min-width: 80rem)  { :root { --maxw: 68rem; } }   /* large laptop      */
+@media (min-width: 100rem) { :root { --maxw: 76rem; } }   /* desktop monitor   */
+
+/* Side gutters grow a little too, so a wide window does not look like the
+   content is pinned to the glass. */
+@media (min-width: 64rem) { .wrap { padding: 0 var(--s6); } }
+
+/* Keep lines readable once the container is wider than a comfortable measure.
+   Direct children only: text inside a card is already constrained by the card. */
+@media (min-width: 64rem) {
+  main .wrap > p,
+  main .wrap > ul,
+  main .wrap > ol,
+  main .wrap > .lede { max-width: 46rem; }
+}
+
 /* The serif is now reserved for display moments - the one h1 per page, the
    wordmark and the big numbers. Section headings run in the sans, which is the
    same face as the body text, so a page reads as one voice instead of
@@ -272,7 +301,14 @@ a:hover { color: var(--brand-strong); }
 .brand-name {
   font-family: var(--font-display);
   font-weight: 700; font-size: 1.08rem; line-height: 1.1; letter-spacing: -.01em;
+  /* "MRC Miracle Health Corps" is four words in a lockup that also carries two
+     seals, the language switch and sign-in. Left alone it broke into three
+     ragged lines on a phone and cost 19px of header height. Balanced, it falls
+     as "MRC Miracle / Health Corps", and it drops a step below 26rem where the
+     tagline is hidden anyway. */
+  text-wrap: balance;
 }
+@media (max-width: 26rem) { .brand-name { font-size: 1rem; } }
 .brand-sub { font-size: .68rem; color: var(--ink-3); line-height: 1.25; display: none; }
 @media (min-width: 26rem) { .brand-sub { display: block; } }
 
@@ -394,6 +430,10 @@ main { padding-bottom: var(--s8); }
 }
 .btn-secondary:hover { background: var(--paper-3); color: var(--ink); border-color: var(--line-strong); }
 .btn-block { display: flex; width: 100%; }
+/* Full width is right on a phone. Once the container grows, a button that
+   still fills it becomes a 990px slab (measured on the wound page at 1440px),
+   which reads as a banner rather than something to press. */
+@media (min-width: 48rem) { .btn-block { max-width: 24rem; } }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: default; box-shadow: none; transform: none; }
 
 /* ---------- cards: a ruled index, not a grid of boxes ----------

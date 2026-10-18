@@ -6,4 +6,4 @@ Disallow: /admin.html
 Disallow: /logo-placement-draft
 Disallow: /logo
 
-Sitemap: https://mrcmiracle.vercel.app/sitemap.xml
+Sitemap: https://www.mrcmiraclehealthcorps.org/sitemap.xml
