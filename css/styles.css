@@ -433,7 +433,7 @@ main { padding-bottom: var(--s8); }
 /* Full width is right on a phone. Once the container grows, a button that
    still fills it becomes a 990px slab (measured on the wound page at 1440px),
    which reads as a banner rather than something to press. */
-@media (min-width: 48rem) { .btn-block { max-width: 24rem; } }
+@media (min-width: 48rem) { .btn-block { max-width: 24rem; margin-inline: auto; } }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: default; box-shadow: none; transform: none; }
 
 /* ---------- cards: a ruled index, not a grid of boxes ----------
@@ -994,6 +994,10 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .wound-stage .small { color: var(--ink-3); }
 
 .wound-cta-row { margin: 0 0 var(--s2); }
+/* The card's own padding is the space above its heading. An h2 carrying its
+   usual top margin as the first child added ~49px on top of that, which read
+   as a gap rather than as padding. */
+.wound-stage > :first-child { margin-top: 0; }
 .btn-hero {
   width: 100%;
   font-size: var(--step-2);

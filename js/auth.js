@@ -15,6 +15,26 @@
 (function (global) {
   'use strict';
 
+  /* Supabase sends the signed-in token to the Site URL configured in its own
+     dashboard, which is still the old mrcmiracle.vercel.app host. Someone who
+     pressed "Continue with Google" on the new domain therefore comes back to
+     the old one, token in hand, and would be signed in on the wrong origin -
+     a different localStorage, so the new domain still shows them signed out.
+
+     Forward the token to the canonical host, hash intact, before anything
+     reads it. Narrow on purpose: it only fires when a token is actually
+     present, so ordinary traffic arriving from a printed poster is untouched
+     and QR attribution is unaffected. Remove this once the new origin is in
+     Supabase's redirect allowlist; until then it is what makes sign-in work. */
+  var CANONICAL_HOST = 'www.mrcmiraclehealthcorps.org';
+  if (location.protocol === 'https:' &&
+      location.host !== CANONICAL_HOST &&
+      location.hash.indexOf('access_token') !== -1) {
+    location.replace('https://' + CANONICAL_HOST +
+      location.pathname + location.search + location.hash);
+    return;
+  }
+
   var SESSION_KEY = 'mrcm_session';
   var AGE_KEY = 'mrcm_age_ok';
   var cfg = null;
