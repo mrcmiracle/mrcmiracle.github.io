@@ -400,3 +400,54 @@ The request was a "health corps theme". `docs/DESIGN.md` forbids decorative icon
 any fifth accent colour, so the identity is carried by naming and typographic weight — no
 crosses, no stripes, no new colour. The HOSA tagline is untouched and still sits directly
 under the wordmark, where PHRC asked for it.
+
+## Post-migration incident and fixes (2026-10-17/18)
+
+**Root cause of the dead posters AND the broken Google sign-in: `vercel alias set`.**
+
+Restoring `mrcmiracle.vercel.app` with `npx vercel alias set <deployment> <domain>` creates a
+**deployment alias**, not a project domain. Deployment aliases inherit Deployment Protection,
+which on this project is `all_except_custom_domains` — so the old host first 404'd, and then,
+once aliased, served a Vercel Authentication wall (`302 → vercel.com/sso-api`). Printed library
+posters hit that wall, and Google sign-in died with it because Supabase's Site URL points there.
+
+**The correct fix is `add_project_domain`** (Vercel API) — a project domain is treated as a
+custom domain for protection and tracks production automatically. Verified afterwards: both
+hosts return 200 publicly, serve the current build, and `/q/<slug>` 302s with `?src=` intact.
+
+Never use `vercel alias set` to restore a public host on this project.
+
+### Sign-in now lands on the right domain
+
+`js/auth.js` forwards a token-bearing hash to `www.mrcmiraclehealthcorps.org` before anything
+reads it, because Supabase still returns to the old Site URL. It fires only when an
+`access_token` is present, so poster traffic and QR attribution are untouched.
+
+**This is a workaround, not the fix.** Add the new origin in Supabase → Authentication → URL
+Configuration (Site URL `https://www.mrcmiraclehealthcorps.org`, redirect
+`https://www.mrcmiraclehealthcorps.org/**`, keeping `https://mrcmiracle.vercel.app/**`), then
+the forward in `auth.js` can be deleted.
+
+### Maps key restricted
+
+The key is `Maps Platform Demo API Key` in project **`gmp-demo-project-467634042`** — not
+`mrc-miracle`, which is why a search of the obvious project found nothing. It now carries
+HTTP-referrer restrictions for the three site hosts (it already had API-target restrictions to
+seven Maps services).
+
+Correction to the earlier entry in this file: the claim "no referrer restriction" was reached by
+curling the Maps JS bootstrap with different `Referer` headers. **That test is invalid** — the
+bootstrap is always served and enforcement happens when the API initialises in the browser. The
+key did lack referrer restrictions, but `gcloud services api-keys describe` is the authority,
+not a curl probe.
+
+### Layout faults fixed
+
+Primary and secondary buttons on the wound page now share the card's centre (all at 756px at a
+1512px viewport); previously the primary sat at 261–645 while the secondary was centred at
+611–901. The heading gap above "Check a photo" is 25px, matching the card's 24px padding, where
+it had been 73px.
+
+**Unverified:** the Google *map* element stays hidden in the ZIP-search flow (results render as
+a list), so the referrer restriction could not be positively confirmed against a rendered map.
+Clean-air itself works end to end — air quality and the location list both load.
