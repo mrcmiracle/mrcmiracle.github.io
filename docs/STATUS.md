@@ -453,25 +453,25 @@ a list), so the referrer restriction could not be positively confirmed against a
 Clean-air itself works end to end — air quality and the location list both load.
 
 
-## Google Cloud OAuth — what the domain move does and does not affect
+## Google Cloud OAuth — confirmed: the domain move needed nothing (2026-10-18)
 
-Verified from the live authorize response, not assumed:
+Google sign-in was confirmed working on the new domain with **no change made in Google Cloud
+Console**, which matches what the live authorize response shows:
 
 - `redirect_uri=https://fsbrpozjfsioxhsqznxw.supabase.co/auth/v1/callback` — Google redirects to
-  **Supabase**, never to this site. **Authorized redirect URIs need no change** for a domain move.
-- `scope=email profile` — non-sensitive only, so publishing the consent screen does **not**
-  require Google verification.
-- The site uses no Google JS SDK (`js/auth.js` is a plain redirect), so **Authorized JavaScript
-  origins are unused**.
+  **Supabase**, never to this site, so a site-domain change cannot affect it.
+- The site uses no Google JS SDK (`js/auth.js` is a plain redirect), so Authorized JavaScript
+  origins are unused.
+- `scope=email profile` — non-sensitive only.
 
-What does need updating, all on the OAuth consent screen (project `mrc-miracle`, client
-`183130978535-…`):
+**Still worth checking once: Google Auth Platform → Audience.** If the consent screen is in
+*Testing*, only the owner and listed test users can sign in; everyone else is refused with an
+unverified-app error, and those sessions expire after 7 days. The owner's own account works
+either way, so this failure is invisible until someone else tries it — exactly the wrong way to
+find out while handing the site to librarians and volunteers. Because the scopes are
+non-sensitive, "Publish app" moves it to Production immediately with no verification review.
 
-1. **Authorized domains** → add `mrcmiraclehealthcorps.org` (registrable domain only — no `www`,
-   no `https://`). Google requires this before it will accept links on that domain.
-2. **Application home page** → `https://www.mrcmiraclehealthcorps.org`
-3. **Privacy policy link** → `https://www.mrcmiraclehealthcorps.org/privacy.html`
-4. **Publishing status** — if it is still **Testing**, only explicitly listed test users can sign
-   in at all and their sessions expire after 7 days. For a site being handed to librarians and
-   volunteers this is the setting most likely to bite. Because the scopes are non-sensitive,
-   "Publish app" moves it to Production immediately with no verification review.
+Cosmetic only, no functional effect — update when convenient so the consent screen stops citing
+the old address: Authorized domains `mrcmiraclehealthcorps.org` (registrable domain, no `www`),
+Application home page `https://www.mrcmiraclehealthcorps.org`, Privacy policy
+`https://www.mrcmiraclehealthcorps.org/privacy.html`.
