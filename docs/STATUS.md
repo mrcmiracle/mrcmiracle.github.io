@@ -330,3 +330,73 @@ Verified, not assumed: `vercel crons ls` lists the job, and triggering it at `04
 produced **six Supabase requests at `04:43:11.3`** — the five RPCs plus overhead.
 
 **If a 13th API function is ever needed, something must be removed or the plan upgraded.**
+
+## Domain move to mrcmiraclehealthcorps.org (2026-10-17)
+
+Primary address is now **https://www.mrcmiraclehealthcorps.org**; the apex 308-redirects to
+it. Canonical, `og:url`, sitemap, robots and the QR generator in `js/admin-qr.js` all point
+there, so posters printed from here on carry the new address.
+
+### The trap: adding the custom domain silently dropped `mrcmiracle.vercel.app`
+
+For a period after the custom domain was attached, **every path on `mrcmiracle.vercel.app`
+returned 404** — including `/q/<slug>`. That domain is encoded in the QR codes already
+printed and hanging in KCLS libraries, so every one of those posters was dead.
+
+Restored with `npx vercel alias set <deployment> mrcmiracle.vercel.app`, which registered it
+as a verified project domain. Confirmed it now **tracks production**, not a pinned
+deployment, by deploying again and checking the old host serves the new CSS.
+
+Two rules follow:
+
+1. **After ANY domain change, immediately `curl` an old `/q/<slug>` path.** A poster in a
+   library has no way to tell anyone it stopped working.
+2. **`mrcmiracle.vercel.app` must never be given a `redirect` to the new domain.** It has to
+   serve the app directly, because `/q/<slug>` is counted by a function — a redirect would
+   bounce the scan before the function ran and scans would silently stop being recorded.
+
+### Open: sign-in on the new origin
+
+`js/auth.js` builds its callback from `location.origin`, so it adapts automatically, but
+**Supabase must allow the new origin or Google sign-in will bounce users back to the old
+domain.** Add to the Supabase dashboard → Authentication → URL Configuration:
+
+- Site URL: `https://www.mrcmiraclehealthcorps.org`
+- Redirect URLs: `https://www.mrcmiraclehealthcorps.org/**` (keep
+  `https://mrcmiracle.vercel.app/**` as well, since posters still land there)
+
+No MCP tool exposes Supabase auth config, so this is a dashboard change.
+
+### Open: the Google Maps key has no referrer restriction
+
+Tested by requesting the Maps JS API with three different `Referer` headers, including
+`https://example.invalid/` — all three returned an identical 176,584-byte response. The key
+is served publicly by `/api/config` (it has to be), so with no restriction **anyone can take
+it and bill Google to this account**. Restrict it in Google Cloud Console → Credentials →
+HTTP referrers to `www.mrcmiraclehealthcorps.org/*`, `mrcmiraclehealthcorps.org/*` and
+`mrcmiracle.vercel.app/*`. Maps will keep working on the new domain either way — this is a
+billing exposure, not a breakage.
+
+## Layout now adapts to the device (2026-10-17)
+
+`--maxw` was `42rem` at every width. Measured at 1440px that gave a 672px column with 384px
+of dead margin each side — **47% of the screen in use**. The container now steps up with the
+viewport (46 / 58 / 68 / 76rem) and the same laptop uses **76%**; 1920px uses 1216px.
+
+Prose deliberately does not follow it: paragraphs directly in the container keep a 46rem
+measure, because a text line spanning a wide monitor is harder to read. Cards, the survey and
+the dashboard take the extra room instead.
+
+Widening the container exposed a bug it had been hiding: `.btn-block` is `width: 100%`, which
+rendered the wound page's primary button **990px wide**. Block buttons now stop at 24rem once
+there is room. The longer wordmark also broke onto three ragged lines on a phone and cost
+19px of header height; `text-wrap: balance` puts it on two, restoring the original 108px.
+
+Verified at 375 / 768 / 1440 / 1920 in both languages, no horizontal overflow at any width.
+
+### Theming was done within DESIGN.md, not against it
+
+The request was a "health corps theme". `docs/DESIGN.md` forbids decorative iconography and
+any fifth accent colour, so the identity is carried by naming and typographic weight — no
+crosses, no stripes, no new colour. The HOSA tagline is untouched and still sits directly
+under the wordmark, where PHRC asked for it.
