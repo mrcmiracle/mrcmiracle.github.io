@@ -417,16 +417,16 @@ hosts return 200 publicly, serve the current build, and `/q/<slug>` 302s with `?
 
 Never use `vercel alias set` to restore a public host on this project.
 
-### Sign-in now lands on the right domain
+### Sign-in (resolved 2026-10-18)
 
-`js/auth.js` forwards a token-bearing hash to `www.mrcmiraclehealthcorps.org` before anything
-reads it, because Supabase still returns to the old Site URL. It fires only when an
-`access_token` is present, so poster traffic and QR attribution are untouched.
+The new origin is now in Supabase → Authentication → URL Configuration, so the token comes back
+to the host the person signed in on. The temporary forward in `js/auth.js` has been **removed**.
 
-**This is a workaround, not the fix.** Add the new origin in Supabase → Authentication → URL
-Configuration (Site URL `https://www.mrcmiraclehealthcorps.org`, redirect
-`https://www.mrcmiraclehealthcorps.org/**`, keeping `https://mrcmiracle.vercel.app/**`), then
-the forward in `auth.js` can be deleted.
+Note for anyone re-testing this: **it is not verifiable from outside.** This Supabase version
+does not validate `redirect_to` on `/authorize` or `/recover` — a bogus domain passes through
+both identically — so only a real sign-in proves the allowlist. If sign-in ever bounces to the
+old host again, that is the setting to check first, and reverting the removal commit restores
+the forward.
 
 ### Maps key restricted
 
@@ -451,3 +451,27 @@ it had been 73px.
 **Unverified:** the Google *map* element stays hidden in the ZIP-search flow (results render as
 a list), so the referrer restriction could not be positively confirmed against a rendered map.
 Clean-air itself works end to end — air quality and the location list both load.
+
+
+## Google Cloud OAuth — what the domain move does and does not affect
+
+Verified from the live authorize response, not assumed:
+
+- `redirect_uri=https://fsbrpozjfsioxhsqznxw.supabase.co/auth/v1/callback` — Google redirects to
+  **Supabase**, never to this site. **Authorized redirect URIs need no change** for a domain move.
+- `scope=email profile` — non-sensitive only, so publishing the consent screen does **not**
+  require Google verification.
+- The site uses no Google JS SDK (`js/auth.js` is a plain redirect), so **Authorized JavaScript
+  origins are unused**.
+
+What does need updating, all on the OAuth consent screen (project `mrc-miracle`, client
+`183130978535-…`):
+
+1. **Authorized domains** → add `mrcmiraclehealthcorps.org` (registrable domain only — no `www`,
+   no `https://`). Google requires this before it will accept links on that domain.
+2. **Application home page** → `https://www.mrcmiraclehealthcorps.org`
+3. **Privacy policy link** → `https://www.mrcmiraclehealthcorps.org/privacy.html`
+4. **Publishing status** — if it is still **Testing**, only explicitly listed test users can sign
+   in at all and their sessions expire after 7 days. For a site being handed to librarians and
+   volunteers this is the setting most likely to bite. Because the scopes are non-sensitive,
+   "Publish app" moves it to Production immediately with no verification review.
