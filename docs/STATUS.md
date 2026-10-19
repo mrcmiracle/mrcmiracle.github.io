@@ -512,3 +512,37 @@ the first of these RPCs to have a file behind it rather than existing only in th
 
 **Follow-up rows already collected are left in `public.events` untouched.** They are simply no
 longer read. Nothing deletes them, so the decision is reversible.
+
+## Wording and alignment pass (2026-10-18)
+
+**The amber "not a diagnosis" box was 736px above a 1024px card, both flush left.** Cause was
+mine: the prose measure added with the wider container applied to `main .wrap > p`, and `.notice`
+is a `<p>` — but it is a bordered box with a background, not running text. A measure cap is for
+reading; a box aligns with the cards around it. `.notice` and `.call911` are now excluded.
+Verified: disclaimer, upload card and "How this works" all 244→1268 at 1512px, and all 343px on
+a phone, while the naked lede keeps its 736px measure.
+
+**Wording in the same box.** "This is not a diagnosis and not medical advice" repeated the
+negation; it now reads "This is not a diagnosis, and not medical advice." The body ended on a
+dangling "see a medical professional, whatever this page says" → "no matter what this page says."
+The Spanish was already idiomatic ("diga lo que diga esta página") and is unchanged.
+
+**Spanish register.** The site is **usted** everywhere — air quality, kit items, privacy,
+emergencies, sign-in, with no exceptions — but 26 strings across the home page, the survey, the
+wound tool and the age gate were written in **tú**, including survey questions 1, 2 and 3 sitting
+side by side in two different registers. To a Spanish reader that is what machine translation
+looks like. All 26 are now usted; a wide second-person scan finds none left.
+
+A first narrower sweep missed five of them ("te sientes", "si te preocupa", "cerca de ti" and two
+imperatives) because it keyed on possessives and a short verb list. **Scan for second-person
+markers broadly, not for a word list.**
+
+Also removed 8 follow-up translation keys orphaned by dropping the second survey.
+
+## Survey verified on mobile
+
+At 375px: visible, five questions, no horizontal overflow, **zero tap targets under 44px**.
+Filled and submitted end to end with the request intercepted so no test row reached the database
+(confirmed: still 20 `prep_check` rows, newest from the day before). The captured payload carried
+`prep_phase: "baseline"` with all five answers, and the thank-you rendered with its gap links.
+Spanish verified at the same width.
