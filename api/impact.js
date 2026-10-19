@@ -4,9 +4,12 @@
  * Built for a judge or an MRC coordinator to check, so it is deliberately
  * honest rather than flattering:
  *
- *  - Before/after preparedness counts only visitors who answered BOTH times,
- *    so the two figures describe the same people. Anyone who answered once is
- *    reported separately as baseline_only rather than being quietly folded in.
+ *  - Preparedness is a SNAPSHOT, not a change measurement. The later-visit
+ *    follow-up was removed on 2026-10-18 (5 answers against 15), so these
+ *    figures describe households as people reported them, once each. Nothing
+ *    here claims the project caused anything.
+ *  - Each readiness item carries its own denominator, because every question
+ *    is optional and the bases genuinely differ.
  *  - Sample sizes travel with every percentage, because "60% improved" out of
  *    five people is not a finding.
  *  - first_event/last_event give the window the numbers cover, so nobody has
@@ -70,7 +73,8 @@ export default async function handler(req, res) {
       wound,
       sections,
       method: 'Anonymous. No name, email, precise location or IP is collected. ' +
-              'Before and after figures count only visitors who answered both times.'
+              'Preparedness figures are a snapshot from one survey per browser, not a ' +
+              'before-and-after comparison, and each item carries its own denominator.'
     });
   } catch (err) {
     console.error('[impact] ' + err.message);

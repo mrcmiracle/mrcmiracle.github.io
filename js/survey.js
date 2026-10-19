@@ -1,26 +1,26 @@
-/* survey.js — the 5 + 5 survey at the bottom of the home page.
+/* survey.js — the five-question survey at the bottom of the home page.
 
    WHY IT EXISTS
-   A scan count says how many people saw a poster. It says nothing about
-   whether anything changed. The MRC Partnership guidelines ask for exactly
-   that - "# of people impacted" (page 2, 1c) and evidence that the partnership
-   "created positive change" (Round Two rubric A.3). So the same readiness
-   question is asked on a first visit and again on a later one, and the two
-   answers from the same browser are compared.
+   A scan count says how many people saw a poster. It says nothing about who
+   they are or what state they are in. The MRC Partnership guidelines ask for
+   "# of people impacted" (page 2, 1c) and evidence that the partnership
+   "created positive change" (Round Two rubric A.3), so this asks each visitor
+   once what their household already has in place.
 
-   THE TWO HALVES
-     first visit  (baseline)  readiness, confidence, household size, age,
-                              household makeup
-     later visit  (followup)  readiness, confidence, usefulness, what they
-                              did, how many people they shared it with
+   ONE SURVEY, ASKED ONCE
+     readiness (four items), confidence, household size, age, household makeup
 
-   "Later visit" means a later browser SESSION than the one the first half was
-   answered in - not a reload of the same page. The visit counter lives in
-   js/track.js (mrcm_seen goes up once per session).
+   A second survey used to be asked on a later visit, so the same person could
+   be compared with themselves. It was removed on 2026-10-18: it had collected
+   5 answers against 15 first answers, far too few to compare anyone to
+   anything, and the impact page said so on every load. Every figure there is
+   now drawn from this one survey and describes readiness as found, not change
+   over time. The follow-up answers already collected are still in the events
+   table - they are simply no longer read, and nothing new is written.
 
    RULES
-   - Five questions per half, maximum. Every question is optional.
-   - One Skip button. A skip is remembered and never re-asked for that half.
+   - Five questions, maximum. Every question is optional.
+   - One Skip button. A skip is remembered and never re-asked.
    - Nothing personal: no name, email, address, phone or location. Answers are
      stored against the same random per-browser id the rest of the site uses.
    - Labels carry data-i18n on an inner <span>, never on the <label> itself:
@@ -46,19 +46,19 @@
     catch (e) { return 1; }
   }
 
-  /* Which half to ask, or '' to stay hidden.
+  /* Whether to ask, or '' to stay hidden. There is one survey, asked once.
+     The later-visit follow-up was removed on 2026-10-18: it had produced 5
+     answers against 15 first answers, which is too few to compare people to
+     themselves, and every figure on the impact page is now drawn from this
+     one survey instead.
+
      `server` is the signed-in account's verified status from /api/me, or null.
      When someone is signed in, what their ACCOUNT has answered wins over what
-     this browser remembers - that is what stops a second device asking the
-     first half again. And a first half answered on another device counts as a
-     "later visit" here: a different device is, by definition, a later visit. */
+     this browser remembers - that is what stops a second device asking again. */
   function phaseToAsk(s, server) {
     var baselineDone = !!s.baselineDone || !!(server && server.baseline);
-    var followupDone = !!s.followupDone || !!(server && server.followup);
-    if (!baselineDone) return s.baselineSkipped ? '' : 'baseline';
-    if (followupDone || s.followupSkipped) return '';
-    if (!s.baselineDone && server && server.baseline) return 'followup';   // answered elsewhere
-    return currentVisit() > (s.baselineVisit || 1) ? 'followup' : '';
+    if (baselineDone || s.baselineSkipped) return '';
+    return 'baseline';
   }
 
   // ---------- tiny DOM helpers ----------
@@ -194,33 +194,6 @@
     form.appendChild(q5);
   }
 
-  function buildFollowup(form) {
-    var q1 = fieldset('survey.f.q1', 'survey.tickall');
-    q1.appendChild(checks('have', READINESS));
-    form.appendChild(q1);
-
-    var q2 = fieldset('survey.f.q2');
-    q2.appendChild(scale('confidence', 'survey.scale.not', 'survey.scale.very'));
-    form.appendChild(q2);
-
-    var q3 = fieldset('survey.f.q3');
-    q3.appendChild(scale('useful', 'survey.scale.notuseful', 'survey.scale.veryuseful'));
-    form.appendChild(q3);
-
-    var q4 = fieldset('survey.f.q4', 'survey.tickall');
-    q4.appendChild(checks('did', [
-      { value: 'water',    key: 'survey.did.water' },
-      { value: 'plan',     key: 'survey.did.plan' },
-      { value: 'cleanair', key: 'survey.did.cleanair' },
-      { value: 'wound',    key: 'survey.did.wound' },
-      { value: 'nothing',  key: 'survey.did.nothing' }
-    ]));
-    form.appendChild(q4);
-
-    var q5 = fieldset('survey.f.q5');
-    q5.appendChild(stepper('shared', 0, 500, 0));
-    form.appendChild(q5);
-  }
 
   // ---------- reading answers ----------
   function ticked(form, name) {
@@ -254,24 +227,13 @@
     Object.keys(r).forEach(function (k) { out[k] = r[k]; });
     var c = picked(form, 'confidence'); if (c) out.prep_confidence = c;
 
-    if (phase === 'baseline') {
-      var h = num(form, 'household'); if (h) out.household_size = h;
-      var a = picked(form, 'age'); if (a) out.age_band = a;
-      var hh = ticked(form, 'hh');
-      if (hh.length) {
-        ['older', 'child', 'disability', 'language'].forEach(function (k) {
-          out['hh_' + k] = hh.indexOf(k) !== -1 ? 1 : 0;
-        });
-      }
-    } else {
-      var u = picked(form, 'useful'); if (u) out.useful = u;
-      var did = ticked(form, 'did');
-      if (did.length) {
-        ['water', 'plan', 'cleanair', 'wound', 'nothing'].forEach(function (k) {
-          out['did_' + k] = did.indexOf(k) !== -1 ? 1 : 0;
-        });
-      }
-      var sh = num(form, 'shared'); if (sh !== '') out.shared_count = sh;
+    var h = num(form, 'household'); if (h) out.household_size = h;
+    var a = picked(form, 'age'); if (a) out.age_band = a;
+    var hh = ticked(form, 'hh');
+    if (hh.length) {
+      ['older', 'child', 'disability', 'language'].forEach(function (k) {
+        out['hh_' + k] = hh.indexOf(k) !== -1 ? 1 : 0;
+      });
     }
     return out;
   }
@@ -287,7 +249,7 @@
     h.id = 'survey-done-h';
     h.tabIndex = -1;
     host.appendChild(h);
-    host.appendChild(el('p', null, phase === 'baseline' ? 'survey.thanks.b' : 'survey.thanks.f'));
+    host.appendChild(el('p', null, 'survey.thanks.b'));
 
     /* Answering should be useful to the person answering, not only to us: a
        gap they just admitted to gets a link to the page that closes it. */
@@ -330,10 +292,10 @@
     var done = document.getElementById('survey-done');
     var err = document.getElementById('survey-err');
 
-    document.getElementById('survey-h').setAttribute('data-i18n', phase === 'baseline' ? 'survey.b.h' : 'survey.f.h');
-    document.getElementById('survey-sub').setAttribute('data-i18n', phase === 'baseline' ? 'survey.b.sub' : 'survey.f.sub');
+    document.getElementById('survey-h').setAttribute('data-i18n', 'survey.b.h');
+    document.getElementById('survey-sub').setAttribute('data-i18n', 'survey.b.sub');
 
-    if (phase === 'baseline') buildBaseline(qs); else buildFollowup(qs);
+    buildBaseline(qs);
 
     /* Shown only once the dictionary has loaded. I18N.init() fetches it
        asynchronously; revealing the box before then would flash a survey of
@@ -359,8 +321,8 @@
       global.Track.send('prep_check', fields, false, acct ? acct.token : undefined);
 
       var s = readState();
-      if (phase === 'baseline') { s.baselineDone = Date.now(); s.baselineVisit = currentVisit(); }
-      else { s.followupDone = Date.now(); }
+      s.baselineDone = Date.now();
+      s.baselineVisit = currentVisit();
       writeState(s);
 
       form.hidden = true;
@@ -369,7 +331,7 @@
 
     document.getElementById('survey-skip').addEventListener('click', function () {
       var s = readState();
-      if (phase === 'baseline') s.baselineSkipped = Date.now(); else s.followupSkipped = Date.now();
+      s.baselineSkipped = Date.now();
       writeState(s);
       global.Track.send('prep_skipped', { prep_phase: phase });
       box.hidden = true;

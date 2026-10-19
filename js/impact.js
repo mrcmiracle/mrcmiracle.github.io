@@ -86,7 +86,12 @@
       row.appendChild(el('div', 'bar-label', r.label));
       var track = el('div', 'bar-track');
       var fill = el('span', 'bar-fill' + (r.tone ? ' tone-' + r.tone : ''));
-      fill.style.width = (max ? (r.value / max) * 100 : 0) + '%';
+      /* A row carrying its own denominator is drawn as a share of that
+         denominator, not against the biggest count in the set. Questions are
+         optional, so "3 of 5" and "4 of 7" have different bases, and scaling
+         both against 4 would draw the larger share as the shorter bar. */
+      fill.style.width = (r.of ? (r.value / r.of) * 100
+                               : (max ? (r.value / max) * 100 : 0)) + '%';
       track.appendChild(fill);
       row.appendChild(track);
       row.appendChild(el('div', 'bar-value', opts.fmt ? opts.fmt(r) : String(r.value)));
@@ -236,75 +241,58 @@
     return c;
   }
 
-  function changeCard(p) {
-    var c = card('Did it change anything?',
-      'People are asked about their household on a first visit and again on a later one. This compares ' +
-      'the same people to themselves.');
-    var paired = p.paired || 0;
+  /* The survey is asked once, so this is a snapshot of how households were
+     found - not a before/after comparison. Each item carries its OWN
+     denominator: people may answer the confidence question and skip the
+     checklist, and "4 of 7" is the honest way to say that. */
+  function readinessCard(p) {
+    var total = p.responses || 0;
+    var c = card('How ready people are',
+      'From the one survey on the home page, answered once per browser. It describes households ' +
+      'as people reported them, not change over time.');
 
-    if (!paired) {
-      c.appendChild(el('p', 'notice',
-        'No before-and-after pairs yet. ' + (p.baseline_total || 0) +
-        ' first answers are recorded; a pair only exists once somebody answers again on a later visit.'));
+    if (!total) {
+      c.appendChild(el('p', 'notice', 'No survey answers yet.'));
       return c;
     }
 
+    var have = p.have || {};
     var rows = [
-      { label: 'Two weeks of water stored', d: p.water },
-      { label: 'A plan for cleaner air in smoke', d: p.air },
-      { label: 'An earthquake plan everyone knows', d: p.plan },
-      { label: 'A first aid kit', d: p.firstaid }
-    ].filter(function (r) { return r.d; });
+      { label: 'Two weeks of water stored', d: have.water },
+      { label: 'A plan for cleaner air in smoke', d: have.air },
+      { label: 'An earthquake plan everyone knows', d: have.plan },
+      { label: 'A first aid kit', d: have.firstaid }
+    ].filter(function (r) { return r.d && r.d.n; });
 
-    var chartRows = rows.map(function (r) {
-      return { label: r.label, before: r.d.before || 0, after: r.d.after || 0 };
-    });
+    if (rows.length) {
+      c.appendChild(hbars(rows.map(function (r) {
+        return { label: r.label, value: r.d.yes || 0, of: r.d.n };
+      }), { fmt: function (x) { return x.value + ' of ' + x.of; } }));
+    }
 
-    var legend = el('div', 'pair-legend');
-    legend.appendChild(el('span', 'key key-before', 'First visit'));
-    legend.appendChild(el('span', 'key key-after', 'Later visit'));
-    c.appendChild(legend);
-
-    var grid = el('div', 'pair-grid');
-    chartRows.forEach(function (r) {
-      var line = el('div', 'pair-line');
-      line.appendChild(el('div', 'pair-label', r.label));
-      line.appendChild(pairChart([r]));
-      line.appendChild(el('div', 'pair-nums', r.before + ' → ' + r.after + ' of ' + paired));
-      grid.appendChild(line);
-    });
-    c.appendChild(grid);
-
-    var s = p.score || {};
-    if (s.out_of) {
-      var delta = (s.after - s.before);
+    var sc = p.score || {};
+    if (sc.n) {
       var d = el('p', 'dash-figure');
-      d.appendChild(el('b', null, s.before + ' → ' + s.after));
+      d.appendChild(el('b', null, String(sc.avg)));
       d.appendChild(document.createTextNode(
-        ' average items in place, out of ' + s.out_of + ' (' +
-        (delta > 0 ? '+' : '') + Math.round(delta * 100) / 100 + '). ' +
-        s.improved + ' improved, ' + s.unchanged + ' stayed the same, ' + s.declined + ' went down.'));
+        ' of ' + sc.out_of + ' items in place on average, across ' + sc.n + ' ' +
+        plural(sc.n, 'answer', 'answers') + '. ' + sc.none + ' had none of the four, ' +
+        sc.all + ' had all four.'));
       c.appendChild(d);
     }
 
     var conf = p.confidence || {};
     if (conf.n) {
       var cf = el('p', 'dash-figure');
-      cf.appendChild(el('b', null, conf.before + ' → ' + conf.after));
+      cf.appendChild(el('b', null, String(conf.avg)));
       cf.appendChild(document.createTextNode(
-        ' average on the 1-to-5 "how prepared do you feel" question, from the ' + conf.n +
-        ' ' + plural(conf.n, 'person', 'people') + ' who answered it both times; ' +
-        conf.improved + ' rated themselves higher the second time.'));
+        ' average on the 1-to-5 "how prepared do you feel" question, from ' + conf.n + ' ' +
+        plural(conf.n, 'person', 'people') + '. ' + conf.low + ' rated themselves 2 or below, ' +
+        conf.high + ' rated 4 or above.'));
       c.appendChild(cf);
     }
 
-    if (paired < MIN_MEANINGFUL) c.appendChild(smallSampleNote(paired, 'answered both times'));
-    if (p.baseline_only) {
-      c.appendChild(el('p', 'dash-note',
-        p.baseline_only + ' more ' + plural(p.baseline_only, 'person', 'people') +
-        ' answered once and have not come back. They are left out of the comparison rather than ' +
-        'counted on one side of it.'));
-    }
+    if (total < MIN_MEANINGFUL) c.appendChild(smallSampleNote(total, 'answered the survey'));
     return c;
   }
 
@@ -343,29 +331,6 @@
     return c;
   }
 
-  function actionsCard(p) {
-    var a = p.actions || {};
-    if (!a.n) return null;
-    var c = card('What people did afterwards',
-      'Self-reported on a later visit. "Shared with" is what people told us, not something we can check.');
-    c.appendChild(hbars([
-      { label: 'Stored water', value: a.water || 0 },
-      { label: 'Made or updated a plan', value: a.plan || 0 },
-      { label: 'Found a clean air location', value: a.cleanair || 0 },
-      { label: 'Used the wound check', value: a.wound || 0 },
-      { label: 'None of these', value: a.nothing || 0, tone: 'flat' }
-    ], { fmt: function (x) { return x.value + ' of ' + a.n; } }));
-
-    var tiles = [];
-    if (p.shared && p.shared.n) {
-      tiles.push({ value: p.shared.people, label: 'people they say they told', sub: p.shared.n + ' answered' });
-    }
-    if (p.useful && p.useful.n) {
-      tiles.push({ value: p.useful.avg, label: 'average usefulness out of 5', sub: p.useful.n + ' answered' });
-    }
-    if (tiles.length) c.appendChild(kpiStrip(tiles));
-    return c;
-  }
 
   function woundCard(w) {
     if (!w || !w.checks) return null;
@@ -469,13 +434,13 @@
 
     root.appendChild(kpiStrip([
       { value: totals.scans || 0, label: 'poster scans' },
-      { value: p.baseline_total || 0, label: 'survey responses' },
+      { value: p.responses || 0, label: 'survey responses' },
       { value: w.checks || 0, label: 'wound photos checked' },
       { value: (d.use && d.use.lookups) || 0, label: 'clean air searches' },
       { value: (reach.codes || []).filter(function (k) { return k.active; }).length, label: 'codes in circulation' }
     ]));
 
-    [postersCard(reach), changeCard(p), reachCard(p.reach), actionsCard(p), woundCard(w),
+    [postersCard(reach), readinessCard(p), reachCard(p.reach), woundCard(w),
      sectionsCard(d.sections), usageCard(d.use || {})]
       .filter(Boolean)
       .forEach(function (section) { root.appendChild(section); });
