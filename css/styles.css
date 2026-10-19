@@ -1000,6 +1000,23 @@ html:lang(es).is-offline .site-head::after { content: "Sin conexión — mostran
 .wound-stage .small { color: var(--ink-3); }
 
 .wound-cta-row { margin: 0 0 var(--s2); }
+
+/* ---------- the intake block reads as one centred column ----------
+   Heading, privacy line, both buttons and both hints share a single axis. It
+   used to alternate - heading, privacy and framing hint flush left, buttons
+   and drag hint centred - six elements in three alignments, which is what
+   made the card look unfinished.
+
+   Scoped to DIRECT children deliberately. #wound-result sits inside this same
+   section, and centring a numbered list of first aid steps, its citations and
+   the "get care now" box would be a real regression. Those stay as they are. */
+.wound-stage > h2,
+.wound-stage > p { text-align: center; }
+/* Centred text wants a tighter measure than left-aligned prose: a centred
+   line running the full width of a 1024px card loses the axis that makes it
+   read as centred at all. */
+.wound-stage > p { margin-inline: auto; max-width: 38rem; }
+.wound-cam-row { text-align: center; }
 /* The card's own padding is the space above its heading. An h2 carrying its
    usual top margin as the first child added ~49px on top of that, which read
    as a gap rather than as padding. */
