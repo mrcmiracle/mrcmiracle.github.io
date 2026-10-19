@@ -546,3 +546,18 @@ Filled and submitted end to end with the request intercepted so no test row reac
 (confirmed: still 20 `prep_check` rows, newest from the day before). The captured payload carried
 `prep_phase: "baseline"` with all five answers, and the thank-you rendered with its gap links.
 Spanish verified at the same width.
+
+### The photo card now sits on one axis
+
+It had alternated six times: heading left, privacy line left, primary button centred, secondary
+button centred, framing hint left, drag hint centred. No single rule was wrong; together they
+read as unfinished. All six now centre on the card's axis — verified at 756 on a 1512px window
+and 188 on a 375px phone, with no overflow.
+
+Centred paragraphs take a 38rem measure, because a centred line running the full width of a
+1024px card loses the axis that makes it read as centred.
+
+**Scoped to direct children deliberately.** `#wound-result` lives inside the same `<section>`, so
+a blanket `text-align: center` would have centred the first aid steps, their citations and the
+"get care now" box. Confirmed after rendering a real result: eyebrow, label, tips, care box and
+sources all still compute to `start`.
