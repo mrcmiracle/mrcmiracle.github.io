@@ -475,3 +475,40 @@ Cosmetic only, no functional effect — update when convenient so the consent sc
 the old address: Authorized domains `mrcmiraclehealthcorps.org` (registrable domain, no `www`),
 Application home page `https://www.mrcmiraclehealthcorps.org`, Privacy policy
 `https://www.mrcmiraclehealthcorps.org/privacy.html`.
+
+## One survey, and impact figures drawn entirely from it (2026-10-18)
+
+The later-visit follow-up survey is **removed**. It had collected **5 answers against 15 first
+answers** — too few to compare people with themselves, and the dashboard flagged it as such on
+every load. Asking once and reporting it honestly is worth more than a comparison nobody could
+rely on.
+
+**Trade-off, stated plainly:** the site can no longer show *change*. "Households that added
+water after using this" is not a claim it can make any more; "households that have water" is.
+That was the strongest impact evidence on paper, and it is gone by choice.
+
+### What changed
+
+- `js/survey.js` — `phaseToAsk()` returns the one survey or nothing. The follow-up question set,
+  its branch of `collect()`, and its state keys are deleted. The thank-you no longer promises
+  follow-up questions, in English **and** Spanish.
+- `js/impact.js` — "Did it change anything?" → **"How ready people are"**, a snapshot with no
+  causal claim. **"What people did afterwards" is removed** (its only source was the follow-up).
+- `impact.html` — the "How to read this" box no longer describes before-and-after figures.
+- `api/impact.js` — header and the public `method` string rewritten to say snapshot, not change.
+
+### Each item carries its own denominator
+
+Every question is optional, so the bases genuinely differ: 4 of 7 had stored water while 3 of 5
+had a first aid kit. `hbars()` scaled every row against the largest **count**, which drew the
+larger share (3/5 = 60%) as the *shorter* bar than 4/7 = 57%. Rows carrying an `of` are now drawn
+as a share of their own denominator. Verified live: 60% vs 57.1%, in the right order.
+
+### Database
+
+`prep_impact()` rewritten to read only the first answer per person, applied as migration
+`prep_impact_baseline_only` and committed as **`supabase/003_prep_impact_baseline_only.sql`** —
+the first of these RPCs to have a file behind it rather than existing only in the live database.
+
+**Follow-up rows already collected are left in `public.events` untouched.** They are simply no
+longer read. Nothing deletes them, so the decision is reversible.
