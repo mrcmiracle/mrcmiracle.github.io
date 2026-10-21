@@ -561,3 +561,43 @@ Centred paragraphs take a 38rem measure, because a centred line running the full
 a blanket `text-align: center` would have centred the first aid steps, their citations and the
 "get care now" box. Confirmed after rendering a real result: eyebrow, label, tips, care box and
 sources all still compute to `start`.
+
+## Alignment audited across every page, not one screenshot at a time (2026-10-20)
+
+Fixing the wound card alone was the wrong move: the same root cause (`.btn-block` capped at
+24rem and centred, inside containers whose text stayed left) was live on three other pages.
+A browser audit now runs over every element with `text-align: center` and flags any whose box
+centre is more than 2px off its container axis. All pages return **zero** hits.
+
+What it found and what was fixed:
+
+- **clean-air lookup** — the zip input ran the full 1024px of the container for a five-digit zip,
+  above a 384px centred button, with its label hard left. Zip field, both buttons and the city
+  picker now share one 24rem column on the page axis. The three inline `style` attributes went
+  with it; their margins were off the spacing scale, which DESIGN.md rule 3 forbids.
+- **the "or" separators** — capped by the prose measure and anchored left, putting the word 144px
+  off the axis every control sat on.
+- **privacy "Back to home"** — same, 144px off.
+
+Two CSS lessons worth keeping:
+
+1. **Specificity.** The first attempt at the separator used `main .wrap > p.lookup-or` — `(0,2,2)`
+   against the prose rule's `(0,3,2)`, because each `:not()` counts its argument. The cap still
+   won. Checking it in the browser rather than trusting the edit is what caught it; the fix was
+   to exclude it at the source, not to escalate.
+2. **A `<p>` holding a block button is not prose.** The measure now skips
+   `:has(.btn-block)`, so this class of bug cannot come back on a new page.
+
+Not a bug, left alone: a button inside the left-aligned `.rn-panel` on the emergencies page.
+
+## Both logging paths verified end to end
+
+`/api/track` reports the status of each leg, so one request proves both. A probe event returned:
+
+```
+{"ok": true, "supabase": "ok", "sheets": "ok"}
+```
+
+`SHEETS_WEBHOOK_URL` is set in production, so the Google Sheet mirror is live, not skipped.
+The probe row was deleted from Supabase afterwards (`id 2816`); **one row remains in the Google
+Sheet**, identifiable by `page = pipeline-probe`, `visitor = zzprobe0001`, if you want it gone.
