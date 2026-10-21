@@ -235,13 +235,16 @@ body {
 /* Keep lines readable once the container is wider than a comfortable measure.
    Direct children only: text inside a card is already constrained by the card.
 
-   Boxed callouts are excluded. A measure cap is for running text; .notice and
+   Excluded: boxed callouts, the lookup separators, and any paragraph whose
+   job is to hold a block button. A <p> wrapping a button is not prose, and
+   capping it at 46rem left the centred button 144px off the page axis on the
+   privacy page. A measure cap is for running text; .notice and
    .call911 carry a border and a background, so capping them left the amber
    "not a diagnosis" box 736px wide above a 1024px upload card, both flush left
    - which reads as a broken layout, not as a reading measure. A box aligns
    with the cards it sits among. */
 @media (min-width: 64rem) {
-  main .wrap > p:not(.notice):not(.call911):not(.lookup-or),
+  main .wrap > p:not(.notice):not(.call911):not(.lookup-or):not(:has(.btn-block)),
   main .wrap > ul,
   main .wrap > ol,
   main .wrap > .lede { max-width: 46rem; }
