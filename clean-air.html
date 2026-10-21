@@ -98,24 +98,24 @@
 
   <p class="notice" id="air-load-err" hidden data-i18n="common.error">Something went wrong loading this. Check your connection and reload.</p>
 
-  <form id="zip-form" class="field" novalidate>
+  <form id="zip-form" class="field lookup" novalidate>
     <label for="zip" data-i18n="air.zip.label">Enter a King County zip code</label>
     <input type="text" id="zip" name="zip" inputmode="numeric" pattern="[0-9]*" maxlength="5"
            autocomplete="postal-code" placeholder="98101" data-i18n-ph="air.zip.placeholder">
-    <p style="margin:.6rem 0 0"><button type="submit" class="btn btn-block" data-i18n="air.zip.button">Find locations</button></p>
+    <p class="lookup-go"><button type="submit" class="btn btn-block" data-i18n="air.zip.button">Find locations</button></p>
   </form>
 
-  <p class="small" style="text-align:center" data-i18n="air.or">or</p>
+  <p class="small lookup-or" data-i18n="air.or">or</p>
 
-  <div class="field" id="geo-field" hidden>
+  <div class="field lookup" id="geo-field" hidden>
     <button type="button" class="btn btn-secondary btn-block" id="geo-btn" data-i18n="air.geo.button">Use my location</button>
-    <p class="small" id="geo-note" style="margin:.5rem 0 0" data-i18n="air.geo.note">Your device will ask permission first. Your location is used in this browser only and is never sent to us.</p>
+    <p class="small lookup-note" id="geo-note" data-i18n="air.geo.note">Your device will ask permission first. Your location is used in this browser only and is never sent to us.</p>
     <p class="notice" id="geo-blocked" hidden data-i18n="air.geo.blocked">Your browser is blocking location for this site, so it cannot ask you. To turn it back on, tap the icon at the left of the address bar and allow Location, or check Location Services in your device settings. Searching by zip code works either way.</p>
   </div>
 
-  <p class="small" style="text-align:center" data-i18n="air.or">or</p>
+  <p class="small lookup-or" data-i18n="air.or">or</p>
 
-  <div class="field">
+  <div class="field lookup">
     <label for="city" data-i18n="air.city.label">Pick a city</label>
     <select id="city">
       <option value="" data-i18n="air.city.any">Choose a city&hellip;</option>
